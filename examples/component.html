@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Component</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.jss"></script>
+  <![endif]-->
+  <script type="text/javascript" src="../build/bee.js"></script>
+  <script src="./third-part/marked.js"></script>
+</head>
+<body>
+  <h1>component</h1>
+  <div id=template>
+    <textarea name="md" id="md" style="width: 45%;" a-model="markdown" placeholder="请在此输入 markdown" rows="10">
+# 标题一
+标题二
+---
+_斜体_
+    </textarea>
+    <x-mdeditor md="{{markdown}}" style="width: 45%; float: right">
+        <div>头</div>
+        <div>尾</div>
+    </x-mdeditor>
+  </div>
+  <script type="text/x-tpl" id="comtpl">
+    <div>
+        <h3>{{$children[0].innerHTML}}</h3>
+        {{{marked(md)}}}
+     </div>
+  </script>
+<script type="text/javascript" id=js>
+  var Com = Bee.extend({
+      $tpl: comtpl.innerHTML,
+      marked: function (md) {
+          return  marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
+      }
+  });
+
+  //注册 标签
+  Bee.tag('x-mdeditor', Com);
+
+  var bee = new Bee(document.getElementById('template'));
+</script>
+</body>
+</html>
