@@ -68,7 +68,7 @@ function Watcher(vm, dir) {
 //TODO
 extend(Watcher, {
   STATE_READY: 0
-  , STATE_CALLED: 1
+, STATE_CALLED: 1
 }, Class);
 
 function watcherUpdate (val) {
@@ -101,11 +101,11 @@ extend(Watcher.prototype, {
 
     this.state = Watcher.STATE_CALLED;
   }
-, getValue: function(vals) {
+, getValue: function(scope) {
     var val;
 
     try{
-      val = evaluate.eval(this.ast, {locals: vals, filters: vals.$filters});
+      val = evaluate.eval(this.ast, scope);
     }catch(e){
       val = '';
       console.error(e);

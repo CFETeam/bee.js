@@ -148,9 +148,9 @@ function getOperator(arity, value){
   return operators[arity][value] || function() { return; }
 }
 
-function reset(_context) {
-  if(_context) {
-    context = {locals: _context.locals || {}, filters: _context.filters || {}};
+function reset(scope) {
+  if(scope) {
+    context = {locals: scope || {}, filters: scope.$filters || {}};
   }else{
     context = {filters: {}, locals: {}};
   }
@@ -174,11 +174,9 @@ function getValue(key, scope) {
 
 //表达式求值
 //tree: parser 生成的 ast
-//context: 表达式执行的环境
-//context.locals: 变量
-//context.filters: 过滤器函数
-exports.eval = function(tree, _context) {
-  reset(_context || {});
+//scope 执行环境
+exports.eval = function(tree, scope) {
+  reset(scope || {});
 
   return evaluate(tree);
 };
