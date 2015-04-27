@@ -70,6 +70,8 @@ module.exports = {
           }
         }
       }.bind(this))
+    }else{
+      //TODO 普通对象的遍历
     }
   }
 };

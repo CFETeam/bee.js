@@ -11,22 +11,30 @@
   </style>
 </head>
 <body>
-  <h1>repeat</h1>
+  <h1>repeat 及 filter</h1>
 	<div id=template>
     <ul>
-      <li a-repeat="item in list" a-on="events">
+      <li a-repeat="item in list.filter(arrFilter) | arr" a-on="events">
           name: {{name}} - item.name: {{item.name}}
       </li>
     </ul>
   </div>
 <script type="text/javascript">
 var bee = new Bee(document.getElementById('template'), {
-  $data: {list:[{name: 'click me'}, {name: 'row 2'}], name: 'parent name'},
+  $data: {list:[{name: 'click me'}, {name: 'row 2'}, {name: 'd3'}], name: 'parent name'},
+  $filters: {
+    arr: function(arr) {
+      return arr.filter(this.arrFilter)
+    }
+  },
+  arrFilter: function(item) {
+    return Math.random() > 0.5;
+  },
   events: {
-      click: function(e) {
-          //TODO 使用`this.$set('name', 'clicked!!')` 而不是下面的
-          this.$set('item.name', 'clicked!!')
-      }
+    click: function(e) {
+      //TODO 使用`this.$set('name', 'clicked!!')` 而不是下面的
+      this.$set('item.name', 'clicked!!')
+    }
   }
 });
 </script>

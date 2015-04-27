@@ -136,7 +136,7 @@ extend(Bee.prototype, Event, {
       extend(true, this.$data, deepSet(key, val, {}));
       extend(true, this, deepSet(key, val, {}));
     }
-    update.call(this, key, val, true);
+    update.call(this, key, val);
     return this;
   }
   /**
@@ -171,7 +171,7 @@ extend(Bee.prototype, Event, {
         }
         parent[path] = isObject(val) ? extend(true, isArray(val) ? [] : {}, val) : val;
     }
-    update.call(this, key, val, false);
+    update.call(this, key, val);
   }
   /**
    * 手动更新某部分数据
@@ -195,6 +195,10 @@ extend(Bee.prototype, Event, {
 
       if(isBubble) {
         keys.pop();
+        //最终都冒泡到 $data
+        if(!keys.length && keyPath !== '$data'){
+          keys.push('$data');
+        }
       }else{
         break;
       }
@@ -276,14 +280,12 @@ function walk(el) {
  * @param {Object} data 要更新的数据. 增量数据或全新的数据.
  * @param {String} [keyPath] 需要更新的数据路径.
  * @param {AnyType|Object} [data] 需要更新的数据. 省略的话将使用现有的数据.
- * @param {Boolean} [isExtend] 界面更新类型.
  为 true 时, 是扩展式更新, 原有的数据不变
  为 false 时, 为替换更新, 不在 data 中的变量, 将在 DOM 中被清空.
  */
-function update (keyPath, data, isExtend) {
+function update (keyPath, data) {
   var attrs, keyPaths;
   if(isObject(keyPath)){
-    isExtend = data;
     attrs = keyPath;
   }else if(typeof keyPath === 'string'){
     keyPath = parseKeyPath(keyPath).join('.');
@@ -295,8 +297,6 @@ function update (keyPath, data, isExtend) {
   }else{
     attrs = this.$data;
   }
-
-  if(isUndefined(isExtend)){ isExtend = isObject(keyPath); }
 
   if(!keyPaths) {
     keyPaths = getKeyPaths.call(this, attrs);

@@ -49,7 +49,7 @@ var operators = {
     }
 
   , '(': function(l, r){ return l.apply(context.locals, r) }
-  , '|': function(l, r){ return r.call(null, l) }//filter. name|filter
+  , '|': function(l, r){ return r.call(context.locals, l) }//filter. name|filter
   , 'new': function(l, r){
       return l === Date ? new Function('return new Date(' + r.join(', ') + ')')() : new (Function.prototype.bind.apply(l, r));
     }
@@ -69,7 +69,7 @@ var operators = {
   , '(': function(f, s, t) { return f[s].apply(f, t) }
 
   //filter. name | filter : arg2 : arg3
-  , '|': function(f, s, t){ return s.apply(null, [f].concat(t)); }
+  , '|': function(f, s, t){ return s.apply(context.locals, [f].concat(t)); }
   }
 };
 

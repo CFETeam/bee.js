@@ -55,7 +55,7 @@ function Watcher(vm, dir) {
       }
     }
 
-    curVm.$watchers[path] = vm.$watchers[path] || [];
+    curVm.$watchers[path] = curVm.$watchers[path] || [];
     curVm.$watchers[path].push(this);
   }
 
@@ -102,13 +102,10 @@ extend(Watcher.prototype, {
     this.state = Watcher.STATE_CALLED;
   }
 , getValue: function(vals) {
-    var dir = this.dir
-      , val
-      , filters = extend({}, this.vm.$filters, function(a, b) {  return b.bind(dir); })
-      ;
+    var val;
 
     try{
-      val = evaluate.eval(this.ast, {locals: vals, filters: filters});
+      val = evaluate.eval(this.ast, {locals: vals, filters: vals.$filters});
     }catch(e){
       val = '';
       console.error(e);

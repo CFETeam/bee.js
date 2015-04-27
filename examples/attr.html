@@ -12,7 +12,7 @@
   <h1>a-attr, a-style 及绑定 </h1>
 	<div id=template>
     <div class="show" a-attr="attr" a-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
-        {{toJSON($data, attr, style, width, height)}}<!-- TODO 消除多余的代监听变量 -->
+        {{toJSON($data)}}
     </div>
     <div class="control" title="这里也是 title: {{attr.title}}">
       <label for="width">width<input type="range" value=50 a-model=width id="width"></label>
