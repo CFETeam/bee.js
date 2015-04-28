@@ -63,7 +63,7 @@ function Bee(tpl, props) {
 
     //私有属性/方法
   , _parent: null
-  , _assignments: null
+  , _assignments: null//当前 vm 的别名
   };
 
   var el;
@@ -133,7 +133,7 @@ extend(Bee.prototype, Event, {
       extend(true, this.$data, key);
       extend(true, this, key);
     }else{
-      extend(true, this.$data, deepSet(key, val, {}));
+      key !== '$data' && extend(true, this.$data, deepSet(key, val, {}));
       extend(true, this, deepSet(key, val, {}));
     }
     update.call(this, key, val);
@@ -147,7 +147,7 @@ extend(Bee.prototype, Event, {
 
     if(isUndefined(key)){ return this; }
 
-    if(isObject(key)){
+    if(typeof key != 'string'){
       this.$data = key;
     }else{
         keys = parseKeyPath(key);
@@ -156,15 +156,13 @@ extend(Bee.prototype, Event, {
           parent = deepGet(keys.join('.'), this.$data);
           if(isUndefined(parent)){
             parent = {};
-            deepSet(keys.join('.'), parent, this.$data);
-            deepSet(keys.join('.'), parent, this);
           }else if(!isObject(parent)){
             //支持基础类型?
             var oldParent = parent;
             parent = {toString: function() { return oldParent; }};
-            deepSet(keys.join('.'), parent, this.$data);
-            deepSet(keys.join('.'), parent, this);
           }
+          deepSet(keys.join('.'), parent, this.$data);
+          deepSet(keys.join('.'), parent, this);
         }else{
           parent = this.$data;
           path = key;
@@ -296,6 +294,7 @@ function update (keyPath, data) {
     keyPaths = [keyPath];
   }else{
     attrs = this.$data;
+    keyPaths = ['$data'];
   }
 
   if(!keyPaths) {

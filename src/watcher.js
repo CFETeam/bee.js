@@ -24,12 +24,11 @@ function exParse(path) {
   summary = evaluate.summary(ast);
   extend(this.dir, summary);
   extend(this, summary);
-  this.vm._assignments = this.assignments;
   this.ast = ast;
 };
 
 function Watcher(vm, dir) {
-  var path, scope = vm, curVm, localKey, willUpdate;
+  var path, scope = vm, curVm, localKey, willUpdate, ass, paths;
 
   this.dir = dir;
   this.vm = vm;
@@ -41,25 +40,37 @@ function Watcher(vm, dir) {
   exParse.call(this, dir.path);
 
   for(var i = 0, l = this.paths.length; i < l; i++) {
-    path = this.paths[i];
-    localKey = utils.parseKeyPath(path)[0];
+    paths = utils.parseKeyPath(this.paths[i]);
+    localKey = paths[0];
 
     while(scope) {
       curVm = scope;
-      if(scope._assignments && scope._assignments.indexOf(localKey) > -1 || ( localKey in scope.$data )) {
-        break;
-      }else {
-        //不在当前
-        willUpdate = true;//对于在父级作用域的表达式应立即执行
-        scope = scope._parent;
-      }
-    }
+      ass = scope._assignments;
 
+      if(ass && ass.length) {
+        //具名 repeat
+        if(ass[0] === localKey) {
+          if(paths.length == 1) {
+            paths[0] = '$data';
+          }else{
+            paths.shift();
+          }
+          break;
+        }
+      }else if(localKey in scope){
+        break;
+      }
+
+      //向上查找
+      willUpdate = true;//对于在父级作用域的表达式应立即执行
+      scope = scope._parent;
+    }
+    path = paths.join('.');
     curVm.$watchers[path] = curVm.$watchers[path] || [];
     curVm.$watchers[path].push(this);
   }
 
-  //没有变量的表达式
+  //没有变量的表达式立即求值
   if(!this.locals.length || willUpdate) {
     this.update();
   }
@@ -87,6 +98,13 @@ extend(Watcher.prototype, {
       , newVal
       , scope = this.vm
       ;
+
+    //具名 repeat
+    if(scope._assignments) {
+      //枚举 eval 做需要的参数
+      scope = {_parent: this.vm._parent, $data: this.vm.$data, $filters: this.vm.$filters};
+      scope[this.vm._assignments[0]] = this.vm.$data;
+    }
 
     newVal = this.getValue(scope);
 

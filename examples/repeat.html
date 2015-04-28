@@ -33,8 +33,7 @@ var bee = new Bee(document.getElementById('template'), {
   },
   events: {
     click: function(e) {
-      //TODO 使用`this.$set('name', 'clicked!!')` 而不是下面的
-      this.$set('item.name', 'clicked!!')
+      this.$set('name', 'clicked!!')
     }
   }
 });
