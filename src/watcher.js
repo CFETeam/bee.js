@@ -63,7 +63,7 @@ function Watcher(vm, dir) {
 
       //向上查找
       willUpdate = true;//对于在父级作用域的表达式应立即执行
-      scope = scope._parent;
+      scope = scope.$parent;
     }
     path = paths.join('.');
     curVm.$watchers[path] = curVm.$watchers[path] || [];
@@ -102,7 +102,7 @@ extend(Watcher.prototype, {
     //具名 repeat
     if(scope._assignments) {
       //枚举 eval 做需要的参数
-      scope = {_parent: this.vm._parent, $data: this.vm.$data, $filters: this.vm.$filters};
+      scope = {$parent: this.vm.$parent, $data: this.vm.$data, $filters: this.vm.$filters};
       scope[this.vm._assignments[0]] = this.vm.$data;
     }
 

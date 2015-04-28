@@ -39,7 +39,6 @@ module.exports = {
         var pos = items.indexOf(item, i)
           , oldPos = curArr.indexOf(item, i)
           , vm, el
-          , itemData = {}
           ;
 
         pos < 0 && (pos = items.lastIndexOf(item, i));
@@ -47,14 +46,9 @@ module.exports = {
 
         //新增元素
         if(oldPos < 0) {
-          //assign in arr
-          for(var a = 0; a < this.assignments.length; a++) {
-            itemData[this.assignments[0]] = item;
-          }
           el = this.el.cloneNode(true)
 
-          //TODO 使用 item 而不是 itemData
-          vm = this.vms[pos]= new this.cstr(el, {$data: item, _parent: this.vm, _assignments: this.assignments});
+          vm = this.vms[pos]= new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments});
           parentNode.insertBefore(vm.$el, this.els[pos] || this.anchors.end)
           this.els.splice(pos, 0, el)
           curArr.splice(pos, 0, item)

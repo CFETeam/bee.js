@@ -21,17 +21,15 @@ function parseKeyPath(keyPath){
  * @param {Boolean} [deep=false] 是否深度合并
  * @param {Object} target 目标对象
  * @param {Object} [object...] 来源对象
- * @param {Function} [callback] 用于自定义合并的回调
  * @return {Function} 合并后的 target 对象
  */
-function extend(/* deep, target, object..., calllback */) {
+function extend(/* deep, target, object... */) {
   var options
     , name, src, copy, copyIsArray, clone
     , target = arguments[0] || {}
     , i = 1
     , length = arguments.length
     , deep = false
-    , callback
     ;
 
   // Handle a deep copy situation
@@ -44,7 +42,6 @@ function extend(/* deep, target, object..., calllback */) {
   }
 
   if(utils.isFunction(arguments[length - 1])) {
-    callback = arguments[length - 1];
     length--;
   }
 
@@ -79,19 +76,11 @@ function extend(/* deep, target, object..., calllback */) {
               clone = src && utils.isPlainObject(src) ? src : {};
             }
 
-            if(callback) {
-              copy = callback(clone, copy, name);
-            }
-
             // Never move original objects, clone them
-            target[ name ] = extend( deep, clone, copy, callback);
+            target[ name ] = extend( deep, clone, copy);
 
             // Don't bring in undefined values
           } else if ( !utils.isUndefined(copy) ) {
-
-            if(callback) {
-              copy = callback(src, copy, name);
-            }
             target[ name ] = copy;
           }
         }

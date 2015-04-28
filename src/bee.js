@@ -16,7 +16,6 @@ var doc = require('./env.js').document
 var isObject = utils.isObject
   , isUndefined = utils.isUndefined
   , isFunction = utils.isFunction
-  , isArray = utils.isArray
   , isPlainObject = utils.isPlainObject
   , parseKeyPath = utils.parseKeyPath
   , deepSet = utils.deepSet
@@ -60,9 +59,9 @@ function Bee(tpl, props) {
   , $children: null
   , $filters: this.$filters || {}
   , $watchers: this.$watchers || {}
+  , $parent: null
 
     //私有属性/方法
-  , _parent: null
   , _assignments: null//当前 vm 的别名
   };
 
@@ -79,7 +78,7 @@ function Bee(tpl, props) {
   this.$tpl = el.tpl;
   this.$children = el.children;
 
-  build.call(this, this.$el);
+  walk.call(this, this.$el);
 
   this.$render(this.$data || {});
 }
@@ -116,7 +115,7 @@ extend(Bee.prototype, Event, {
   }
 
 , $get: function(key) {
-    return deepGet(key, this.$data);
+    return deepGet(key, this);
   }
 
   /**
@@ -126,50 +125,44 @@ extend(Bee.prototype, Event, {
    * @param {AnyType|Object} val 数据内容. 如果数据路径被省略, 第一个参数是一个对象. 那么 val 将并入 .$data
    */
 , $set: function(key, val) {
-
+    var add, keys, hasKey = false;
     if(isUndefined(key)){ return this; }
 
-    if(isObject(key)){
+    if(arguments.length === 1){
       extend(true, this.$data, key);
       extend(true, this, key);
     }else{
-      key !== '$data' && extend(true, this.$data, deepSet(key, val, {}));
-      extend(true, this, deepSet(key, val, {}));
+      hasKey = true;
+      keys = parseKeyPath(key);
+      add = deepSet(key, val, {});
+      keys[0] !== '$data' && extend(true, this.$data, add);
+      extend(true, this, add);
     }
-    update.call(this, key, val);
+    hasKey ? update.call(this, key, val) : update.call(this, key);
     return this;
   }
   /**
    * 数据替换
    */
 , $replace: function (key, val) {
-    var keys, path, parent;
+    var keys, hasKey = false;
 
     if(isUndefined(key)){ return this; }
 
-    if(typeof key != 'string'){
+    if(arguments.length === 1){
       this.$data = key;
     }else{
-        keys = parseKeyPath(key);
-        if(keys.length > 1){
-          path = keys.pop();
-          parent = deepGet(keys.join('.'), this.$data);
-          if(isUndefined(parent)){
-            parent = {};
-          }else if(!isObject(parent)){
-            //支持基础类型?
-            var oldParent = parent;
-            parent = {toString: function() { return oldParent; }};
-          }
-          deepSet(keys.join('.'), parent, this.$data);
-          deepSet(keys.join('.'), parent, this);
-        }else{
-          parent = this.$data;
-          path = key;
-        }
-        parent[path] = isObject(val) ? extend(true, isArray(val) ? [] : {}, val) : val;
+      hasKey = true;
+      keys = parseKeyPath(key);
+      if(keys[0] !== 'data') {
+        deepSet(key, null, this.$data);
+        deepSet(key, val, this.$data);
+      }
+      deepSet(key, null, this);
+      deepSet(key, val, this);
     }
-    update.call(this, key, val);
+    hasKey ? update.call(this, key, val) : update.call(this, key);
+    return this;
   }
   /**
    * 手动更新某部分数据
@@ -201,6 +194,7 @@ extend(Bee.prototype, Event, {
         break;
       }
     }
+    return this;
   }
 , $watch: function (keyPath, callback) {
     if(callback) {
@@ -218,10 +212,58 @@ extend(Bee.prototype, Event, {
   }
 });
 
-function build(el) {
-  walk.call(this, el);
+function update (keyPath, data) {
+  var keyPaths;
+
+  if(arguments.length === 1) {
+    data = keyPath;
+  }else{
+    keyPaths = [keyPath];
+  }
+
+  if(!keyPaths) {
+    if(isObject(data)) {
+      keyPaths = getKeyPaths.call(this, data);
+      //keyPaths = Object.keys(data);//TODO 移至 .$update
+    }else{
+      //.$data 有可能是基本类型数据
+      keyPaths = ['$data'];
+    }
+  }
+
+  for(var i = 0, path; path = keyPaths[i]; i++){
+    this.$update(path, true);
+  }
+
 }
 
+//找出对象的所有 keyPath
+//obj 不能递归
+function getKeyPaths(obj, base) {
+  var keyPaths = [];
+  var keyPath;
+
+  base = base || '';
+
+  for(var key in obj) {
+    if(obj.hasOwnProperty(key)) {
+      keyPath = (base + '.' + key);
+      if(!base) {
+        keyPath = keyPath.slice(1);
+      }
+      //数组统一不深究?
+      if(isObject(obj[key]) && !utils.isArray(obj[key])) {
+        keyPaths = keyPaths.concat(getKeyPaths.call(this, obj[key], keyPath))
+      }
+      if(keyPath in this.$watchers) {
+        keyPaths.push(keyPath);
+      }
+    }
+  }
+  return keyPaths;
+}
+
+//遍历 dom 树
 function walk(el) {
 
   if(el.nodeType === NODETYPE.FRAGMENT) {
@@ -271,62 +313,6 @@ function walk(el) {
     walk.call(this, child);
     child = next;
   }
-}
-
-/**
- * 更新模板.
- * @param {Object} data 要更新的数据. 增量数据或全新的数据.
- * @param {String} [keyPath] 需要更新的数据路径.
- * @param {AnyType|Object} [data] 需要更新的数据. 省略的话将使用现有的数据.
- 为 true 时, 是扩展式更新, 原有的数据不变
- 为 false 时, 为替换更新, 不在 data 中的变量, 将在 DOM 中被清空.
- */
-function update (keyPath, data) {
-  var attrs, keyPaths;
-  if(isObject(keyPath)){
-    attrs = keyPath;
-  }else if(typeof keyPath === 'string'){
-    keyPath = parseKeyPath(keyPath).join('.');
-    if(isUndefined(data)){
-      data = this.$get(keyPath);
-    }
-    attrs = deepSet(keyPath, data, {});
-    keyPaths = [keyPath];
-  }else{
-    attrs = this.$data;
-    keyPaths = ['$data'];
-  }
-
-  if(!keyPaths) {
-    keyPaths = getKeyPaths.call(this, attrs);
-  }
-
-  for(var i = 0, path; path = keyPaths[i]; i++){
-    this.$update(path, true);
-  }
-
-  return this;
-}
-
-//找出对象的所有 keyPath
-function getKeyPaths(obj, base) {
-  var keyPaths = [];
-  var keyPath;
-
-  base = base || '';
-
-  for(var key in obj) {
-    if(obj.hasOwnProperty(key)) {
-      if(isObject(obj[key])) {
-        keyPaths = keyPaths.concat(getKeyPaths.call(this, obj[key], base + '.' + key))
-      }
-      keyPath = (base + '.' + key).slice(1);
-      if(keyPath in this.$watchers) {
-        keyPaths.push(keyPath);
-      }
-    }
-  }
-  return keyPaths;
 }
 
 //自定义标签

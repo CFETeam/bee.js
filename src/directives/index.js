@@ -42,6 +42,7 @@ dirs.html = {
 
 dirs['if'] = {
   anchor: true
+, priority: 100
 , link: function() {
     if(this.el.content) {
       this.frag = this.el.content;
@@ -93,6 +94,7 @@ dirs.template = {
   }
 };
 
+//图片用, 避免加载大括号的原始模板内容
 dirs.src = {
   update: function(val) {
     this.el.src = val;
@@ -105,5 +107,6 @@ dirs.attr = require('./attr.js');
 dirs.model = require('./model.js');
 dirs.style = require('./style.js');
 dirs.on = require('./on.js');
+dirs.component = require('./component.js');
 
 module.exports = dirs;

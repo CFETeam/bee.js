@@ -164,8 +164,8 @@ function getValue(key, scope) {
   if(typeof scope[key] !== 'undefined') {
     return scope[key];
   }else{
-    if(scope._parent) {
-      return getValue(key, scope._parent);
+    if(scope.$parent) {
+      return getValue(key, scope.$parent);
     }else{
       return;
     }
