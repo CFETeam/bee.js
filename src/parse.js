@@ -202,7 +202,7 @@ var tokenize = function (code, prefix, suffix) {
 			c = code.charAt(i);
 
 			// regexp
-		}else if(c === '/'){
+		}else if(c === '/' && false){
 			i += 1;
 			str = '';
 			f = '';
@@ -595,7 +595,7 @@ var make_parse = function (vars) {
 		return this;
 	});
 
-	prefix('new', function (left) {
+	prefix('new', function () {
 		var a = [];
 		this.first = expression(79);
 		if(token.id === '(') {
@@ -615,6 +615,19 @@ var make_parse = function (vars) {
 		}
 		return this;
 	});
+
+  //prefix('/', function() {
+  //  var a = [], n, v;
+  //  if(token.id !== '/') {
+  //    while(true) {
+  //      n = token;
+  //      advance();
+  //    }
+  //  }
+  //  advance('/');
+  //  this.first = a;
+  //  return this;
+  //})
 
 	//_source: 表达式代码字符串
 	//_context: 表达式的语句环境
