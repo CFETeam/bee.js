@@ -336,17 +336,24 @@ function checkTag (el) {
   var components = this.constructor.components;
   var Comp, comp;
   var dirs = [], $data = {};
+  var attrs;
+
   if(el.__checked) {
     return;
   }
   if(nodeName in components) {
 
-    //TODO 普通属性传递
     dirs = checkAttr.call(this, el).dirs;
 
     dirs = dirs.filter(function (dir) {
       return dir.type == 'attr'
     });
+
+    attrs = el.attributes;
+
+    for(var i = attrs.length - 1; i >= 0; i--) {
+      $data[attrs[0].nodeName] = attrs[0].value;
+    }
 
     dirs.forEach(function (dir) {
       dir.dirs.forEach(function (token) {

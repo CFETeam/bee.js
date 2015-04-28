@@ -93,6 +93,12 @@ dirs.template = {
   }
 };
 
+dirs.src = {
+  update: function(val) {
+    this.el.src = val;
+  }
+};
+
 //dirs.partial = require('./partial.js');
 dirs.repeat = require('./repeat.js');
 dirs.attr = require('./attr.js');
