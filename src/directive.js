@@ -26,12 +26,13 @@ function Directive(key, opts) {
 }
 
 Directive.prototype = {
-  priority: 0
-, link: utils.noop
-, update: utils.noop
+  priority: 0//权重
+, link: utils.noop//初始化方法
+, update: utils.noop//更新方法
 , tearDown: utils.noop
-, terminal: false
-, replace: false
+, terminal: false//是否终止
+, replace: false//是否替换当前元素
+, watch: true//是否监控 key 的变化
 
 , anchor: false
 , anchors: null
@@ -53,14 +54,19 @@ Directive.prototype = {
 };
 
 //获取一个元素上所有用 HTML 属性定义的指令
-function getDir(el, directives, prefix) {
+function getDir(el, directives, components, prefix) {
   prefix = prefix || '';
   directives = directives || {};
 
   var attr, attrName, dirName
     , dirs = [], dir, anchors = {}
     , parent = el.parentNode
+    , nodeName = el.nodeName.toLowerCase()
     ;
+
+  if(nodeName in components) {
+    el.setAttribute(prefix + 'component', nodeName);
+  }
 
   for(var i = el.attributes.length - 1; i >= 0; i--){
     attr = el.attributes[i];

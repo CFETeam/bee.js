@@ -66,8 +66,8 @@ function Watcher(vm, dir) {
       scope = scope.$parent;
     }
     path = paths.join('.');
-    curVm.$watchers[path] = curVm.$watchers[path] || [];
-    curVm.$watchers[path].push(this);
+    curVm._watchers[path] = curVm._watchers[path] || [];
+    curVm._watchers[path].push(this);
   }
 
   //没有变量的表达式立即求值

@@ -42,7 +42,6 @@ dirs.html = {
 
 dirs['if'] = {
   anchor: true
-, priority: 100
 , link: function() {
     if(this.el.content) {
       this.frag = this.el.content;

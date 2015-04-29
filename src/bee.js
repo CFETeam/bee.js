@@ -58,10 +58,10 @@ function Bee(tpl, props) {
   , $tpl: this.$tpl || ''
   , $children: null
   , $filters: this.$filters || {}
-  , $watchers: this.$watchers || {}
   , $parent: null
 
     //私有属性/方法
+  , _watchers: this._watchers || {}
   , _assignments: null//当前 vm 的别名
   };
 
@@ -176,7 +176,7 @@ extend(Bee.prototype, Event, {
     var watchers;
 
     while(keyPath = keys.join('.')) {
-      watchers = this.$watchers[keyPath];
+      watchers = this._watchers[keyPath];
 
       if (watchers) {
         for (var i = 0, l = watchers.length; i < l; i++) {
@@ -198,11 +198,11 @@ extend(Bee.prototype, Event, {
   }
 , $watch: function (keyPath, callback) {
     if(callback) {
-      addWatcher.call(this, {path: keyPath, update: callback})
+      addWatcher.call(this, {path: keyPath, update: callback, watch: true})
     }
   }
 , $unwatch: function (keyPath, callback) {
-    var watchers = this.$watchers[keyPath] || [];
+    var watchers = this._watchers[keyPath] || [];
 
     for(var i = watchers.length - 1; i >= 0; i--){
       if(watchers[i].dir.update === callback){
@@ -255,7 +255,7 @@ function getKeyPaths(obj, base) {
       if(isObject(obj[key]) && !utils.isArray(obj[key])) {
         keyPaths = keyPaths.concat(getKeyPaths.call(this, obj[key], keyPath))
       }
-      if(keyPath in this.$watchers) {
+      if(keyPath in this._watchers) {
         keyPaths.push(keyPath);
       }
     }
@@ -281,9 +281,6 @@ function walk(el) {
 
   switch (el.nodeType) {
     case NODETYPE.ELEMENT:
-      if(checkTag.call(this, el)) {
-        return;
-      }
         break;
     case NODETYPE.COMMENT:
       //注释节点
@@ -315,57 +312,11 @@ function walk(el) {
   }
 }
 
-//自定义标签
-function checkTag (el) {
-  var nodeName = el.nodeName.toLowerCase();
-  var components = this.constructor.components;
-  var Comp, comp;
-  var dirs = [], $data = {};
-  var attrs;
-
-  if(el.__checked) {
-    return;
-  }
-  if(nodeName in components) {
-
-    dirs = checkAttr.call(this, el).dirs;
-
-    dirs = dirs.filter(function (dir) {
-      return dir.type == 'attr'
-    });
-
-    attrs = el.attributes;
-
-    for(var i = attrs.length - 1; i >= 0; i--) {
-      $data[attrs[0].nodeName] = attrs[0].value;
-    }
-
-    dirs.forEach(function (dir) {
-      dir.dirs.forEach(function (token) {
-        this.$watch(token.path, function() {
-          var val = dir.el.getAttribute(dir.nodeName);
-          if(comp) {
-            comp.$set(dir.nodeName, val);
-          }else{
-            $data[dir.nodeName] = val;
-          }
-        })
-      }.bind(this));
-    }.bind(this));
-
-    el.__checked = true;
-
-    Comp = components[nodeName];
-    comp = new Comp({$el: el, $data: $data});
-    return true;
-  }
-}
-
 //遍历属性
 function checkAttr(el) {
   var cstr = this.constructor
     , prefix = cstr.prefix
-    , dirs = cstr.directive.getDir(el, cstr.directives, prefix)
+    , dirs = cstr.directive.getDir(el, cstr.directives, cstr.components, prefix)
     , dir
     , terminalPriority, terminal
     , result = {};
@@ -373,6 +324,7 @@ function checkAttr(el) {
 
   for (var i = 0, l = dirs.length; i < l; i++) {
     dir = dirs[i];
+    dir.__dirs = dirs;
 
     //对于 terminal 为 true 的 directive, 在解析完其相同权重的 directive 后中断遍历该元素
     if(terminalPriority > dir.priority) {
@@ -452,7 +404,7 @@ function setBinding(dir) {
 }
 
 function addWatcher(dir) {
-  if(dir.path) {
+  if(dir.path && dir.watch) {
     return new Watcher(this, dir);
   }
 }
