@@ -14,9 +14,8 @@ module.exports = {
 
     this.cstr = vm.constructor;
 
-    this.vms = [];
     this.curArr = [];
-    this.els = [];
+    this.list = [];//[{el:el, vm: vm}]
 
     this.el.parentNode.removeChild(this.el);
   }
@@ -29,9 +28,8 @@ module.exports = {
       arrDiff(curArr, items).forEach(function(item) {
         var pos = curArr.indexOf(item)
         curArr.splice(pos, 1)
-        this.vms.splice(pos, 1)
-        parentNode.removeChild(this.els[pos])
-        this.els.splice(pos, 1)
+        parentNode.removeChild(this.list[pos].el)
+        this.list.splice(pos, 1)
 
       }.bind(this))
 
@@ -48,18 +46,17 @@ module.exports = {
         if(oldPos < 0) {
           el = this.el.cloneNode(true)
 
-          vm = this.vms[pos]= new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments});
-          parentNode.insertBefore(vm.$el, this.els[pos] || this.anchors.end)
-          this.els.splice(pos, 0, el)
+          vm = new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments});
+          parentNode.insertBefore(vm.$el, this.list[pos] && this.list[pos].el || this.anchors.end)
           curArr.splice(pos, 0, item)
+          this.list.splice(pos, 0, {el: el, vm: vm});
         }else {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(this.els[oldPos], this.els[pos] || this.anchor.end)
-            parentNode.insertBefore(this.els[pos], this.els[oldPos + 1] || this.anchor.end)
-            this.vms[oldPos] = [this.vms[pos], this.vms[pos] = this.vms[oldPos]][0]
-            this.els[oldPos] = [this.els[pos], this.els[pos] = this.els[oldPos]][0]
+            parentNode.insertBefore(this.list[oldPos].el, this.list[pos].el || this.anchor.end)
+            parentNode.insertBefore(this.list[pos].el, this.list[oldPos + 1].el || this.anchor.end)
+            this.list[oldPos] = [this.list[pos], this.list[pos] = this.list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
           }
         }

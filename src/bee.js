@@ -41,7 +41,9 @@ function setPrefix(newPrefix) {
 }
 
 /**
- * @param {String} [tpl] 模板. 等同于 props.$tpl
+ * 构造函数
+ * ---
+ * @param {String|Element} [tpl] 模板. 等同于 props.$tpl
  * @param {Object} [props] 属性/方法
  **/
 function Bee(tpl, props) {
@@ -110,7 +112,6 @@ extend(Bee.prototype, Event, {
   $render: function(data) {
     data = data || this.$data;
     this.$replace(data);
-    //this.trigger('render');
     return this;
   }
 
