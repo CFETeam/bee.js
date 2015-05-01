@@ -178,11 +178,11 @@ extend(Bee.prototype, Event, {
 , $update: function (keyPath, isBubble) {
     isBubble = isBubble !== false;
 
-    var keys = parseKeyPath(keyPath);
+    var keys = parseKeyPath(keyPath), key, attrs;
     var watchers;
 
-    while(keyPath = keys.join('.')) {
-      watchers = this._watchers[keyPath];
+    while(key = keys.join('.')) {
+      watchers = this._watchers[key];
 
       if (watchers) {
         for (var i = 0, l = watchers.length; i < l; i++) {
@@ -193,13 +193,22 @@ extend(Bee.prototype, Event, {
       if(isBubble) {
         keys.pop();
         //最终都冒泡到 $data
-        if(!keys.length && keyPath !== '$data'){
+        if(!keys.length && key !== '$data'){
           keys.push('$data');
         }
       }else{
         break;
       }
     }
+    attrs = this.$get(keyPath);
+
+    //同时更新子路径
+    if(isObject(attrs)) {
+      Object.keys(attrs).forEach(function(attr) {
+        this.$update(keyPath + '.' + attr, false);
+      }.bind(this))
+    }
+
     return this;
   }
 , $watch: function (keyPath, callback) {
@@ -229,8 +238,7 @@ function update (keyPath, data) {
 
   if(!keyPaths) {
     if(isObject(data)) {
-      keyPaths = getKeyPaths.call(this, data);
-      //keyPaths = Object.keys(data);//TODO 移至 .$update
+      keyPaths = Object.keys(data);
     }else{
       //.$data 有可能是基本类型数据
       keyPaths = ['$data'];
@@ -241,32 +249,6 @@ function update (keyPath, data) {
     this.$update(path, true);
   }
 
-}
-
-//找出对象的所有 keyPath
-//obj 不能递归
-function getKeyPaths(obj, base) {
-  var keyPaths = [];
-  var keyPath;
-
-  base = base || '';
-
-  for(var key in obj) {
-    if(obj.hasOwnProperty(key)) {
-      keyPath = (base + '.' + key);
-      if(!base) {
-        keyPath = keyPath.slice(1);
-      }
-      //数组统一不深究?
-      if(isObject(obj[key]) && !utils.isArray(obj[key])) {
-        keyPaths = keyPaths.concat(getKeyPaths.call(this, obj[key], keyPath))
-      }
-      if(keyPath in this._watchers) {
-        keyPaths.push(keyPath);
-      }
-    }
-  }
-  return keyPaths;
 }
 
 //遍历 dom 树

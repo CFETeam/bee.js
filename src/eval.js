@@ -160,17 +160,16 @@ function reset(scope) {
 }
 
 //在作用域中查找值
-function getValue(key, scope) {
-  if(typeof scope[key] !== 'undefined') {
+var getValue = function (key, scope) {
+  //对于具名 repeat 查找顺序为 别名, 父级 scope, 自身 scope
+  if(scope._assignments && scope._assignments[0] === key) {
+    return scope
+  }else if(scope.$parent) {
+    return getValue(key, scope.$parent);
+  }else  if(typeof scope[key] !== 'undefined') {
     return scope[key];
   }else{
-    if(scope._assignments && scope._assignments[0] === key) {
-      return scope
-    }else if(scope.$parent) {
-      return getValue(key, scope.$parent);
-    }else{
-      return;
-    }
+    return;
   }
 }
 

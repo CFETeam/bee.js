@@ -33,25 +33,25 @@ module.exports = {
         //属性表达式
         if(dir.dirs) {
           withMap = dir.dirs.map(function (token) {
-            return {parentPath: token.path, currentPath: dir.nodeName};
+            return {path: token.path, componentPath: dir.nodeName};
           });
         }else{
           //a-with directive
           withMap = dir.locals.map(function(local) {
-            return {parentPath: local, currentPath: local};
+            return {path: local, componentPath: local};
           });
         }
 
         //监听父组件更新
         withMap.forEach(function (pathConfig) {
-          vm.$watch(pathConfig.parentPath, function (val) {
+          vm.$watch(pathConfig.path, function (val) {
             if (comp) {
-              comp.$set(pathConfig.currentPath, val);
+              comp.$set(pathConfig.componentPath, val);
             } else {
-              if(pathConfig.currentPath === '$data'){
+              if(pathConfig.componentPath === '$data'){
                 $data = val
               }else {
-                $data[pathConfig.currentPath] = val;
+                $data[pathConfig.componentPath] = val;
               }
             }
           })
