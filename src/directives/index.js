@@ -2,6 +2,7 @@
 
 var doc = require('../env.js').document
   , utils = require('../utils.js')
+  , token = require('../token.js')
   ;
 
 var dirs = {};
@@ -99,6 +100,8 @@ dirs.src = {
     this.el.src = val;
   }
 };
+
+dirs['with'] = {};
 
 //dirs.partial = require('./partial.js');
 dirs.repeat = require('./repeat.js');

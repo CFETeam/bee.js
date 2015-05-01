@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>repeat</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="../build/bee.js"></script>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>嵌套 repeat</h1>
+	<div id=template>
+    <div>{{toJSON($data)}}</div>
+    <ul>
+      <li a-repeat="item in list" a-on="events">
+        <span>{{item.name}}</span>
+        <div>{{toJSON($data)}}</div>
+        <ul>
+          <li a-repeat="item2 in list2">{{item[item2.name]}} --- {{toJSON($data)}}</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+<script type="text/javascript">
+var bee = new Bee(document.getElementById('template'), {
+  $data: {list:[{name: 'click me'}], name: 'parent name', list2: [{name: 'name'}]},
+  events: {
+    click: function(e) {
+      this.$set('name', 'clicked!!')
+    }
+  },
+  toJSON:  JSON.stringify
+});
+</script>
+</body>
+</html>

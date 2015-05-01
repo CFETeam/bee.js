@@ -24,7 +24,7 @@
     </div>
   </div>
 <script type="text/javascript" id=js>
-  var bee = new Bee(window.template.innerHTML, {
+  var bee = new Bee(window.template, {
     $data: {
       attr: {
         onclick: 'alert(this.onclick)'
@@ -33,7 +33,6 @@
           color: '#dd0707'
       }
     }
-  , $el: window.template
   , toJSON: function(obj) {
           return JSON.stringify(obj)
     }

@@ -96,17 +96,9 @@ extend(Watcher.prototype, {
   update: function() {
     var that = this
       , newVal
-      , scope = this.vm
       ;
 
-    //具名 repeat
-    if(scope._assignments) {
-      //枚举 eval 做需要的参数
-      scope = {$parent: this.vm.$parent, $data: this.vm.$data, $filters: this.vm.$filters};
-      scope[this.vm._assignments[0]] = this.vm.$data;
-    }
-
-    newVal = this.getValue(scope);
+    newVal = this.getValue(this.vm);
 
     if(newVal && newVal.then) {
       //a promise

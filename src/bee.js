@@ -57,6 +57,7 @@ function Bee(tpl, props) {
     //$ 开头的是共有属性/方法
     $data: this.$data || {}
   , $el: this.$el || null
+  , $target: this.$target || null
   , $tpl: this.$tpl || ''
   , $children: null
   , $filters: this.$filters || {}
@@ -74,9 +75,13 @@ function Bee(tpl, props) {
   extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
-  el = tplParse(tpl, this.$el);
+  el = tplParse(tpl, this.$target);
 
-  this.$el = el.el;
+  if(this.$el){
+    this.$el.appendChild(el.el);
+  }else{
+    this.$el = el.el;
+  }
   this.$tpl = el.tpl;
   this.$children = el.children;
 
@@ -121,9 +126,9 @@ extend(Bee.prototype, Event, {
 
   /**
    * ### bee.$set
-   * 更新合并 `.data` 中的数据
+   * 更新合并 `.data` 中的数据. 如果只有一个参数, 那么这个参数将并入 .$data
    * @param {String} [key] 数据路径.
-   * @param {AnyType|Object} val 数据内容. 如果数据路径被省略, 第一个参数是一个对象. 那么 val 将并入 .$data
+   * @param {AnyType|Object} val 数据内容.
    */
 , $set: function(key, val) {
     var add, keys, hasKey = false;
@@ -410,34 +415,32 @@ function addWatcher(dir) {
   }
 }
 
+
+//target: el 替换的目标
 function tplParse(tpl, target) {
-  var el, children = null;
+  var el, children = null, wraper;
   if(isObject(target) && target.children) {
     children = [];
-    for(var i = 0, childNode; childNode = target.children[i]; i++) {
-      children.push(childNode);
+    for(var i = 0, l = target.children.length; i < l; i++) {
+      children.push(target.children[i].cloneNode(true));
     }
   }
   if(isObject(tpl)){
-    if(target){
-      el = target = isObject(target) ? target : doc.createElement(target);
-      el.innerHTML = '';//清空目标对象
-      target.appendChild(tpl);
-    }else{
-      el = tpl;
-    }
+    el = tpl;
     tpl = el.outerHTML;
   }else{
-    el = isObject(target) ? target : doc.createElement(target || 'div');
-    if(tpl) {
-      el.innerHTML = tpl;
-    }else{
-      tpl = el.innerHTML;
-    }
+    wraper = doc.createElement('div');
+    wraper.innerHTML = tpl;
+
+    el = wraper.firstElementChild || wraper.children[0];
+
   }
+  if(target){
+    target.parentNode && target.parentNode.replaceChild(el, target);
+  }
+
   return {el: el, tpl: tpl, children: children};
 }
-
 
 Bee.version = '%VERSION';
 

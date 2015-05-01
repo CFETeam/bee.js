@@ -64,6 +64,7 @@ function getDir(el, directives, components, prefix) {
     , nodeName = el.nodeName.toLowerCase()
     ;
 
+  //对于自定义标签, 将其转为 directive
   if(nodeName in components) {
     el.setAttribute(prefix + 'component', nodeName);
   }
@@ -78,7 +79,7 @@ function getDir(el, directives, components, prefix) {
       dir = utils.create(directives[dirName]);
       dir.dirName = dirName
     }else if(token.hasToken(attr.value)) {
-      //属性表达式
+      //属性表达式可能有多个表达式区
       dir = utils.create(directives['attr']);
       dir.dirs = token.parseToken(attr.value);
       dir.dirName = attrName.indexOf(prefix) === 0 ? dirName : attrName ;

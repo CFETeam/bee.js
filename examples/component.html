@@ -5,10 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Component</title>
   <!--[if lt IE 9]>
-  <script type="text/javascript" src="../src/es5-bee-shim.jss"></script>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
   <![endif]-->
   <script type="text/javascript" src="../build/bee.js"></script>
   <script src="./third-part/marked.js"></script>
+  <script type="text/x-tpl" id="comtpl">
+    <div style="width: 45%; float: right">
+        <h3>{{$children[0].innerHTML}}</h3>
+        {{{marked(md)}}}
+        <div>{{toJSON($data)}}</div>
+     </div>
+  </script>
+  <script type="text/javascript" id=js>
+    var Com = Bee.extend({
+      $tpl: comtpl.innerHTML,
+      marked: function (md) {
+        return marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
+      },
+      toJSON: function (obj) {
+        return JSON.stringify(obj)
+      }
+    });
+    //注册 标签
+    Bee.tag('x-mdeditor', Com);
+    </script>
 </head>
 <body>
   <h1>component</h1>
@@ -20,30 +40,15 @@
 _斜体_
     </textarea>
 
-    <x-mdeditor md="{{markdown}}" style="width: 45%; float: right">
+    <x-mdeditor md="{{markdown}}" a-with="$data" a-repeat="[1,2]">
         <div>头</div>
         <div>尾</div>
     </x-mdeditor>
   </div>
 
-  <script type="text/x-tpl" id="comtpl">
-    <div>
-        <h3>{{$children[0].innerHTML}}</h3>
-        {{{marked(md)}}}
-     </div>
-  </script>
-<script type="text/javascript" id=js>
-  var Com = Bee.extend({
-    $tpl: comtpl.innerHTML,
-    marked: function (md) {
-        return  marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
-    }
-  });
+<script type="text/javascript">
 
-  //注册 标签
-  Bee.tag('x-mdeditor', Com);
-
-  var bee = new Bee(template);
+  var bee = new Bee(template, {$data: {a: 1}});
 </script>
 </body>
 </html>

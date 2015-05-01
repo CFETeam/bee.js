@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Attributes</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="../build/bee.js"></script>
+</head>
+<body>
+  <h1>a-attr, a-style 及绑定 </h1>
+	<div id=template>
+    <div data-a="t-{{a + b}}-{{b + a}}">
+        {{a}}
+    </div>
+  </div>
+<script type="text/javascript" id=js>
+  var bee = new Bee(window.template, {
+    $data: {
+      a: 'a',
+      b: 'b'
+    }
+  });
+</script>
+</body>
+</html>
