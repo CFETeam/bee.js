@@ -66,6 +66,7 @@ function Bee(tpl, props) {
     //私有属性/方法
   , _watchers: this._watchers || {}
   , _assignments: null//当前 vm 的别名
+  , _relativePath: []
   };
 
   var el;
@@ -88,6 +89,7 @@ function Bee(tpl, props) {
   walk.call(this, this.$el);
 
   this.$render(this.$data || {});
+  this._isRendered = true;
 }
 
 //静态属性
@@ -207,6 +209,15 @@ extend(Bee.prototype, Event, {
       Object.keys(attrs).forEach(function(attr) {
         this.$update(keyPath + '.' + attr, false);
       }.bind(this))
+    }
+
+    if(isBubble) {
+      if(this.$parent) {
+        //同步更新父 vm 对应部分
+        this._relativePath.forEach(function (path) {
+          this.$parent.$update(path);
+        }.bind(this))
+      }
     }
 
     return this;

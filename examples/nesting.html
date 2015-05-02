@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>repeat</title>
+	<title>嵌套 repeat</title>
   <!--[if lt IE 9]>
   <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
   <![endif]-->
@@ -18,9 +18,8 @@
     <ul>
       <li a-repeat="item in list" a-on="events">
         <span>{{item.name}}</span>
-        <div>{{toJSON($data)}}</div>
         <ul>
-          <li a-repeat="item2 in list2">{{item[item2.name]}} --- {{toJSON($data)}}</li>
+          <li a-repeat="item2 in list2">{{item[item2.name]}}</li>
         </ul>
       </li>
     </ul>

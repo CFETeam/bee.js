@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>数组操作</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="../build/bee.js"></script>
+  <style>
+  </style>
+</head>
+<body>
+<h1>数组操作</h1>
+<div id=template>
+  <ul>
+    <li a-repeat="item in list">
+      <span>name: {{name}} - item.name: {{item.name}}</span>
+      <a href="javascript:;" a-on="events">删除</a>
+    </li>
+  </ul>
+</div>
+<script type="text/javascript">
+  var bee = new Bee(document.getElementById('template'), {
+    $data: {list:[{name: 'click me'}, {name: 'row 2'}, {name: 'd3'}], name: 'parent name'},
+    events: {
+      click: function(e) {
+        var list = this.$parent.$get(this._relativePath[0]);
+        var i = list.indexOf(this.$data);
+
+        list.splice(i, 1);
+        this.$parent.$update(this._relativePath[0]);
+      }
+    }
+  });
+</script>
+</body>
+</html>

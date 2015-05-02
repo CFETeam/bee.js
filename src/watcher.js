@@ -62,7 +62,6 @@ function Watcher(vm, dir) {
       }
 
       //向上查找
-      willUpdate = true;//对于在父级作用域的表达式应立即执行
       scope = scope.$parent;
     }
     path = paths.join('.');
@@ -70,8 +69,17 @@ function Watcher(vm, dir) {
     curVm._watchers[path].push(this);
   }
 
-  //没有变量的表达式立即求值
-  if(!this.locals.length || willUpdate) {
+  //没有变量 / 变量不在当前作用域的表达式立即求值
+  for(var i = 0, l = this.locals.length; i < l; i++) {
+    if(utils.isObject(this.vm.$data) && (this.locals[i] in this.vm.$data)) {
+      break;
+    }
+  }
+  if(i == l) {
+    willUpdate = true;
+  }
+
+  if(willUpdate || this.vm._isRendered) {
     this.update();
   }
 }
