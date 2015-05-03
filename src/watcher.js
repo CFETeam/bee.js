@@ -123,7 +123,7 @@ extend(Watcher.prototype, {
     var val;
 
     try{
-      val = evaluate.eval(this.ast, scope);
+      val = evaluate.eval(this.ast, scope, this.dir);
     }catch(e){
       val = '';
       console.error(e);

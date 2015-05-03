@@ -422,10 +422,10 @@ var make_parse = function (vars) {
 
 	symbol("(literal)").nud = itself;
 
-	// symbol("this").nud = function () {
-	// this.arity = "this";
-	// return this;
-	// };
+	symbol("this").nud = function () {
+	  this.arity = "this";
+	  return this;
+	};
 
 	//Operator Precedence:
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence

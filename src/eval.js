@@ -76,6 +76,7 @@ var operators = {
 var argName = ['first', 'second', 'third']
   , context, summary
   , path
+  , self
   ;
 
 //遍历 ast
@@ -138,7 +139,7 @@ var evaluate = function(tree) {
       res = context.filters[value];
     break;
     case 'this':
-      res = context.locals;
+      res = self;
     break;
   }
   return res;
@@ -148,11 +149,14 @@ function getOperator(arity, value){
   return operators[arity][value] || function() { return; }
 }
 
-function reset(scope) {
+function reset(scope, that) {
   if(scope) {
     context = {locals: scope || {}, filters: scope.$filters || {}};
   }else{
     context = {filters: {}, locals: {}};
+  }
+  if(that){
+    self = that;
   }
 
   summary = {filters: {}, locals: {}, paths: {}, assignments: {}};
@@ -176,8 +180,8 @@ var getValue = function (key, scope) {
 //表达式求值
 //tree: parser 生成的 ast
 //scope 执行环境
-exports.eval = function(tree, scope) {
-  reset(scope || {});
+exports.eval = function(tree, scope, that) {
+  reset(scope || {}, that);
 
   return evaluate(tree);
 };
