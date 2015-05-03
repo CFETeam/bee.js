@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Promise</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
+  <![endif]-->
+  <script src=" ./third-part/es6-promise.min.js"></script>
+  <script>
+    ES6Promise.polyfill();
+  </script>
+  <script type="text/javascript" src="../build/bee.js"></script>
+</head>
+<body>
+  <h1>promise</h1>
+	<div id=template>
+    <input type="text" value="基地" a-model="title"/>
+    <select a-model="title">
+      <option value="从0到1">从0到1</option>
+      <option value="黑客与画家">黑客与画家</option>
+      <option value="三体">三体</option>
+      <option value="基地">基地</option>
+    </select>
+    <a href="javascript:;"  a-on="{click: toggleData}">查看JSON数据</a>
+    <pre style="display: none">{{promise2JSON(getData(title))}}</pre>
+    <div>
+      <ul>
+        <li a-repeat="book in books" style="overflow: hidden; list-style: none">
+          <img style="float: left; width: 90px; height: 127px; margin: 1em;" a-src="book.image" title="{{book.origin_title}}" alt="{{book.subtitle}}"/>
+          <h2 title="{{book.catalog}}">
+            <a href="{{book.alt}}" target="_blank">
+              {{book.title}} - {{book.author.join(' ')}}
+              <small a-if="book.translator.length">({{book.translator.join(' ')}} 译)</small>
+            </a>
+          </h2>
+          <a target="_blank" a-if="book.ebook_url" href="{{book.ebook_url}}">试读</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="./third-part/jquery.min.js"></script>
+<script type="text/javascript">
+  var bee = new Bee(window.template, {
+    getData: function getData(title) {
+      var promise
+      //防止同时有多个请求
+      if(getData.promise) {
+        return getData.promise;
+      }else {
+        promise =  title ? Promise.resolve($.ajax({
+          url: 'https://api.douban.com/v2/book/search',
+          dataType: 'jsonp',
+          timeout: 5000,
+          cache: true,
+          data: {
+            q: title,
+            count: 5
+          }
+        })) : Promise.reject('请输入关键字');
+
+        getData.promise = promise.then(function(data) {
+          delete getData.promise;
+          return data
+        }, function(err) {
+          delete getData.promise;
+          return err.statusText ? '请求超时. 很可能是调用太过频繁 :(' : err;
+        })
+        return getData.promise;
+      }
+    },
+    promise2JSON: function(promise) {
+      return promise.then(function(res) {
+        return JSON.stringify(res, null, 2)
+      }, function(err) {
+        return err;
+      })
+    },
+    toggleData: function(e){
+      $(e.target).next().slideToggle();
+    }
+  });
+
+  bee.$watch('title', function(title) {
+    title && this.getData(title).then(function(obj) {
+      this.$replace('books', obj.books);
+    }.bind(this))
+  }.bind(bee))
+</script>
+</body>
+</html>
