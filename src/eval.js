@@ -139,7 +139,7 @@ var evaluate = function(tree) {
       res = context.filters[value];
     break;
     case 'this':
-      res = self;
+      res = context.locals;//TODO this 指向 vm 还是 dir?
     break;
   }
   return res;

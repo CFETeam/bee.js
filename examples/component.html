@@ -18,7 +18,8 @@
      </div>
   </script>
   <script type="text/javascript" id=js>
-    var Com = Bee.extend({
+    //注册 标签
+    Bee.tag('x-mdeditor', {
       $tpl: comtpl.innerHTML,
       marked: function (md) {
         return marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
@@ -27,8 +28,6 @@
         return JSON.stringify(obj)
       }
     });
-    //注册 标签
-    Bee.tag('x-mdeditor', Com);
     </script>
 </head>
 <body>
