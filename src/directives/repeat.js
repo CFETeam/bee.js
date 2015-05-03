@@ -30,7 +30,6 @@ module.exports = {
         curArr.splice(pos, 1)
         parentNode.removeChild(this.list[pos].el)
         this.list.splice(pos, 1)
-
       }.bind(this))
 
       items.forEach(function(item, i) {
@@ -52,8 +51,7 @@ module.exports = {
 
           el = this.el.cloneNode(true)
 
-
-          vm = new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments});
+          vm = new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments, $index: pos});
           parentNode.insertBefore(vm.$el, this.list[pos] && this.list[pos].el || this.anchors.end)
           this.list.splice(pos, 0, {el: el, vm: vm});
           curArr.splice(pos, 0, item)
@@ -69,9 +67,17 @@ module.exports = {
             parentNode.insertBefore(this.list[pos].el, this.list[oldPos + 1].el || this.anchor.end)
             this.list[oldPos] = [this.list[pos], this.list[pos] = this.list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
+            this.list[pos].vm.$index = pos
+            this.list[pos].vm.$update('$index')
           }
         }
       }.bind(this))
+
+      //更新索引
+      this.list.forEach(function(item, i) {
+        item.vm.$index = i
+        item.vm.$update('$index', false)
+      })
     }else{
       //TODO 普通对象的遍历
     }

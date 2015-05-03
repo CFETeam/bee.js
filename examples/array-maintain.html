@@ -16,7 +16,7 @@
 <div id=template>
   <ul>
     <li a-repeat="item in list">
-      <span>name: {{name}} - item.name: {{item.name}}</span>
+      <span>({{item.$index}}) name: {{name}} - item.name: {{item.name}}</span>
       <a href="javascript:;" a-on="events">删除</a>
     </li>
   </ul>
