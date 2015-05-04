@@ -170,10 +170,8 @@ var getValue = function (key, scope) {
     return scope
   }else if(scope.$parent) {
     return getValue(key, scope.$parent);
-  }else  if(typeof scope[key] !== 'undefined') {
+  }else {
     return scope[key];
-  }else{
-    return;
   }
 }
 

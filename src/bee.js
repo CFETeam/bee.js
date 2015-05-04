@@ -90,6 +90,7 @@ function Bee(tpl, props) {
 
   this.$render(this.$data || {});
   this._isRendered = true;
+  this.$init();
 }
 
 //静态属性
@@ -121,7 +122,7 @@ extend(Bee.prototype, Event, {
     this.$replace(data);
     return this;
   }
-
+, $init: utils.noop
 , $get: function(key) {
     return deepGet(key, this);
   }
@@ -218,6 +219,11 @@ extend(Bee.prototype, Event, {
           this.$parent.$update(path);
         }.bind(this))
       }
+    }
+
+    //更新数组长度
+    if(utils.isArray(attrs)) {
+      this.$update(keyPath + '.length', false);
     }
 
     return this;

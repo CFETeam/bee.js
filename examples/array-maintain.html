@@ -14,9 +14,10 @@
 <body>
 <h1>数组操作</h1>
 <div id=template>
+  {{list.length}}
   <ul>
     <li a-repeat="item in list">
-      <span>({{item.$index}}) name: {{name}} - item.name: {{item.name}}</span>
+      <span>({{item.$index + 1}}) name: {{name}} - item.name: {{item.name}}</span>
       <a href="javascript:;" a-on="events">删除</a>
     </li>
   </ul>
@@ -30,7 +31,7 @@
         var i = list.indexOf(this.$data);
 
         list.splice(i, 1);
-        this.$parent.$update(this._relativePath[0]);
+        this.$update('$data');
       }
     }
   });

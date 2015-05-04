@@ -63,8 +63,8 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(this.list[oldPos].el, this.list[pos].el || this.anchor.end)
-            parentNode.insertBefore(this.list[pos].el, this.list[oldPos + 1].el || this.anchor.end)
+            parentNode.insertBefore(this.list[oldPos].el, this.list[pos] && this.list[pos].el || this.anchor.end)
+            parentNode.insertBefore(this.list[pos].el, this.list[oldPos + 1] && this.list[oldPos + 1].el || this.anchor.end)
             this.list[oldPos] = [this.list[pos], this.list[pos] = this.list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
             this.list[pos].vm.$index = pos
