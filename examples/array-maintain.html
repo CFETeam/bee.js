@@ -27,11 +27,10 @@
     $data: {list:[{name: 'click me'}, {name: 'row 2'}, {name: 'd3'}], name: 'parent name'},
     events: {
       click: function(e) {
-        var list = this.$parent.$get(this._relativePath[0]);
+        var list = this.$get('list', false)
         var i = list.indexOf(this.$data);
 
-        list.splice(i, 1);
-        this.$update('$data');
+        list.$remove(i);
       }
     }
   });

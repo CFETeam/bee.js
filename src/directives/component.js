@@ -49,7 +49,7 @@ module.exports = {
               comp.$set(pathConfig.componentPath, val);
             } else {
               if(pathConfig.componentPath === '$data'){
-                $data = val
+                $data = Object(val)
               }else {
                 $data[pathConfig.componentPath] = val;
               }

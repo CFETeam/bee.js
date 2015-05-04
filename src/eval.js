@@ -165,13 +165,10 @@ function reset(scope, that) {
 
 //在作用域中查找值
 var getValue = function (key, scope) {
-  //对于具名 repeat 查找顺序为 别名, 父级 scope, 自身 scope
-  if(scope._assignments && scope._assignments[0] === key) {
-    return scope
-  }else if(scope.$parent) {
-    return getValue(key, scope.$parent);
-  }else {
-    return scope[key];
+  if(scope.$get) {
+    return scope.$get(key, false)
+  }else{
+    return scope[key]
   }
 }
 

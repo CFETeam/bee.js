@@ -77,6 +77,18 @@ module.exports = {
       this.list.forEach(function(item, i) {
         item.vm.$index = i
         item.vm.$update('$index', false)
+      });
+
+      utils.extend(items, {
+        $set: function(i, item) {
+          this.list[i].vm.$set(item);
+        }.bind(this),
+        $remove: function(i) {
+          items.splice(i, 1);
+          this.listPath.forEach(function(path) {
+            this.vm.$update(path)
+          }.bind(this));
+        }.bind(this)
       })
     }else{
       //TODO 普通对象的遍历

@@ -123,8 +123,40 @@ extend(Bee.prototype, Event, {
     return this;
   }
 , $init: utils.noop
-, $get: function(key) {
-    return deepGet(key, this);
+  /**
+   * 获取属性/方法
+   * @param {String} keyPath 路径
+   * @param {Boolean} strict
+   * @return {*}
+   */
+, $get: function(keyPath, strict) {
+    strict = strict !== false;
+
+    var scope = this
+      , path = keyPath
+      , paths, headPath
+      ;
+
+    if(!strict) {
+      if(this.$parent) {
+        paths = parseKeyPath(path);
+        headPath = paths[0]
+        if(scope._assignments && scope._assignments.length) {
+          // 具名 repeat
+          if(headPath === this._assignments[0]) {
+            scope = {};
+            scope[headPath] = this;
+          }else{
+            return this.$parent.$get(keyPath, strict)
+          }
+        }else{
+          //匿名 repeat
+          return (headPath in this) ? this.$get(keyPath) : this.$parent.$get(keyPath, strict)
+        }
+      }
+    }
+
+    return deepGet(path, scope);
   }
 
   /**

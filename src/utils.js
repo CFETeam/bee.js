@@ -186,7 +186,7 @@ var utils = {
       chain = parseKeyPath(keyStr);
       for(var i = 0, l = chain.length; i < l; i++) {
         key = chain[i];
-        if(cur && cur.hasOwnProperty(key)){
+        if(cur){
           cur = cur[key];
         }else{
           return;
