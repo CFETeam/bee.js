@@ -12,6 +12,7 @@
     "browserify": "^10.0.0",
     "del": "^1.1.1",
     "gulp": "^3.8.11",
+    "gulp-gzip": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-streamify": "0.0.5",

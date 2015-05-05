@@ -157,7 +157,7 @@ extend(Bee.prototype, Event, {
         paths = parseKeyPath(path);
         headPath = paths[0]
         if(scope._assignments && scope._assignments.length) {
-          // 具名 repeat
+          // 具名 repeat 不会直接查找自身作用域
           if(headPath === this._assignments[0]) {
             scope = {};
             scope[headPath] = this;

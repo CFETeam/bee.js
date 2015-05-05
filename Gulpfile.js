@@ -6,6 +6,7 @@ var sourcemaps = require('gulp-sourcemaps')
 var uglify = require('gulp-uglify')
 var del = require('del')
 var rename = require('gulp-rename')
+var gzip = require('gulp-gzip')
 
 var versionFix = require('./tools/gulp.versionFix')
 
@@ -26,7 +27,8 @@ gulp.task('build', function () {
     .pipe(streamify(sourcemaps.write('./', {sourceRoot: './'})))
     .pipe(rename('bee.min.js'))
     .pipe(gulp.dest('./build'))
-
+    .pipe(gzip())
+    .pipe(gulp.dest('./build'))
 })
 
 gulp.task('watch', function () {
