@@ -4,15 +4,21 @@ var doc = require('../env.js').document
   , utils = require('../utils.js')
   ;
 
+//这些数组操作方法被重写成自动触发更新
+var arrayMethods = ['splice', 'push', 'pop', 'shift', 'unshift', 'sort', 'reverse'];
+
 module.exports = {
   priority: 1000
 , anchor: true
 , terminal: true
 , link: function(vm) {
-
+    var cstr = this.cstr = vm.constructor;
     this.vm = vm;
 
-    this.cstr = vm.constructor;
+    while(cstr.__super__){
+      cstr = this.cstr = cstr.__super__.constructor;
+    }
+
 
     this.curArr = [];
     this.list = [];//[{el:el, vm: vm}]
@@ -22,6 +28,8 @@ module.exports = {
 , update: function(items) {
     var curArr = this.curArr;
     var parentNode = this.anchors.end.parentNode;
+    var that = this;
+
     if(utils.isArray(items)) {
 
       //删除元素
@@ -79,16 +87,27 @@ module.exports = {
         item.vm.$update('$index', false)
       });
 
+      //数组操作方法
       utils.extend(items, {
         $set: function(i, item) {
-          this.list[i].vm.$set(item);
-        }.bind(this),
+          that.list[i].vm.$set(item);
+        },
+        $replace: function(i, item) {
+          that.list[i].vm.$replace(item)
+        },
         $remove: function(i) {
           items.splice(i, 1);
-          this.listPath.forEach(function(path) {
-            this.vm.$update(path)
-          }.bind(this));
-        }.bind(this)
+          that.listPath.forEach(function(path) {
+            that.vm.$update(path)
+          });
+        }
+      });
+      arrayMethods.forEach(function(method) {
+        items[method] = utils.afterFn(items[method], function() {
+          that.listPath.forEach(function(path) {
+            that.vm.$update(path)
+          })
+        })
       })
     }else{
       //TODO 普通对象的遍历

@@ -10,15 +10,26 @@ module.exports = {
 , priority: 1
 , link: function(vm) {
     var keyPath = this.path;
+    var paths = utils.parseKeyPath(keyPath);
+    var headPath = paths[0];
 
     if(!keyPath) { return false; }
+
+    //TODO 实现类似 .$get 的 .$set
+    if(vm.$parent) {
+      if (vm._assignments && vm._assignments[0] === headPath) {
+        keyPath = paths.slice(1).join('.') || '$data';
+      }else{
+        vm = vm.$parent;
+      }
+    }
 
     var el = this.el
       , ev = 'change'
       , attr, value = attr = 'value'
       , ant = vm
       //, cur = vm.$getVM(keyPath, {assignment: this.assignment})
-      , isSetDefaut = utils.isUndefined(ant.$get(keyPath))//界面的初始值不会覆盖 model 的初始值
+      , isSetDefaut = utils.isUndefined(ant.$get(keyPath, false))//界面的初始值不会覆盖 model 的初始值
       , crlf = /\r\n/g//IE 8 下 textarea 会自动将 \n 换行符换成 \r\n. 需要将其替换回来
       , callback = function(val) {
           var newVal = (val || '') + ''

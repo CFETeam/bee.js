@@ -1,6 +1,7 @@
 "use strict";
 
-var doc = require('./env.js').document
+var env = require('./env.js')
+  , doc = env.document
   , utils = require('./utils.js')
   , Event = require('./event.js')
   , Class = require('./class.js')
@@ -67,6 +68,7 @@ function Bee(tpl, props) {
   , _watchers: this._watchers || {}
   , _assignments: null//当前 vm 的别名
   , _relativePath: []
+  , _isRendered: false
   };
 
   var el;
@@ -86,6 +88,8 @@ function Bee(tpl, props) {
   this.$tpl = el.tpl;
   this.$children = el.children;
 
+  this.$el.bee = this;
+
   walk.call(this, this.$el);
 
   this.$render(this.$data || {});
@@ -100,6 +104,17 @@ extend(Bee, Class, Dir, Com, {
 , doc: doc
 , directives: {}
 , components: {}
+, mount: function(id, props) {
+    var el = doc.getElementById(id);
+    var Comp = this.components[el.tagName.toLowerCase()];
+    var instance
+    if(Comp) {
+      instance = new Comp(extend({$target: el}, props))
+    }else{
+      instance = null;
+    }
+    return instance
+  }
 });
 
 
@@ -126,11 +141,11 @@ extend(Bee.prototype, Event, {
   /**
    * 获取属性/方法
    * @param {String} keyPath 路径
-   * @param {Boolean} strict
+   * @param {Boolean} [strict=false] 是否严格在自身中查找.
    * @return {*}
    */
 , $get: function(keyPath, strict) {
-    strict = strict !== false;
+    strict = strict === true;
 
     var scope = this
       , path = keyPath
@@ -191,7 +206,11 @@ extend(Bee.prototype, Event, {
     if(isUndefined(key)){ return this; }
 
     if(arguments.length === 1){
+      Object.keys(this.$data).forEach(function(key) {
+        delete this[key];
+      }.bind(this))
       this.$data = key;
+      extend(this, key);
     }else{
       hasKey = true;
       keys = parseKeyPath(key);

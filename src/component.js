@@ -8,13 +8,13 @@ var utils = require('./utils.js');
  * @param {Function|props} Component 自定义组件的构造函数 / 构造函数参数
  * @return {Function} 自定义组件的构造函数
  */
-function tag(tagName, Component) {
+function tag(tagName, Component, statics) {
   var tags = this.components = this.components || {};
 
   this.doc.createElement(tagName);//for old IE
 
   if(utils.isObject(Component)) {
-    Component = this.extend(Component);
+    Component = this.extend(Component, statics);
   }
   return tags[tagName] = Component;
 }

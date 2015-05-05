@@ -14,6 +14,11 @@ module.exports = {
     var attrs;
 
     if(comName in components) {
+      Comp = components[comName];
+
+      if(Comp === vm.constructor) {
+        return;
+      }
 
       dirs = this.__dirs;
 
@@ -58,7 +63,6 @@ module.exports = {
         });
       });
 
-      Comp = components[comName];
       comp = new Comp({$target: el, $data: utils.extend({}, Comp.prototype.$data, $data)});
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
