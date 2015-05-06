@@ -23,6 +23,5 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "jsdom": "^0.10.6"
   }
 }
