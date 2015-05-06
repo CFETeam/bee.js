@@ -6,7 +6,7 @@ var utils = require('./utils.js')
   ;
 
 /**
- * 为 Ant 构造函数添加指令 (directive). `Ant.directive`
+ * 为 Bee 构造函数添加指令 (directive). `Bee.directive`
  * @param {String} key directive 名称
  * @param {Object} [opts] directive 参数
  * @param {Number} opts.priority=0 directive 优先级. 同一个元素上的指令按照优先级顺序执行.

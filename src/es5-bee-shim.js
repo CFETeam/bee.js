@@ -1,4 +1,4 @@
-//ES5 and other staff shim for Ant.js
+//ES5 and other staff shim for beejs
 
 if(!Array.prototype.forEach){
   Array.prototype.forEach = function(fn, scope) {
