@@ -2,7 +2,7 @@ var utils = require('./utils.js');
 
 var Event = {
   //监听自定义事件.
-  on: function(name, handler, context) {
+  $on: function(name, handler, context) {
     var ctx = context || this
       ;
 
@@ -12,14 +12,14 @@ var Event = {
     ctx._handlers[name].push({handler: handler, context: context, ctx: ctx});
     return this;
   },
-  one: function (name, handler, context) {
+  $one: function (name, handler, context) {
     if(handler){
       handler.one = true;
     }
     return this.on(name, handler, context);
   },
   //移除监听事件.
-  off: function(name, handler, context) {
+  $off: function(name, handler, context) {
     var ctx = context || this
       , handlers = ctx._handlers
       ;
@@ -39,7 +39,7 @@ var Event = {
   },
   //触发自定义事件.
   //该方法没有提供静态化的 context 参数. 如要静态化使用, 应该: `Event.trigger.call(context, name, data)`
-  trigger: function(name, data) {
+  $trigger: function(name, data) {
     var args = [].slice.call(arguments, 1)
       , handlers = this._handlers && this._handlers[name]
       ;
