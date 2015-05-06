@@ -59,7 +59,7 @@ function Bee(tpl, props) {
     $data: this.$data || {}
   , $el: this.$el || null
   , $target: this.$target || null
-  , $tpl: this.$tpl || ''
+  , $tpl: this.$tpl || '<div></div>'
   , $children: null
   , $filters: this.$filters || {}
   , $parent: null
@@ -105,13 +105,13 @@ extend(Bee, Class, Dir, Com, {
 , directives: {}
 , components: {}
 , mount: function(id, props) {
-    var el = doc.getElementById(id);
+    var el = id.nodeType ? id : doc.getElementById(id);
     var Comp = this.components[el.tagName.toLowerCase()];
     var instance
     if(Comp) {
       instance = new Comp(extend({$target: el}, props))
     }else{
-      instance = null;
+      instance = new Bee(el, props);
     }
     return instance
   }

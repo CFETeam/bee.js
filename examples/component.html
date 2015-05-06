@@ -13,8 +13,6 @@
     <div style="width: 45%; float: right">
         <h3>{{$children[0].innerHTML}}</h3>
         {{{marked(md)}}}
-        <div>{{toJSON($data)}}</div>
-        <div>{{$data.markdown}}</div>
      </div>
   </script>
   <script type="text/javascript" id=js>
@@ -23,9 +21,6 @@
       $tpl: comtpl.innerHTML,
       marked: function (md) {
         return marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
-      },
-      toJSON: function (obj) {
-        return JSON.stringify(obj)
       }
     });
     </script>
@@ -33,14 +28,14 @@
 <body>
   <h1>component</h1>
   <div id=template>
-    <textarea name="md" id="md" style="width: 45%;" a-model="markdown" placeholder="请在此输入 markdown" rows="10">
+<textarea name="md" id="md" style="width: 45%;" a-model="markdown" placeholder="请在此输入 markdown" rows="20">
 # 标题一
 标题二
 ---
 _斜体_
-    </textarea>
+</textarea>
 
-    <x-mdeditor md="{{markdown}}" a-with="$data" a-repeat="item in [1,2]">
+    <x-mdeditor md="{{markdown}}">
         <div>头</div>
         <div>尾</div>
     </x-mdeditor>
