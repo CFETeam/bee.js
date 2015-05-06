@@ -15,6 +15,7 @@
 <body>
   <h1>a-attr, a-style 及绑定 </h1>
 	<div id=template>
+    <div>{{text}}</div>
     <div class="show" a-attr="attr" a-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
         {{toJSON($data)}}
     </div>
