@@ -5,19 +5,19 @@ scripts:
 
 browsers:
   - name: ie
-    version: 6..latest
-  - name: firefox
     version: 8..latest
+  - name: firefox
+    version: 30..latest
   - name: chrome
-    version: 26..latest
+    version: 32..latest
   - name: safari
-    version: 5..latest
+    version: 6..latest
   - name: opera
     version: 11..latest
   - name: iphone
-    version: 4.3..latest
+    version: 6.0..latest
   - name: ipad
-    version: 4.3..latest
+    version: 6.0..latest
   - name: android
     version: 4.0..latest
 
