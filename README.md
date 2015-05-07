@@ -2,7 +2,7 @@
 
 轻量级 MVVM 库
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/ckr189.svg)](https://saucelabs.com/u/ckr189)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/ckr189.svg)](https://travis-ci.org/CFETeam/bee.js)
 
 特性
 ---
@@ -34,4 +34,3 @@ gulp build
 ```
 
 或者直接使用: `gulp`
-

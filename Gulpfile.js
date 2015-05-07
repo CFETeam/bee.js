@@ -17,7 +17,6 @@ gulp.task('build', function () {
 
   b.transform(versionFix)
 
-  b.exclude('jsdom')
   b.add('./src/bee.js')
 
   return b.bundle()
