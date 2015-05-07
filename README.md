@@ -2,6 +2,8 @@
 
 轻量级 MVVM 库
 
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/ckr189.svg)](https://saucelabs.com/u/ckr189)
+
 特性
 ---
 - [x] 自定义标签

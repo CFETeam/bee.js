@@ -163,7 +163,7 @@ test('expression 表达式', function(t) {
   }
 
   t.test('new 操作符', function(t) {
-    t.equal(evalu(parse('new Date')).getTime(), (new Date).getTime(), 'new Date');
+    t.equal(evalu(parse('new Date(123456789).getTime()')), (new Date(123456789)).getTime(), 'new Date');
     t.end();
   })
 });

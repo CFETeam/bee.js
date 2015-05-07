@@ -7,9 +7,9 @@ browsers:
   - name: ie
     version: 8..latest
   - name: firefox
-    version: 30..latest
+    version: 35..latest
   - name: chrome
-    version: 32..latest
+    version: 40..latest
   - name: safari
     version: 6..latest
   - name: opera
