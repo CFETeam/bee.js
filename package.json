@@ -4,14 +4,18 @@
   "description": "",
   "main": "src/bee.js",
   "scripts": {
-    "test": "tape test"
+    "test": "tape test",
+    "test_local": "zuul test --local 8080",
+    "test_cloud": "zuul -- test"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^10.0.0",
     "del": "^1.1.1",
+    "es6-promise": "^2.1.1",
     "gulp": "^3.8.11",
+    "gulp-filter": "^2.0.2",
     "gulp-gzip": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
@@ -20,8 +24,8 @@
     "jquery": "^1.11.2",
     "tape": "^4.0.0",
     "through2": "^0.6.5",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "zuul": "^3.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

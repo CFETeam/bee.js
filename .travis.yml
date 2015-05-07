@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "0.10"
+  - "0.12"
+before_script:
+  - npm install jsdom@0.10
+
+env:
+  global:
+    - secure: U/T20gf3xuyNl93KC9+uW2DeXIwaud0iLZpklLOD0tvHF5wJ7MmY9WJremlKba3f1y4cCRHWEez8Qa+OEL2rVOWzpDl6gu7XRSFe4Zl4yvzIrbOs1b1/QltDon8XLcQUUJT8IkBmTp8p5PlJNH63ZBDNameyy9OiAZI96OPobeU=
+    - secure: Eag+QzmeZWn+f1bpt+O33WTMs6C60UVAzF19HMM0aWJGGojanNP5xtmo7IgWXzJDEBy+gZi7fPCKClsZZ2qEVAnbtaYp4DjBctDtKwjgxes+8+Nu9g0yPO1JVzWQpEFrRV90vn9JlVqHInAm8Nxt0dDaeKcuqgabkCqnzS1RiM8=
