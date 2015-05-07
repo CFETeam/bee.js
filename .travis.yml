@@ -1,9 +1,10 @@
 language: node_js
 node_js:
   - "0.10"
-  - "0.12"
 before_script:
   - npm install jsdom@0.10
+
+script: "npm run-script test_cloud"
 
 env:
   global:
