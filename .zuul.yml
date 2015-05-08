@@ -18,6 +18,3 @@ browsers:
     version: 6.0..latest
   - name: android
     version: 4.0..latest
-
-browserify:
-  - exclude: jsdom

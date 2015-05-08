@@ -19,10 +19,10 @@
 	<div id=template>
     <div>{{toJSON($data)}}</div>
     <ul>
-      <li a-repeat="item in list" a-on="events">
+      <li b-repeat="item in list" b-on="events">
         <span>{{item.name}}</span>
         <ul>
-          <li a-repeat="item2 in list2">{{item[item2.name]}}</li>
+          <li b-repeat="item2 in list2">{{item[item2.name]}}</li>
         </ul>
       </li>
     </ul>

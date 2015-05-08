@@ -79,4 +79,19 @@ test(function(t) {
   t.end();
 });
 
+test('构造函数参数', function(t) {
+  var data = {a: 'a'};
+  var bee = new Bee({
+    $data: data
+  });
 
+  t.equal(bee.$data, data)
+  t.equal(bee.a, data.a)
+
+  var el = Bee.doc.createElement('div');
+  var bee = new Bee('<div>{{name}}</div>', { $el: el, $data: { name: 'Bee' } })
+
+  t.equal(bee.$el, el, '.$el')
+
+  t.end()
+})

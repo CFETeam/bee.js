@@ -16,15 +16,15 @@
   <h1>a-attr, a-style 及绑定 </h1>
 	<div id=template>
     <div>{{text}}</div>
-    <div class="show" a-attr="attr" a-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
+    <div class="show" b-attr="attr" b-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
         {{toJSON($data)}}
     </div>
     <div class="control" title="这里也是 title: {{attr.title}}">
-      <label for="width">width<input type="range" value=50 a-model=width id="width"></label>
-      <label for="height">height<input type="range" a-model=height id="height"></label>
-      <label for="color" a-style="style">文字颜色<input type="color" a-model='style.color' value="#0044ff" id="color"></label>
-      <label for="bgcolor">背景颜色<input type="color" a-model=bgcolor value="#efefef" id="bgcolor"></label>
-      <label for="title"><input type="text" a-model="attr.title" id="title" value="输入显示框的 title"/></label>
+      <label for="width">width<input type="range" value=50 b-model=width id="width"></label>
+      <label for="height">height<input type="range" b-model=height id="height"></label>
+      <label for="color" b-style="style">文字颜色<input type="color" b-model='style.color' value="#0044ff" id="color"></label>
+      <label for="bgcolor">背景颜色<input type="color" b-model=bgcolor value="#efefef" id="bgcolor"></label>
+      <label for="title"><input type="text" b-model="attr.title" id="title" value="输入显示框的 title"/></label>
     </div>
   </div>
 <script type="text/javascript" id=js>

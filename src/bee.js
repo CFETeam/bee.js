@@ -118,7 +118,7 @@ extend(Bee, Class, Dir, Com, {
 });
 
 
-Bee.setPrefix('a-');
+Bee.setPrefix('b-');
 
 //内置 directive
 for(var dir in dirs) {

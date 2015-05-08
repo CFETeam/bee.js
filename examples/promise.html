@@ -19,26 +19,26 @@
 <body>
   <h1>promise</h1>
 	<div id=template>
-    <input type="text" value="基地" a-model="title"/>
-    <select a-model="title">
+    <input type="text" value="基地" b-model="title"/>
+    <select b-model="title">
       <option value="从0到1">从0到1</option>
       <option value="黑客与画家">黑客与画家</option>
       <option value="三体">三体</option>
       <option value="基地">基地</option>
     </select>
-    <a href="javascript:;"  a-on="{click: toggleData}">查看JSON数据</a>
+    <a href="javascript:;"  b-on="{click: toggleData}">查看JSON数据</a>
     <pre style="display: none">{{promise2JSON(getData(title))}}</pre>
     <div>
       <ul>
-        <li a-repeat="book in books" style="overflow: hidden; list-style: none">
-          <img style="float: left; width: 90px; height: 127px; margin: 1em;" a-src="book.image" title="{{book.origin_title}}" alt="{{book.subtitle}}"/>
+        <li b-repeat="book in books" style="overflow: hidden; list-style: none">
+          <img style="float: left; width: 90px; height: 127px; margin: 1em;" b-src="book.image" title="{{book.origin_title}}" alt="{{book.subtitle}}"/>
           <h2 title="{{book.catalog}}">
             <a href="{{book.alt}}" target="_blank">
               {{book.title}} - {{book.author.join(' ')}}
-              <small a-if="book.translator.length">({{book.translator.join(' ')}} 译)</small>
+              <small b-if="book.translator.length">({{book.translator.join(' ')}} 译)</small>
             </a>
           </h2>
-          <a target="_blank" a-if="book.ebook_url" href="{{book.ebook_url}}">试读</a>
+          <a target="_blank" b-if="book.ebook_url" href="{{book.ebook_url}}">试读</a>
         </li>
       </ul>
     </div>
