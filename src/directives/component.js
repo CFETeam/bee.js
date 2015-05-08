@@ -28,11 +28,6 @@ module.exports = {
 
       attrs = el.attributes;
 
-      //普通属性
-      for(var i = attrs.length - 1; i >= 0; i--) {
-        $data[attrs[0].nodeName] = attrs[0].value;
-      }
-
       dirs.forEach(function (dir) {
         var withMap = [];
         //属性表达式
@@ -54,7 +49,7 @@ module.exports = {
               comp.$set(pathConfig.componentPath, val);
             } else {
               if(pathConfig.componentPath === '$data'){
-                $data = val
+                utils.extend($data, val)
               }else {
                 $data[pathConfig.componentPath] = val;
               }
@@ -62,6 +57,11 @@ module.exports = {
           })
         });
       });
+
+      //普通属性
+      for(var i = attrs.length - 1; i >= 0; i--) {
+        $data[attrs[0].nodeName] = attrs[0].value;
+      }
 
       comp = new Comp({$target: el, $data: utils.extend({}, Comp.prototype.$data, $data)});
 
