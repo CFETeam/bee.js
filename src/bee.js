@@ -320,7 +320,7 @@ function update (keyPath, data) {
   }
 
 }
-
+doc.createElement('template')
 //遍历 dom 树
 function walk(el) {
 
@@ -351,16 +351,22 @@ function walk(el) {
         break;
   }
 
+  if(el.nodeName.toLowerCase() === 'template') {
+    //template shim
+    if(!el.content) {
+      el.content = doc.createDocumentFragment();
+      while(el.childNodes[0]) {
+        el.content.appendChild(el.childNodes[0])
+      }
+    }
+  }
+
   if(checkAttr.call(this, el)){
     return;
   }
 
-  //template
-  //meta element has content, too.
-  if(el.content && el.content.nodeType) {
-    walk.call(this, el.content);
-    el.parentNode && el.parentNode.replaceChild(el.content, el);
-    return;
+  if(el.nodeName.toLowerCase() === 'template') {
+    walk.call(this, el.content)
   }
 
   for(var child = el.firstChild, next; child; ){

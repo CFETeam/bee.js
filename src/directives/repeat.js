@@ -28,7 +28,7 @@ module.exports = {
 , update: function(items) {
     var curArr = this.curArr;
     var parentNode = this.anchors.end.parentNode;
-    var that = this;
+    var that = this, list = this.list;
 
     if(utils.isArray(items)) {
 
@@ -36,9 +36,9 @@ module.exports = {
       arrDiff(curArr, items).forEach(function(item) {
         var pos = curArr.indexOf(item)
         curArr.splice(pos, 1)
-        parentNode.removeChild(this.list[pos].el)
-        this.list.splice(pos, 1)
-      }.bind(this))
+        parentNode.removeChild(list[pos].el)
+        list.splice(pos, 1)
+      })
 
       items.forEach(function(item, i) {
         var pos = items.indexOf(item, i)
@@ -54,8 +54,8 @@ module.exports = {
 
           // 在 repeat 指令表达式中
           this.listPath = this.locals.filter(function(path) {
-            return utils.isArray(this.vm.$get(path))
-          }.bind(this));
+            return utils.isArray(that.vm.$get(path))
+          });
 
           el = this.el.cloneNode(true)
 
@@ -63,8 +63,8 @@ module.exports = {
             $data: item, _assignments: this.assignments, $index: pos,
             $root: this.vm.$root, $parent: this.vm
           });
-          parentNode.insertBefore(vm.$el, this.list[pos] && this.list[pos].el || this.anchors.end)
-          this.list.splice(pos, 0, {el: el, vm: vm});
+          parentNode.insertBefore(vm.$el, list[pos] && list[pos].el || this.anchors.end)
+          list.splice(pos, 0, {el: el, vm: vm});
           curArr.splice(pos, 0, item)
 
           //延时赋值给 `_relativePath`, 避免出现死循环
@@ -74,12 +74,12 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(this.list[oldPos].el, this.list[pos] && this.list[pos].el || this.anchor.end)
-            parentNode.insertBefore(this.list[pos].el, this.list[oldPos + 1] && this.list[oldPos + 1].el || this.anchor.end)
-            this.list[oldPos] = [this.list[pos], this.list[pos] = this.list[oldPos]][0]
+            parentNode.insertBefore(list[oldPos].el, list[pos] && list[pos].el || that.anchor.end)
+            parentNode.insertBefore(list[pos].el, list[oldPos + 1] && list[oldPos + 1].el || that.anchor.end)
+            list[oldPos] = [list[pos], list[pos] = list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
-            this.list[pos].vm.$index = pos
-            this.list[pos].vm.$update('$index')
+            list[pos].vm.$index = pos
+            list[pos].vm.$update('$index')
           }
         }
       }.bind(this))

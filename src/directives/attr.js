@@ -4,21 +4,13 @@
 
 var utils = require('../utils.js');
 
-var attrPostReg = /\?$/;
-
 module.exports = {
   link: function() {
     if(this.dirName === this.type) {//attr binding
       this.attrs = {};
     }else {
-      //条件属性
-      if(attrPostReg.test(this.dirName)) {// someAttr? condition binding
-        this.dirName = this.dirName.replace(attrPostReg, '');
-        this.conditionalAttr = true;
-      }else{
-        //属性表达式默认将值置空, 防止表达式内变量不存在
-        this.update('')
-      }
+      //属性表达式默认将值置空, 防止表达式内变量不存在
+      this.update('')
     }
   }
 , update: function(val) {
@@ -39,7 +31,7 @@ module.exports = {
       }
       this.attrs = newAttrs;
     }else{
-      if(this.conditionalAttr) {
+      if(this.conditional) {
         val ? setAttr(el, this.dirName, val) : removeAttr(el, this.dirName);
       }else{
         this.textMap[this.position] = val && (val + '');

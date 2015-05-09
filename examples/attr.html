@@ -13,7 +13,7 @@
   <script type="text/javascript" src="../build/bee.js"></script>
 </head>
 <body>
-  <h1>a-attr, a-style 及绑定 </h1>
+  <h1>属性及样式绑定 </h1>
 	<div id=template>
     <div>{{text}}</div>
     <div class="show" b-attr="attr" b-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
@@ -24,7 +24,8 @@
       <label for="height">height<input type="range" b-model=height id="height"></label>
       <label for="color" b-style="style">文字颜色<input type="color" b-model='style.color' value="#0044ff" id="color"></label>
       <label for="bgcolor">背景颜色<input type="color" b-model=bgcolor value="#efefef" id="bgcolor"></label>
-      <label for="title"><input type="text" b-model="attr.title" id="title" value="输入显示框的 title"/></label>
+      <label for="title"><input type="text" disabled?="disabled" b-model="attr.title" id="title" value="输入显示框的 title"/></label>
+      <label for="disabled">条件属性<input type="checkbox" b-model="disabled" id="disabled"/></label>
     </div>
   </div>
 <script type="text/javascript" id=js>

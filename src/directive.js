@@ -5,6 +5,8 @@ var utils = require('./utils.js')
   , doc = require('./env.js').document
   , parse = require('./parse.js').parse
   , evaluate = require('./eval.js')
+
+  , create = utils.create
   ;
 
 /**
@@ -80,6 +82,8 @@ Directive.prototype = {
   }
 };
 
+var attrPostReg = /\?$/;
+
 //获取一个元素上所有用 HTML 属性定义的指令
 function getDir(el, directives, components, prefix) {
   prefix = prefix || '';
@@ -105,15 +109,18 @@ function getDir(el, directives, components, prefix) {
 
     if(attrName.indexOf(prefix) === 0 && (dirName in directives)) {
       //指令
-      dir = utils.create(directives[dirName]);
+      dir = create(directives[dirName]);
       dir.dirName = dirName//dir 名
     }else if(token.hasToken(attr.value)) {
       //属性表达式可能有多个表达式区
       token.parseToken(attr.value).forEach(function(origin) {
         origin.dirName = attrName.indexOf(prefix) === 0 ? dirName : attrName ;
-        dirs.push(utils.extend(utils.create(directives['attr']), proto, origin))
+        dirs.push(utils.extend(create(directives.attr), proto, origin))
       });
       //由于已知属性表达式不存在 anchor, 所以直接跳过下面的检测
+    }else if(attrPostReg.test(attrName)) {
+      //条件属性指令
+      dir = utils.extend(create(directives.attr), { dirName: attrName.replace(attrPostReg, ''), conditional: true });
     }
 
     if(dir) {

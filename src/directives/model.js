@@ -41,7 +41,7 @@ module.exports = {
           var val = el[value];
 
           val.replace && (val = val.replace(crlf, '\n'));
-          ant.$set(keyPath, val, {isBubble: isInit !== true});
+          ant.$set(keyPath, val);
         }
       , callHandler = function(e) {
           if(e && e.propertyName && e.propertyName !== attr) {
@@ -92,7 +92,7 @@ module.exports = {
             for(var i = 0, l = el.options.length; i < l; i++){
               if(el.options[i].selected){ vals.push(el.options[i].value) }
             }
-            ant.$set(keyPath, vals, {isBubble: isInit !== true});
+            ant.$set(keyPath, vals);
           };
           callback = function(vals){
             if(vals && vals.length){
