@@ -39,6 +39,7 @@ test(function(t) {
     t.equal(Object.keys(bee.$data).length, 0)
     t.equal(Object.keys(bee.$filters).length, 0)
     t.equal(bee.$parent, null)
+    t.equal(bee.$root, bee)
 
     t.end()
   })

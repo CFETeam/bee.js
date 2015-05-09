@@ -60,9 +60,10 @@ function Bee(tpl, props) {
   , $el: this.$el || null
   , $target: this.$target || null
   , $tpl: this.$tpl || '<div></div>'
-  , $children: null
+  , $childElements: null
   , $filters: this.$filters || {}
   , $parent: null
+  , $root: this
 
     //私有属性/方法
   , _watchers: this._watchers || {}
@@ -86,7 +87,7 @@ function Bee(tpl, props) {
     this.$el = el.el;
   }
   this.$tpl = el.tpl;
-  this.$children = el.children;
+  this.$childElements = el.children;
 
   this.$el.bee = this;
 
@@ -281,9 +282,10 @@ extend(Bee.prototype, Event, {
   }
 , $watch: function (keyPath, callback) {
     if(callback) {
-      addWatcher.call(this, {path: keyPath, update: callback, watch: true})
+      addWatcher.call(this, new Dir('watcher', {path: keyPath, update: callback}))
     }
   }
+  //TODO 支持 表达式 keyPath ?
 , $unwatch: function (keyPath, callback) {
     var watchers = this._watchers[keyPath] || [];
 
@@ -349,7 +351,7 @@ function walk(el) {
         break;
   }
 
-  if(checkAttr.call(this, el).terminal){
+  if(checkAttr.call(this, el)){
     return;
   }
 
@@ -380,7 +382,7 @@ function checkAttr(el) {
 
   for (var i = 0, l = dirs.length; i < l; i++) {
     dir = dirs[i];
-    dir.__dirs = dirs;
+    dir.dirs = dirs;
 
     //对于 terminal 为 true 的 directive, 在解析完其相同权重的 directive 后中断遍历该元素
     if(terminalPriority > dir.priority) {
@@ -398,10 +400,8 @@ function checkAttr(el) {
   }
 
   result.dirs = dirs;
-  if(terminal) {
-    result.terminal = true;
-  }
-  return result;
+
+  return terminal
 }
 
 //处理文本节点中的绑定占位符({{...}})
@@ -449,14 +449,7 @@ function setBinding(dir) {
 
   dir.link(this);
 
-  if(dir.dirs) {
-    //属性表达式
-    dir.dirs.forEach(function(d) {
-      addWatcher.call(this, extend(create(dir), d));
-    }.bind(this));
-  }else{
-    addWatcher.call(this, dir);
-  }
+  addWatcher.call(this, dir)
 }
 
 function addWatcher(dir) {

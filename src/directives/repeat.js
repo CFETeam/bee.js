@@ -59,7 +59,10 @@ module.exports = {
 
           el = this.el.cloneNode(true)
 
-          vm = new this.cstr(el, {$data: item, $parent: this.vm, _assignments: this.assignments, $index: pos});
+          vm = new this.cstr(el, {
+            $data: item, _assignments: this.assignments, $index: pos,
+            $root: this.vm.$root, $parent: this.vm
+          });
           parentNode.insertBefore(vm.$el, this.list[pos] && this.list[pos].el || this.anchors.end)
           this.list.splice(pos, 0, {el: el, vm: vm});
           curArr.splice(pos, 0, item)

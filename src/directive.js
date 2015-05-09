@@ -3,6 +3,8 @@
 var utils = require('./utils.js')
   , token = require('./token.js')
   , doc = require('./env.js').document
+  , parse = require('./parse.js').parse
+  , evaluate = require('./eval.js')
   ;
 
 /**
@@ -51,6 +53,31 @@ Directive.prototype = {
       return null;
     }
   }
+  //解析表达式
+, parse: function() {
+    try{
+      this.ast = parse(this.path, this.type);
+    }catch(e) {
+      this.ast = {};
+      e.message = 'SyntaxError in "' + this.path + '" | ' + e.message;
+      console.error(e);
+    }
+  }
+  //表达式求值
+, getValue: function(scope) {
+    var val;
+
+    try{
+      val = evaluate.eval(this.ast, scope, this);
+    }catch(e){
+      val = '';
+      console.error(e);
+    }
+    if(utils.isUndefined(val) || val === null) {
+      val = '';
+    }
+    return val;
+  }
 };
 
 //获取一个元素上所有用 HTML 属性定义的指令
@@ -58,7 +85,7 @@ function getDir(el, directives, components, prefix) {
   prefix = prefix || '';
   directives = directives || {};
 
-  var attr, attrName, dirName
+  var attr, attrName, dirName, proto
     , dirs = [], dir, anchors = {}
     , parent = el.parentNode
     , nodeName = el.nodeName.toLowerCase()
@@ -73,18 +100,20 @@ function getDir(el, directives, components, prefix) {
     attr = el.attributes[i];
     attrName = attr.nodeName;
     dirName = attrName.slice(prefix.length);
+    proto = {el: el, node: attr, nodeName: attrName, path: attr.value};
+    dir = null;
 
     if(attrName.indexOf(prefix) === 0 && (dirName in directives)) {
       //指令
       dir = utils.create(directives[dirName]);
-      dir.dirName = dirName
+      dir.dirName = dirName//dir 名
     }else if(token.hasToken(attr.value)) {
       //属性表达式可能有多个表达式区
-      dir = utils.create(directives['attr']);
-      dir.dirs = token.parseToken(attr.value);
-      dir.dirName = attrName.indexOf(prefix) === 0 ? dirName : attrName ;
-    }else{
-      dir = false;
+      token.parseToken(attr.value).forEach(function(origin) {
+        origin.dirName = attrName.indexOf(prefix) === 0 ? dirName : attrName ;
+        dirs.push(utils.extend(utils.create(directives['attr']), proto, origin))
+      });
+      //由于已知属性表达式不存在 anchor, 所以直接跳过下面的检测
     }
 
     if(dir) {
@@ -100,7 +129,8 @@ function getDir(el, directives, components, prefix) {
           parent.appendChild(anchors.end);
         }
       }
-      dirs.push(utils.extend(dir, {el: el, node: attr, nodeName: attrName, path: attr.value, anchors: dir.anchor ? anchors : null}));
+      dir.anchors = dir.anchor ? anchors : null;
+      dirs.push(utils.extend(dir, proto));
     }
   }
   dirs.sort(function(d0, d1) {
@@ -109,6 +139,7 @@ function getDir(el, directives, components, prefix) {
   return dirs;
 }
 
+Directive.directive = directive;
 directive.getDir = getDir;
 
-exports.directive = directive;
+module.exports = Directive;

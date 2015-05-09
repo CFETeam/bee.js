@@ -13,10 +13,7 @@ var pixelAttrs = [
 ]
 
 module.exports = {
-  link: function() {
-
-  }
-, update: function(styles) {
+  update: function(styles) {
     var el = this.el;
     var styleStr = '';
     var dashKey, val;

@@ -11,16 +11,16 @@
   <script src="./third-part/marked.js"></script>
   <script type="text/x-tpl" id="comtpl">
     <div style="width: 45%; float: right">
-        <h3>{{$children[0].innerHTML}}</h3>
-        {{{marked(md)}}}
-     </div>
+      <h3>{{$childElements[0].innerHTML}}</h3>
+      {{{marked(md)}}}
+    </div>
   </script>
   <script type="text/javascript" id=js>
     //注册 标签
     Bee.tag('x-mdeditor', {
       $tpl: comtpl.innerHTML,
       marked: function (md) {
-        return marked(md) + '<div>' + this.$children[1].innerHTML + '</div>';
+        return marked(md) + '<div>' + this.$childElements[1].innerHTML + '</div>';
       }
     });
     </script>
@@ -28,12 +28,11 @@
 <body>
   <h1>component</h1>
   <div id=template>
-<textarea name="md" id="md" style="width: 45%;" b-model="markdown" placeholder="请在此输入 markdown" rows="20">
+    <textarea name="md" id="md" style="width: 45%;" b-model="markdown" placeholder="请在此输入 markdown" rows="20">
 # 标题一
 标题二
 ---
-_斜体_
-</textarea>
+_斜体_</textarea>
 
     <x-mdeditor md="{{markdown}}">
         <div>头</div>

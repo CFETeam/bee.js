@@ -16,54 +16,50 @@ module.exports = {
     if(comName in components) {
       Comp = components[comName];
 
+      //TODO
       if(Comp === vm.constructor) {
         return;
       }
 
-      dirs = this.__dirs;
+      dirs = this.dirs;
 
       dirs = dirs.filter(function (dir) {
         return dir.type == 'attr' || dir.type == 'with';
       });
 
-      attrs = el.attributes;
-
       dirs.forEach(function (dir) {
-        var withMap = [];
-        //属性表达式
-        if(dir.dirs) {
-          withMap = dir.dirs.map(function (token) {
-            return {path: token.path, componentPath: dir.nodeName};
-          });
+        var curPath, comPath;
+
+        curPath = dir.path;
+        if(dir.type === 'with' || dir.dirName === 'attr') {
+          //这里 attr 及 with 指令效果一样
+          comPath = '$data'
+          utils.extend($data, vm.$get(curPath))
         }else{
-          //a-with directive
-          withMap = dir.locals.map(function(local) {
-            return {path: local, componentPath: local};
-          });
+          comPath = dir.dirName;
+          $data[comPath] = vm.$get(curPath);
         }
 
-        //监听父组件更新
-        withMap.forEach(function (pathConfig) {
-          vm.$watch(pathConfig.path, function (val) {
-            if (comp) {
-              comp.$set(pathConfig.componentPath, val);
-            } else {
-              if(pathConfig.componentPath === '$data'){
-                utils.extend($data, val)
-              }else {
-                $data[pathConfig.componentPath] = val;
-              }
-            }
-          })
-        });
+        //监听父组件更新, 同步数据
+        vm.$watch(curPath, function (val) {
+          if(comp){
+            val = dir.textMap ? dir.textMap.join('') : val;
+            comp.$set(comPath, val);
+          }
+        })
       });
 
+      attrs = el.attributes;
       //普通属性
       for(var i = attrs.length - 1; i >= 0; i--) {
         $data[attrs[0].nodeName] = attrs[0].value;
       }
 
-      comp = new Comp({$target: el, $data: utils.extend({}, Comp.prototype.$data, $data)});
+      comp = new Comp({
+        $target: el,
+        $root: vm.$root,
+        $data: utils.extend({}, Comp.prototype.$data, $data)
+      });
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
       if(vm.$el === el) {

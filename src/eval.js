@@ -74,7 +74,7 @@ var operators = {
 };
 
 var argName = ['first', 'second', 'third']
-  , context, summary
+  , context, summary, summaryCall
   , path
   , self
   ;
@@ -121,7 +121,7 @@ var evaluate = function(tree) {
       try{
         res = getOperator(arity, value).apply(tree, args);
       }catch(e){
-        //console.debug(e);
+        summaryCall || console.warn(e);
       }
     break;
     case 'literal':
@@ -150,7 +150,9 @@ function getOperator(arity, value){
 }
 
 function reset(scope, that) {
+  summaryCall = true;
   if(scope) {
+    summaryCall = false;
     context = {locals: scope || {}, filters: scope.$filters || {}};
   }else{
     context = {filters: {}, locals: {}};

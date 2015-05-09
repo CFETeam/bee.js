@@ -15,6 +15,9 @@ module.exports = {
       if(attrPostReg.test(this.dirName)) {// someAttr? condition binding
         this.dirName = this.dirName.replace(attrPostReg, '');
         this.conditionalAttr = true;
+      }else{
+        //属性表达式默认将值置空, 防止表达式内变量不存在
+        this.update('')
       }
     }
   }
@@ -61,10 +64,8 @@ function setAttr(el, attr, val){
       }
     }
   }catch(e){}
-  try{
-    //chrome setattribute with `{{}}` will throw an error
-    el.setAttribute(attr, val);
-  }catch(e){ console.warn(e) }
+  //chrome setattribute with `{{}}` will throw an error
+  el.setAttribute(attr, val);
 }
 
 function removeAttr(el, attr) {

@@ -1,7 +1,6 @@
 "use strict";
 
-var parse = require('./parse.js').parse
-  , evaluate = require('./eval.js')
+var evaluate = require('./eval.js')
   , utils = require('./utils.js')
   , Class = require('./class.js')
   ;
@@ -9,22 +8,16 @@ var parse = require('./parse.js').parse
 var extend = utils.extend;
 
 //表达式解析
-function exParse(path) {
-  var ast = {}
-    , summary
+function exParse() {
+  var summary
+    , dir = this.dir
     ;
 
-  try{
-    ast = parse(path, this.dir.type);
-  }catch(e) {
-    e.message = 'SyntaxError in "' + path + '" | ' + e.message;
-    console.error(e);
-  }
+  dir.parse();
 
-  summary = evaluate.summary(ast);
-  extend(this.dir, summary);
+  summary = evaluate.summary(dir.ast);
+  extend(dir, summary);
   extend(this, summary);
-  this.ast = ast;
 };
 
 function Watcher(vm, dir) {
@@ -106,7 +99,7 @@ extend(Watcher.prototype, {
       , newVal
       ;
 
-    newVal = this.getValue(this.vm);
+    newVal = this.dir.getValue(this.vm);
 
     if(newVal && newVal.then) {
       //a promise
@@ -118,20 +111,6 @@ extend(Watcher.prototype, {
     }
 
     this.state = Watcher.STATE_CALLED;
-  }
-, getValue: function(scope) {
-    var val;
-
-    try{
-      val = evaluate.eval(this.ast, scope, this.dir);
-    }catch(e){
-      val = '';
-      console.error(e);
-    }
-    if(utils.isUndefined(val) || val === null) {
-      val = '';
-    }
-    return val;
   }
 });
 
