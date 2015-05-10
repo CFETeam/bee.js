@@ -60,7 +60,7 @@ function Bee(tpl, props) {
   , $el: this.$el || null
   , $target: this.$target || null
   , $tpl: this.$tpl || '<div></div>'
-  , $childElements: null
+  , $content: null
   , $filters: this.$filters || {}
   , $parent: null
   , $root: this
@@ -87,7 +87,7 @@ function Bee(tpl, props) {
     this.$el = el.el;
   }
   this.$tpl = el.tpl;
-  this.$childElements = el.children;
+  this.$content = el.content;
 
   this.$el.bee = this;
 
@@ -467,11 +467,11 @@ function addWatcher(dir) {
 
 //target: el 替换的目标
 function tplParse(tpl, target) {
-  var el, children = null, wraper;
-  if(isObject(target) && target.children) {
-    children = [];
-    for(var i = 0, l = target.children.length; i < l; i++) {
-      children.push(target.children[i].cloneNode(true));
+  var el, wraper;
+  var content = doc.createDocumentFragment()
+  if(isObject(target) && target.childNodes) {
+    while(target.childNodes[0]) {
+      content.appendChild(target.childNodes[0]);
     }
   }
   if(isObject(tpl)){
@@ -488,7 +488,7 @@ function tplParse(tpl, target) {
     target.parentNode && target.parentNode.replaceChild(el, target);
   }
 
-  return {el: el, tpl: tpl, children: children};
+  return {el: el, tpl: tpl, content: content};
 }
 
 Bee.version = '%VERSION';

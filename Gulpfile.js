@@ -9,13 +9,9 @@ var rename = require('gulp-rename')
 var gzip = require('gulp-gzip')
 var gulpFilter = require('gulp-filter')
 
-var versionFix = require('./tools/gulp.versionFix')
-
 gulp.task('build', function () {
   var b = browserify({debug: true, standalone: 'Bee'})
   var filter = gulpFilter(['bee.min.js'])
-
-  b.transform(versionFix)
 
   b.add('./src/bee.js')
 

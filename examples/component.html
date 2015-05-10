@@ -11,7 +11,7 @@
   <script src="./third-part/marked.js"></script>
   <script type="text/x-tpl" id="comtpl">
     <div style="width: 45%; float: right">
-      <h3>{{$childElements[0].innerHTML}}</h3>
+      <h3>{{$content.children[0].innerHTML}}</h3>
       {{{marked(md)}}}
     </div>
   </script>
@@ -20,7 +20,7 @@
     Bee.tag('x-mdeditor', {
       $tpl: comtpl.innerHTML,
       marked: function (md) {
-        return marked(md) + '<div>' + this.$childElements[1].innerHTML + '</div>';
+        return marked(md) + '<div>' + this.$content.children[1].innerHTML + '</div>';
       }
     });
     </script>

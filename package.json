@@ -30,5 +30,8 @@
   "browser": {
     "jsdom": false
   },
+  "browserify": {
+    "transform" : ["./tools/gulp.versionFix"]
+  },
   "dependencies": {}
 }
