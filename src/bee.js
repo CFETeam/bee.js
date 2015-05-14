@@ -81,7 +81,8 @@ function Bee(tpl, props) {
 
   for(var propKey in props) {
     if(propKey in mergeProps) {
-      defaults[propKey] = extend(props[propKey], defaults[propKey], props[propKey]);
+      extend(defaults[propKey], props[propKey])
+      defaults[propKey] = extend(props[propKey], defaults[propKey]);
     }else{
       defaults[propKey] = props[propKey];
     }
