@@ -4,7 +4,6 @@ var utils = require('../utils.js');
 module.exports = {
   priority: -10
 , watch: false
-, terminal: true
 , link: function(vm) {
     var el = this.el;
     var comName = this.path;

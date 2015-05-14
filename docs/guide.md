@@ -48,6 +48,12 @@ var bee = new Bee(tpl, {
 
 运行效果请访问: http://codepen.io/justan/pen/GJopBB
 
+MVVM
+---
+
+Bee 实例实际上是一个 ViewModel 对象, 其混合了 view 及 model 的属性.
+在使用的时候应注意不要让 `$data` 中的数据和实例方法在命名上冲突. 
+
 
 组件化
 ---

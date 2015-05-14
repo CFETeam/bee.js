@@ -42,9 +42,11 @@ bee.a;              //'a'
 
 - `$tpl` 等同于前面的参数 `tpl`, 缺省值为 `<div></div>`. 当传入一个 dom 对象时,
 其会被传换成该元素的 `outerHTML`.
-- `$el` 必须是一个 dom 元素, 缺省值是 `$tpl` 表示的 dom 元素. 当 `$tpl` 和 `$el` 都传入时,
-`$tpl` 节点将会被插入 `$el` 中.
+- `$el` 是一个 dom 元素, 缺省值是 `$tpl` 表示的元素. 当 `$tpl` 和 `$el` 都传入时,
+`$tpl` 将被插入 `$el` 中.
 - `$target` 类似 `$el`, 不同的是 `$target` 节点会被 `$tpl` 节点替换, 而不是插入.
+- 当 `$target` 存在时, 会同时创建一个 `$content` 的 documentFragment,
+`$target` 的子元素会被存放其中.
 
 ```js
 var el = document.getElementById('someId');
@@ -58,11 +60,34 @@ bee.$el === el;    //true
 
 ### Bee.extend
 
+创建一个继承 Bee 的构造函数.
+
+```js
+Bee.extend({
+  //原型属性/方法
+  constructor: function() {
+    //doSth
+    Bee.apply(this, arguments)
+  },
+  someMethod: function() {
+
+  }
+}, {
+  //静态属性/方法
+})
+```
+
 ### Bee.directive
+
+创建一个自定义指令.
 
 ### Bee.tag
 
+`Bee.component` 的别名. 以一个自定义标签定义一个组件.
+
 ### Bee.mount
+
+加载某个组件. 如果 `Bee.mount` 一个普通元素(非关联的自定义标签), 则效果与 `new Bee` 一样.
 
 
 实例方法
@@ -70,10 +95,20 @@ bee.$el === el;    //true
 
 ### $get
 
+获取当前实例的数据.
+
 ### $set
+
+更新当前实例的数据. 用 `$set` 方法总是扩展(添加或修改)数据.
 
 ### $replace
 
+替换当前实例的数据.
+
 ### $watch
 
+监听某个表达式的变化.
+
 ### $unwatch
+
+取消监听.

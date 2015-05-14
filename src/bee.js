@@ -41,6 +41,10 @@ function setPrefix(newPrefix) {
   }
 }
 
+var mergeProps = {
+  $data: 1, $filter: 1
+};
+
 /**
  * 构造函数
  * ---
@@ -56,12 +60,13 @@ function Bee(tpl, props) {
 
   var defaults = {
     //$ 开头的是共有属性/方法
-    $data: this.$data || {}
+    $data: this.$data
+  , $filters: this.$filters
+
   , $el: this.$el || null
   , $target: this.$target || null
   , $tpl: this.$tpl || '<div></div>'
   , $content: null
-  , $filters: this.$filters || {}
   , $parent: null
   , $root: this
 
@@ -74,8 +79,16 @@ function Bee(tpl, props) {
 
   var el;
 
+  for(var propKey in props) {
+    if(propKey in mergeProps) {
+      defaults[propKey] = extend({}, defaults[propKey], props[propKey]);
+    }else{
+      defaults[propKey] = props[propKey];
+    }
+  }
+
   //合并所有到当前空间下
-  extend(this, defaults, props);
+  extend(this, defaults);
   extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
@@ -93,7 +106,7 @@ function Bee(tpl, props) {
 
   walk.call(this, this.$el);
 
-  this.$render(this.$data || {});
+  this.$render(this.$data);
   this._isRendered = true;
   this.$init();
 }
