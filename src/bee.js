@@ -60,8 +60,8 @@ function Bee(tpl, props) {
 
   var defaults = {
     //$ 开头的是共有属性/方法
-    $data: this.$data
-  , $filters: this.$filters
+    $data: this.$data || {}
+  , $filters: this.$filters || {}
 
   , $el: this.$el || null
   , $target: this.$target || null
@@ -81,7 +81,7 @@ function Bee(tpl, props) {
 
   for(var propKey in props) {
     if(propKey in mergeProps) {
-      defaults[propKey] = extend({}, defaults[propKey], props[propKey]);
+      defaults[propKey] = extend(props[propKey], defaults[propKey], props[propKey]);
     }else{
       defaults[propKey] = props[propKey];
     }
