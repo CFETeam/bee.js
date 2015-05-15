@@ -31,6 +31,10 @@ module.exports = {
     var that = this, list = this.list;
 
     if(utils.isArray(items)) {
+      // 在 repeat 指令表达式中
+      this.listPath = this.locals.filter(function(path) {
+        return !utils.isFunction(that.vm.$get(path))
+      });
 
       //删除元素
       arrDiff(curArr, items).forEach(function(item) {
@@ -52,10 +56,6 @@ module.exports = {
         //新增元素
         if(oldPos < 0) {
 
-          // 在 repeat 指令表达式中
-          this.listPath = this.locals.filter(function(path) {
-            return utils.isArray(that.vm.$get(path))
-          });
 
           el = this.el.cloneNode(true)
 
@@ -90,28 +90,31 @@ module.exports = {
         item.vm.$update('$index', false)
       });
 
-      //数组操作方法
-      utils.extend(items, {
-        $set: function(i, item) {
-          that.list[i].vm.$set(item);
-        },
-        $replace: function(i, item) {
-          that.list[i].vm.$replace(item)
-        },
-        $remove: function(i) {
-          items.splice(i, 1);
-          that.listPath.forEach(function(path) {
-            that.vm.$update(path)
-          });
-        }
-      });
-      arrayMethods.forEach(function(method) {
-        items[method] = utils.afterFn(items[method], function() {
-          that.listPath.forEach(function(path) {
-            that.vm.$update(path)
+      if(!items.__bee__){
+        //数组操作方法
+        utils.extend(items, {
+          $set: function(i, item) {
+            that.list[i].vm.$set(item);
+          },
+          $replace: function(i, item) {
+            that.list[i].vm.$replace(item)
+          },
+          $remove: function(i) {
+            items.splice(i, 1);
+            that.listPath.forEach(function(path) {
+              that.vm.$update(path)
+            });
+          }
+        });
+        arrayMethods.forEach(function(method) {
+          items[method] = utils.afterFn(items[method], function() {
+            that.listPath.forEach(function(path) {
+              that.vm.$update(path)
+            })
           })
-        })
-      })
+        });
+        items.__bee__  = true;
+      }
     }else{
       //TODO 普通对象的遍历
     }
@@ -124,4 +127,3 @@ function arrDiff(arr1, arr2) {
     return arr2.indexOf(el) < 0
   })
 }
-
