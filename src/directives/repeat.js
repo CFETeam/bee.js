@@ -87,6 +87,7 @@ module.exports = {
       //更新索引
       this.list.forEach(function(item, i) {
         item.vm.$index = i
+        item.el.$index = i
         item.vm.$update('$index', false)
       });
 

@@ -11,9 +11,26 @@ module.exports = {
     this.vm = vm;
   }
 , update: function(events) {
+    var selector, eventType;
     for(var name in events) {
-      eventBind.addEvent(this.el, name, events[name].bind(this.vm));
+      selector = name.split(/\s+/);
+      eventType = selector[0];
+      selector = selector[1];
+      eventBind.addEvent(this.el, eventType, callHandler(this, selector, events[name]));
     }
-    //this.events = events;
+  }
+}
+
+//委托事件
+function callHandler (dir, selector, callback) {
+  return function(e) {
+    var els = selector ? [].slice.call(dir.el.querySelectorAll(selector)) : [e.target];
+    var cur = e.target;
+    do{
+      if(els.indexOf(cur) >= 0) {
+        e.delegateTarget = cur;//委托元素
+        return callback.call(dir.vm, e)
+      }
+    }while(cur = cur.parentNode)
   }
 }
