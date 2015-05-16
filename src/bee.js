@@ -106,6 +106,7 @@ function Bee(tpl, props) {
 
   this.$el.bee = this;
 
+  this.$content && walk.call(this.$root, this.$content);
   walk.call(this, this.$el);
 
   for(var key in this.$watchers) {
@@ -467,7 +468,6 @@ function setBinding(dir) {
     if(isFunction(dir.replace)) {
       dir.node = dir.replace();
     }else if(dir.replace){
-      //dir.node = doc.createComment(dir.type + ' = ' + dir.path);
       dir.node = doc.createTextNode('');
     }
 
@@ -490,8 +490,9 @@ function addWatcher(dir) {
 //target: el 替换的目标
 function tplParse(tpl, target) {
   var el, wraper;
-  var content = doc.createDocumentFragment()
+  var content = null;
   if(isObject(target) && target.childNodes) {
+    content = doc.createDocumentFragment();
     while(target.childNodes[0]) {
       content.appendChild(target.childNodes[0]);
     }

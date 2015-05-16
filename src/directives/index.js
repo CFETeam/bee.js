@@ -110,5 +110,6 @@ dirs.model = require('./model.js');
 dirs.style = require('./style.js');
 dirs.on = require('./on.js');
 dirs.component = require('./component.js');
+dirs.content = require('./content.js')
 
 module.exports = dirs;

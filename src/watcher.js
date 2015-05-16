@@ -63,18 +63,18 @@ function Watcher(vm, dir) {
   }
 
   //没有变量 / 变量不在当前作用域的表达式立即求值
-  for(var i = 0, l = this.locals.length; i < l; i++) {
-    if(utils.isObject(this.vm.$data) && (this.locals[i] in this.vm.$data)) {
-      break;
-    }
-  }
-  if(i == l) {
-    willUpdate = true;
-  }
+  //for(var i = 0, l = this.locals.length; i < l; i++) {
+  //  if(utils.isObject(this.vm.$data) && (this.locals[i] in this.vm.$data)) {
+  //    break;
+  //  }
+  //}
+  //if(i == l) {
+  //  willUpdate = true;
+  //}
 
-  if(willUpdate || this.vm._isRendered) {
+  //if(willUpdate || this.vm._isRendered) {
     this.update();
-  }
+  //}
 }
 
 //TODO

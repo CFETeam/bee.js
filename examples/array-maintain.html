@@ -15,22 +15,30 @@
 <h1>数组操作</h1>
 <div id=template>
   {{list.length}}
+  <button b-on="{click: add}">添加</button>
   <ul>
-    <li b-repeat="item in list">
+    <li b-repeat="item in list" b-on="events">
       <span>({{item.$index + 1}}) name: {{name}} - item.name: {{item.name}}</span>
-      <a href="javascript:;" b-on="events">删除</a>
+      <a href="javascript:;">删除</a>
     </li>
   </ul>
 </div>
 <script type="text/javascript">
   var bee = new Bee(document.getElementById('template'), {
     $data: {list:[{name: 'click me'}, {name: 'row 2'}, {name: 'd3'}], name: 'parent name'},
+    add: function() {
+      this.list.push({name: '新'})
+    },
     events: {
-      click: function(e) {
-        var list = this.$get('list', false)
+      //事件委托
+      "click a": function(e) {
+        var list = this.$get('list')
         var i = list.indexOf(this.$data);
 
-        list.$remove(i);
+        list.$remove(i);//等同于 list.splice(i, 1)
+      },
+      "click span": function() {
+        this.$root.list.$set(this.$index, {name: 'clicked' + Math.random()})
       }
     }
   });

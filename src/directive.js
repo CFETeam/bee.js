@@ -35,7 +35,7 @@ Directive.prototype = {
 , update: utils.noop//更新方法
 , tearDown: utils.noop
 , terminal: false//是否终止
-, replace: false//是否替换当前元素
+, replace: false//是否替换当前元素. 如果是, 将用一个空的文本节点替换当前元素
 , watch: true//是否监控 key 的变化
 
 , anchor: false
