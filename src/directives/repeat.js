@@ -50,8 +50,8 @@ module.exports = {
           , vm, el
           ;
 
-        pos < 0 && (pos = items.lastIndexOf(item, i));
-        oldPos < 0 && (oldPos = curArr.lastIndexOf(item, i));
+        //pos < 0 && (pos = items.lastIndexOf(item, i));
+        //oldPos < 0 && (oldPos = curArr.lastIndexOf(item, i));
 
         //新增元素
         if(oldPos < 0) {
@@ -125,7 +125,14 @@ module.exports = {
 
 
 function arrDiff(arr1, arr2) {
+  var arr2Copy = arr2.slice();
   return arr1.filter(function(el) {
-    return arr2.indexOf(el) < 0
+    var result, index = arr2Copy.indexOf(el)
+    if(index < 0) {
+      result = true
+    }else{
+      arr2Copy.splice(index, 1)
+    }
+    return result
   })
 }

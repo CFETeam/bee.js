@@ -10,12 +10,29 @@ test('repeat: 简单数组', function(t) {
   var list = [1, 3, "5"];
   var bee = new Bee(tpl, { $data: {list : list, name: 'parentName'} })
   var $el = $(bee.$el)
-  t.equal($el.find('li').length, list.length)
-  $el.find('li').each(function(i) {
-    t.equal(i, $(this).data().index * 1, '[索引] $index: ' + i)
-    t.equal(list[i] + '', $(this).text(), 'item ' + i + ' : ' + list[i])
-    t.equal(bee.name, $(this).data().parentname, 'parentName')
-  });
+  var checkRepeat = function() {
+    t.equal($el.find('li').length, list.length)
+    $el.find('li').each(function(i) {
+      var $li = $(this)
+      t.equal(i, $li.attr('data-index') * 1, '[索引] $index: ' + i)
+      t.equal(list[i] + '', $li.text(), 'item ' + i + ' : ' + list[i])
+      t.equal(bee.name, $li.attr('data-parentname'), 'parentName')
+    });
+  }
+
+  checkRepeat()
+
+  bee.list.push('6');
+  t.comment('push')
+  checkRepeat()
+
+  bee.list.push('6')
+  t.comment('再次 push 相同数据')
+  checkRepeat()
+
+  bee.list.pop()
+  t.comment('pop')
+  checkRepeat()
 
   t.end()
 })
