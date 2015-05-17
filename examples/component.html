@@ -1,48 +1,107 @@
 <!DOCTYPE HTML>
-<html lang="en-US">
+<html lang="zh-CN">
 <head>
-	<meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Component</title>
+  <title>组件及 content 指令</title>
   <!--[if lt IE 9]>
   <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
   <![endif]-->
   <script type="text/javascript" src="../build/bee.js"></script>
   <script src="./third-part/marked.js"></script>
-  <script type="text/x-tpl" id="comtpl">
-    <div style="width: 45%; float: right">
-      <h3>{{$content.children[0].innerHTML}}</h3>
-      {{{marked(md)}}}
+  <style>
+    [data-role=dialog] {
+      width: 500px;
+      margin:1em auto;
+      padding: 1em;
+      border: 1px dashed #ddd;
+    }
+    [data-role=dialog] .content{
+      overflow: auto;
+    }
+    [data-role=mdeditor]>textarea {
+      width: 45%;
+      float: left;
+    }
+  </style>
+
+  <!--dialog 组件-->
+  <script type="text/x-tpl" id="dialogTpl">
+    <div b-style="{display: show ? 'block' : 'none'}" data-role="dialog">
+    <h3>{{title}}</h3>
+    <div class="content">
+        <span b-content="$content"></span>
     </div>
+  <div> <button b-on="$btnEvents" b-repeat="btn in $btns">{{btn}}</button> </div>
+  </div>
   </script>
-  <script type="text/javascript" id=js>
-    //注册 标签
-    Bee.tag('x-mdeditor', {
-      $tpl: comtpl.innerHTML,
-      marked: function (md) {
-        return marked(md) + '<div>' + this.$content.children[1].innerHTML + '</div>';
+  <script>
+    Bee.tag('x-dialog', {
+      $tpl: document.getElementById('dialogTpl').innerHTML,
+      $data: {
+        title: '弹层标题'
+      },
+      $btnEvents: {
+        'click': function() {
+          console.log(this.$index)
+          this.$parent.$toggle();
+        }
+      },
+      $btns: ['确定'],
+
+      $toggle: function() {
+        this.$set({'show': !this.show})
       }
-    });
-    </script>
+    })
+  </script>
+  <!--dialog 组件 end-->
+  <!--mdeditor 组件-->
+  <script type="text/x-tpl" id="mdeditorTpl">
+  <div data-role="mdeditor">
+    <textarea b-model="markdown" cols="30" rows="10"></textarea>
+    <div style="overflow: hidden;" class="html">{{{$marked(markdown)}}}</div>
+  </div>
+  </script>
+  <script>
+    Bee.tag('x-mdeditor', {
+      $tpl: document.getElementById('mdeditorTpl').innerHTML,
+      $marked: function(md) {
+        return md ? marked(md) : '';
+      }
+    })
+  </script>
+  <!--mdeditor 组件 enc-->
 </head>
 <body>
-  <h1>component</h1>
-  <div id=template>
-    <textarea name="md" id="md" style="width: 45%;" b-model="markdown" placeholder="请在此输入 markdown" rows="20">
-# 标题一
-标题二
----
-_斜体_</textarea>
+<div id="demo">
+  <ul>
+    <li><button b-on="{click: events.tagToggle}" class="tag-toggle">Toggle</button> 自定义标签用法</li>
+    <li><button b-on="{click: events.jsToggle}" class="js-toggle">Toggle</button> Javascript 用法 </li>
+  </ul>
 
-    <x-mdeditor md="{{markdown}}">
-        <div>头</div>
-        <div>尾</div>
-    </x-mdeditor>
-  </div>
-
-<script type="text/javascript">
-
-  var bee = new Bee(template, {$data: {a: 1}});
+  <x-dialog title="温馨提示">
+    <x-mdeditor></x-mdeditor>
+  </x-dialog>
+</div>
+<script>
+  new Bee(document.getElementById('demo'), {
+    events: {
+      'tagToggle': function() {
+        this.$el.querySelector('[data-role=dialog]').bee.$toggle()
+      },
+      'jsToggle': function() {
+        if(this.$dialog) {
+          this.$dialog.$toggle()
+        }else{
+          this.$dialog = new Bee.components['x-dialog']({
+            $data: { title: '温馨提示2', show: true },
+            $content: '<div b-component="x-mdeditor" markdown="# test"></div>'//这里使用自定义标签在 IE8 下有兼容性问题, 使用 directive 替代
+          })
+          document.body.appendChild(this.$dialog.$el)
+        }
+      }
+    }
+  })
 </script>
 </body>
 </html>

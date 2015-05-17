@@ -61,7 +61,8 @@ module.exports = {
 
           vm = new this.cstr(el, {
             $data: item, _assignments: this.assignments, $index: pos,
-            $root: this.vm.$root, $parent: this.vm
+            $root: this.vm.$root, $parent: this.vm,
+            __repeat: true
           });
           parentNode.insertBefore(vm.$el, list[pos] && list[pos].el || this.anchors.end)
           list.splice(pos, 0, {el: el, vm: vm});

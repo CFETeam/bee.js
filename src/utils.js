@@ -81,7 +81,10 @@ function extend(/* deep, target, object... */) {
 
             // Don't bring in undefined values
           } else if ( !utils.isUndefined(copy) ) {
-            target[ name ] = copy;
+            try {
+              //一些情下, 比如 firefox 下给字符串对象赋值时会异常
+              target[name] = copy;
+            }catch (e) {}
           }
         }
       }

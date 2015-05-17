@@ -56,7 +56,7 @@ module.exports = {
 
       comp = new Comp({
         $target: el,
-        $root: vm.$root,
+        //$root: vm.$root,
         $data: utils.extend({}, Comp.prototype.$data, $data)
       });
 

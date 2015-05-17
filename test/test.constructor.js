@@ -1,6 +1,5 @@
 var test = require('tape');
 var Bee = require('../');
-var $ = require('jquery')(typeof window === 'undefined' ? Bee.doc.parentWindow : window);
 
 function testConstructor(Bee, name) {
   test('构造函数: ' + (name || Bee.name), function(t) {

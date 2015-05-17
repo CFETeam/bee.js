@@ -16,12 +16,19 @@ test(function(t) {
       $data: data
     });
 
-    t.equal(ant.$data, data)
+    t.equal(ant.$data, data, '保持 $data 的引用')
     t.notOk(ant.$data === Ant.prototype.$data)
     t.equal(ant.$data.a, a1)
     t.equal(ant.$data.b, b2)
     t.equal(ant.$data.c, c2)
     t.notEqual(ant.$data.c, c1)
+
+    var data2 = 'ant';
+    var ant2 = new Ant({
+      $data: data2
+    })
+    t.equal(ant2.$data + '', data2 + '', '$data 为字符串时')
+    t.equal(ant2.$data.a, a1)
 
     t.end();
   })

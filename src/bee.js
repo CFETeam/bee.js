@@ -11,6 +11,7 @@ var env = require('./env.js')
 
   , dirs = require('./directives')
   , token = require('./token.js')
+  , domUtils = require('./dom-utils.js')
   ;
 
 
@@ -80,8 +81,15 @@ function Bee(tpl, props) {
 
   var el;
 
+  //.$data 必须为对象. 基础类型的将被转成对象, 这时候 this.$data 和 props.$data 会不等
+  if(!isUndefined(props.$data)) {
+    props.$data = Object(props.$data)
+  }
+
+  //保持对传入属性的引用
   for(var propKey in props) {
     if(propKey in mergeProps) {
+      //mergeProps 中的属性会被默认值扩展
       extend(defaults[propKey], props[propKey])
       defaults[propKey] = extend(props[propKey], defaults[propKey]);
     }else{
@@ -94,7 +102,7 @@ function Bee(tpl, props) {
   extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
-  el = tplParse(tpl, this.$target);
+  el = domUtils.tplParse(tpl, this.$target, this.$content);
 
   if(this.$el){
     this.$el.appendChild(el.el);
@@ -113,7 +121,7 @@ function Bee(tpl, props) {
     this.$watch(key, this.$watchers[key])
   }
 
-  this.$render(this.$data);
+  this.$replace(this.$data);
   this._isRendered = true;
   this.$init();
 }
@@ -149,16 +157,7 @@ for(var dir in dirs) {
 //实例方法
 //----
 extend(Bee.prototype, Event, {
-  /**
-   * ### ant.render
-   * 渲染模板
-   */
-  $render: function(data) {
-    data = data || this.$data;
-    this.$replace(data);
-    return this;
-  }
-, $init: utils.noop
+  $init: utils.noop
   /**
    * 获取属性/方法
    * @param {String} keyPath 路径
@@ -174,14 +173,16 @@ extend(Bee.prototype, Event, {
       ;
 
     if(!strict) {
-      if(this.$parent) {
+      if(this.__repeat) {
         paths = parseKeyPath(path);
         headPath = paths[0]
         if(scope._assignments && scope._assignments.length) {
-          // 具名 repeat 不会直接查找自身作用域
           if(headPath === this._assignments[0]) {
+            // 具名 repeat 不会直接查找自身作用域
             scope = {};
-            scope[headPath] = this;
+            scope[headPath] = this.$data;
+          }else if(headPath === '$index') {
+            scope = this;
           }else{
             return this.$parent.$get(keyPath, strict)
           }
@@ -212,7 +213,10 @@ extend(Bee.prototype, Event, {
       hasKey = true;
       keys = parseKeyPath(key);
       add = deepSet(key, val, {});
-      keys[0] !== '$data' && extend(true, this.$data, add);
+      if(keys[0] === '$data') {
+        add = add.$data
+      }
+      extend(true, this.$data, add);
       extend(true, this, add);
     }
     hasKey ? update.call(this, key, val) : update.call(this, key);
@@ -235,10 +239,11 @@ extend(Bee.prototype, Event, {
     }else{
       hasKey = true;
       keys = parseKeyPath(key);
-      if(keys[0] !== 'data') {
+      if(keys[0] !== '$data') {
         deepSet(key, null, this.$data);
         deepSet(key, val, this.$data);
       }
+      //TODO 清除历史数据
       deepSet(key, null, this);
       deepSet(key, val, this);
     }
@@ -253,7 +258,7 @@ extend(Bee.prototype, Event, {
 , $update: function (keyPath, isBubble) {
     isBubble = isBubble !== false;
 
-    var keys = parseKeyPath(keyPath), key, attrs;
+    var keys = parseKeyPath(keyPath.replace(/^\$data\./, '')), key, attrs;
     var watchers;
 
     while(key = keys.join('.')) {
@@ -484,34 +489,6 @@ function addWatcher(dir) {
   if(dir.path && dir.watch) {
     return new Watcher(this, dir);
   }
-}
-
-
-//target: el 替换的目标
-function tplParse(tpl, target) {
-  var el, wraper;
-  var content = null;
-  if(isObject(target) && target.childNodes) {
-    content = doc.createDocumentFragment();
-    while(target.childNodes[0]) {
-      content.appendChild(target.childNodes[0]);
-    }
-  }
-  if(isObject(tpl)){
-    el = tpl;
-    tpl = el.outerHTML;
-  }else{
-    wraper = doc.createElement('div');
-    wraper.innerHTML = tpl;
-
-    el = wraper.firstElementChild || wraper.children[0];
-
-  }
-  if(target){
-    target.parentNode && target.parentNode.replaceChild(el, target);
-  }
-
-  return {el: el, tpl: tpl, content: content};
 }
 
 Bee.version = '%VERSION';

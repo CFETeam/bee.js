@@ -18,7 +18,7 @@
   <button b-on="{click: add}">添加</button>
   <ul>
     <li b-repeat="item in list" b-on="events">
-      <span>({{item.$index + 1}}) name: {{name}} - item.name: {{item.name}}</span>
+      <span>({{$index + 1}}) name: {{name}} - item.name: {{item.name}}</span>
       <a href="javascript:;">删除</a>
     </li>
   </ul>
