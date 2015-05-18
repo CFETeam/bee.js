@@ -81,14 +81,9 @@ function Bee(tpl, props) {
 
   var el;
 
-  //.$data 必须为对象. 基础类型的将被转成对象, 这时候 this.$data 和 props.$data 会不等
-  if(!isUndefined(props.$data)) {
-    props.$data = Object(props.$data)
-  }
-
   //保持对传入属性的引用
   for(var propKey in props) {
-    if(propKey in mergeProps) {
+    if((propKey in mergeProps) && isObject(props[propKey])) {
       //mergeProps 中的属性会被默认值扩展
       extend(defaults[propKey], props[propKey])
       defaults[propKey] = extend(props[propKey], defaults[propKey]);
@@ -207,8 +202,12 @@ extend(Bee.prototype, Event, {
     if(isUndefined(key)){ return this; }
 
     if(arguments.length === 1){
-      extend(true, this.$data, key);
-      extend(true, this, key);
+      if(isObject(key)) {
+        extend(true, this.$data, key);
+        extend(true, this, key);
+      }else{
+        this.$data = key;
+      }
     }else{
       hasKey = true;
       keys = parseKeyPath(key);
@@ -231,11 +230,13 @@ extend(Bee.prototype, Event, {
     if(isUndefined(key)){ return this; }
 
     if(arguments.length === 1){
-      Object.keys(this.$data).forEach(function(key) {
-        delete this[key];
-      }.bind(this))
+      if(isObject(key)) {
+        Object.keys(this.$data).forEach(function(key) {
+          delete this[key];
+        }.bind(this))
+        extend(this, key);
+      }
       this.$data = key;
-      extend(this, key);
     }else{
       hasKey = true;
       keys = parseKeyPath(key);
@@ -243,7 +244,6 @@ extend(Bee.prototype, Event, {
         deepSet(key, null, this.$data);
         deepSet(key, val, this.$data);
       }
-      //TODO 清除历史数据
       deepSet(key, null, this);
       deepSet(key, val, this);
     }
