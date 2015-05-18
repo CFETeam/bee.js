@@ -314,14 +314,7 @@ extend(Bee.prototype, Event, {
   }
   //TODO 支持 表达式 keyPath ?
 , $unwatch: function (keyPath, callback) {
-    var watchers = this._watchers[keyPath] || [], update;
-
-    for(var i = watchers.length - 1; i >= 0; i--){
-      update = watchers[i].dir.update;
-      if(update === callback || update._originFn === callback){
-        watchers.splice(i, 1);
-      }
-    }
+    Watcher.unwatch(this, keyPath, callback)
   }
 });
 

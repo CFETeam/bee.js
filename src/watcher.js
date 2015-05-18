@@ -3,6 +3,7 @@
 var evaluate = require('./eval.js')
   , utils = require('./utils.js')
   , Class = require('./class.js')
+  , parse = require('./parse.js').parse
   ;
 
 var extend = utils.extend;
@@ -77,6 +78,26 @@ function Watcher(vm, dir) {
   //if(willUpdate || this.vm._isRendered) {
     this.update();
   //}
+}
+
+Watcher.unwatch = function(vm, key, callback) {
+  var summary;
+  try {
+    summary = evaluate.summary(parse(key))
+  }catch (e){
+
+  }
+  summary.paths.forEach(function(path) {
+
+    var watchers = vm._watchers[path] || [], update;
+
+    for(var i = watchers.length - 1; i >= 0; i--){
+      update = watchers[i].dir.update;
+      if(update === callback || update._originFn === callback){
+        watchers.splice(i, 1);
+      }
+    }
+  })
 }
 
 //TODO

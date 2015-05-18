@@ -28,7 +28,7 @@ test(function(t) {
       $data: data2
     })
     t.equal(ant2.$data + '', data2 + '', '$data 为字符串时')
-    t.equal(ant2.$data.a, a1)
+    t.notEqual(ant2.$data.a, a1, '基础类型的 $data 会覆盖默认值')
 
     t.end();
   })
