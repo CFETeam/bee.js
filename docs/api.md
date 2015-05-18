@@ -54,6 +54,12 @@ var bee = new Bee('<div>{{name}}</div>', { $el: el, $data: { name: 'Bee' } });
 bee.$el === el;    //true
 ```
 
+#### props 与实例属性
+一般来说, `props` 传入的参数都将作为实例属性出现, 并且保持同一引用. 但是有几个特例:
+
+- `$tpl` 可以通过 props 传入 DOM 元素或字符串模板, 但其实例属性始终是字符串
+- `$data, $filters, $watchers` 作为实力属性会和传入值保持同一引用, 但是会并入默认项
+- `$content` 接受字符串参数
 
 构造函数方法
 ---

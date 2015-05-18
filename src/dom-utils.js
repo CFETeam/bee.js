@@ -10,24 +10,25 @@ function tplParse(tpl, target, content) {
     , frag = doc.createDocumentFragment();
   if(utils.isObject(target) && target.childNodes) {
     content = frag;
-    contents = target.childNodes;
+    contents = createNodes(target.childNodes);
   }else{
-    if(typeof content == 'string') {
-      contents = createElementByTpl(content)
+    if(content) {
+      contents = createNodes(content)
       content = frag;
     }
   }
   if(contents) {
-    while (contents[0]) {
-      content.appendChild(contents[0]);
+    for (var i = 0, l = contents.length; i < l; i++) {
+      content.appendChild(contents[i]);
     }
   }
+
+  el = createNodes(tpl)[0];
+
   if(utils.isObject(tpl)){
-    el = tpl;
     tpl = el.outerHTML;
-  }else{
-    el = createElementByTpl(tpl)[0]
   }
+
   if(target){
     target.parentNode && target.parentNode.replaceChild(el, target);
   }
@@ -35,14 +36,28 @@ function tplParse(tpl, target, content) {
   return {el: el, tpl: tpl, content: content};
 }
 
-function createElementByTpl(tpl) {
-  var wraper = doc.createElement('div');
-  //自定义标签在 IE8 下无效. 使用 component 指令替代
-  wraper.innerHTML = tpl.trim();
-  return wraper.childNodes;
+//将模板/元素/nodelist 同一转成 nodes array
+function createNodes(tpl) {
+  var wraper;
+  var nodes = [];
+  if(utils.isObject(tpl)) {
+    if(tpl.nodeName && tpl.nodeType) {
+      //dom 元素
+      nodes = [tpl];
+    }else if('length' in tpl){
+      //nodelist
+      nodes = tpl;
+    }
+  }else {
+    wraper = doc.createElement('div')
+    //自定义标签在 IE8 下无效. 使用 component 指令替代
+    wraper.innerHTML = (tpl + '').trim();
+    nodes = wraper.childNodes;
+  }
+  return utils.toArray(nodes);
 }
 
 module.exports = {
   tplParse: tplParse,
-  createElementByTpl: createElementByTpl
-}
+  createNodes: createNodes
+};

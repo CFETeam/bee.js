@@ -3,6 +3,7 @@
 //事件监听
 
 var eventBind = require('../event-bind.js');
+var utils = require('../utils')
 
 //TODO 移除时的情况
 module.exports = {
@@ -24,8 +25,8 @@ module.exports = {
 //委托事件
 function callHandler (dir, selector, callback) {
   return function(e) {
-    var els = selector ? [].slice.call(dir.el.querySelectorAll(selector)) : [e.target];
-    var cur = e.target;
+    var cur = e.target || e.srcElement;
+    var els = selector ? utils.toArray(dir.el.querySelectorAll(selector)) : [cur];
     do{
       if(els.indexOf(cur) >= 0) {
         e.delegateTarget = cur;//委托元素

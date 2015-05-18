@@ -200,6 +200,19 @@ var utils = {
   }
 , extend: extend
 , create: create
+, toArray: function(arrLike) {
+    var arr = [];
+
+    try{
+      //IE 8 对 dom 对象会报错
+      arr = Array.prototype.slice.call(arrLike)
+    }catch (e){
+      for(var i = 0, l = arrLike.length; i < l; i++) {
+        arr[i] = arrLike[i]
+      }
+    }
+    return arr;
+  }
 };
 
 module.exports = utils;
