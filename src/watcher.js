@@ -85,7 +85,8 @@ Watcher.unwatch = function(vm, key, callback) {
   try {
     summary = evaluate.summary(parse(key))
   }catch (e){
-
+    e.message = 'SyntaxError in "' + key + '" | ' + e.message;
+    console.error(e);
   }
   summary.paths.forEach(function(path) {
 
@@ -99,12 +100,6 @@ Watcher.unwatch = function(vm, key, callback) {
     }
   })
 }
-
-//TODO
-extend(Watcher, {
-  STATE_READY: 0
-, STATE_CALLED: 1
-}, Class);
 
 function watcherUpdate (val) {
   try{

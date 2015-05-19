@@ -122,7 +122,11 @@ function Bee(tpl, props) {
 }
 
 //静态属性
-extend(Bee, Class, Dir, Com, {
+extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
+  //每个构造函数都有自己的 directives 和 components 引用
+  sub.directives = create(this.directives);
+  sub.components = create(this.components);
+})}, Dir, Com, {
   setPrefix: setPrefix
 , prefix: ''
 , doc: doc
@@ -283,7 +287,7 @@ extend(Bee.prototype, Event, {
     attrs = this.$get(keyPath);
 
     //同时更新子路径
-    if(isObject(attrs)) {
+    if(isObject(attrs) && !utils.isArray(attrs)) {
       Object.keys(attrs).forEach(function(attr) {
         this.$update(keyPath + '.' + attr, false);
       }.bind(this))
@@ -312,7 +316,6 @@ extend(Bee.prototype, Event, {
       addWatcher.call(this, new Dir('watcher', {path: keyPath, update: update}))
     }
   }
-  //TODO 支持 表达式 keyPath ?
 , $unwatch: function (keyPath, callback) {
     Watcher.unwatch(this, keyPath, callback)
   }

@@ -92,30 +92,43 @@ module.exports = {
         item.vm.$update('$index', false)
       });
 
-      if(!items.__bee__){
+      if(!items.__dirs__){
         //数组操作方法
         utils.extend(items, {
           $set: function(i, item) {
-            that.list[i].vm.$set(item);
+            items.__dirs__.forEach(function(dir) {
+              dir.list[i].vm.$set(item);
+            })
           },
           $replace: function(i, item) {
-            that.list[i].vm.$replace(item)
+            items.__dirs__.forEach(function(dir) {
+              dir.list[i].vm.$replace(item)
+            })
           },
           $remove: function(i) {
             items.splice(i, 1);
-            that.listPath.forEach(function(path) {
-              that.vm.$update(path)
-            });
+            items.__dirs__.forEach(function(dir) {
+              dir.listPath.forEach(function (path) {
+                dir.vm.$update(path)
+              });
+            })
           }
         });
         arrayMethods.forEach(function(method) {
           items[method] = utils.afterFn(items[method], function() {
-            that.listPath.forEach(function(path) {
-              that.vm.$update(path)
+            items.__dirs__.forEach(function(dir) {
+              dir.listPath.forEach(function(path) {
+                dir.vm.$update(path)
+              })
             })
           })
         });
-        items.__bee__  = true;
+        items.__dirs__  = [];
+      }
+      //一个数组多处使用
+      //TODO 移除时的情况
+      if(items.__dirs__.indexOf(that) === -1) {
+        items.__dirs__.push(that)
       }
     }else{
       //TODO 普通对象的遍历
