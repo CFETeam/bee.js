@@ -33,6 +33,9 @@ test('repeat: 简单数组', function(t) {
   bee.list.pop()
   t.comment('pop')
   checkRepeat()
+  bee.list.shift()
+  t.comment('shift')
+  checkRepeat()
 
   t.end()
 })

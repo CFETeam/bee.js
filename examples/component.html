@@ -95,7 +95,7 @@
         }else{
           this.$dialog = new Bee.components['x-dialog']({
             $data: { title: '温馨提示2', show: true },
-            $content: document.createElement("x-mdeditor")//'<div b-component="x-mdeditor" markdown="# test"></div>'//这里使用自定义标签在 IE8 下有兼容性问题, 使用 directive 替代
+            $content: '<div b-component="x-mdeditor" markdown="# test"></div>'//这里使用自定义标签在 IE8 下有兼容性问题, 使用 directive 替代
           })
           document.body.appendChild(this.$dialog.$el)
         }
