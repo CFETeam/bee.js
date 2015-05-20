@@ -103,7 +103,6 @@ dirs.src = {
 
 dirs['with'] = {};
 
-//dirs.partial = require('./partial.js');
 dirs.repeat = require('./repeat.js');
 dirs.attr = require('./attr.js');
 dirs.model = require('./model.js');

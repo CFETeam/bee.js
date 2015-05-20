@@ -58,8 +58,8 @@ bee.$el === el;    //true
 一般来说, `props` 传入的参数都将作为实例属性出现, 并且保持同一引用. 但是有几个特例:
 
 - `$tpl` 可以通过 props 传入 DOM 元素或字符串模板, 但其实例属性始终是字符串
-- `$data, $filters, $watchers` 作为实力属性会和传入值保持同一引用, 但是会并入默认项
-- `$content` 接受字符串参数
+- `$data, $filters, $watchers` 作为实例属性会和传入值保持同一引用, 但是会并入默认项
+- `$content` 接受字符串 / DOM元素 / nodeList 参数, 但是会被转成 "documentFragment"
 
 构造函数方法
 ---

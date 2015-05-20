@@ -6,27 +6,22 @@ var utils = require('./utils')
 //处理 $target,  $content, $tpl
 //target: el 替换的目标
 function tplParse(tpl, target, content) {
-  var el, contents
-    , frag = doc.createDocumentFragment();
+  var el;
   if(utils.isObject(target) && target.childNodes) {
-    content = frag;
-    contents = createNodes(target.childNodes);
+    content = createContent(target.childNodes);
   }else{
     if(content) {
-      contents = createNodes(content)
-      content = frag;
+      content = createContent(content)
     }
   }
-  if(contents) {
-    for (var i = 0, l = contents.length; i < l; i++) {
-      content.appendChild(contents[i]);
-    }
-  }
-
-  el = createNodes(tpl)[0];
 
   if(utils.isObject(tpl)){
+    //DOM 元素
+    el = tpl;
     tpl = el.outerHTML;
+  }else{
+    //字符串
+    el = createContent(tpl).childNodes[0];
   }
 
   if(target){
@@ -36,14 +31,15 @@ function tplParse(tpl, target, content) {
   return {el: el, tpl: tpl, content: content};
 }
 
-//将模板/元素/nodelist 同一转成 nodes array
-function createNodes(tpl) {
+//将模板/元素/nodelist 包裹在 fragment 中
+function createContent(tpl) {
+  var content = doc.createDocumentFragment();
   var wraper;
   var nodes = [];
   if(utils.isObject(tpl)) {
     if(tpl.nodeName && tpl.nodeType) {
       //dom 元素
-      nodes = [tpl];
+      content.appendChild(tpl);
     }else if('length' in tpl){
       //nodelist
       nodes = tpl;
@@ -54,10 +50,13 @@ function createNodes(tpl) {
     wraper.innerHTML = (tpl + '').trim();
     nodes = wraper.childNodes;
   }
-  return utils.toArray(nodes);
+  while(nodes[0]) {
+    content.appendChild(nodes[0])
+  }
+  return content;
 }
 
 module.exports = {
   tplParse: tplParse,
-  createNodes: createNodes
+  createContent: createContent
 };

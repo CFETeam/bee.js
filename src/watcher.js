@@ -2,7 +2,6 @@
 
 var evaluate = require('./eval.js')
   , utils = require('./utils.js')
-  , Class = require('./class.js')
   , parse = require('./parse.js').parse
   ;
 
@@ -19,7 +18,7 @@ function exParse() {
   summary = evaluate.summary(dir.ast);
   extend(dir, summary);
   extend(this, summary);
-};
+}
 
 function Watcher(vm, dir) {
   var path, scope = vm, curVm, localKey, willUpdate, ass, paths;
@@ -28,8 +27,6 @@ function Watcher(vm, dir) {
   this.vm = vm;
 
   this.val = NaN;
-
-  this.state = Watcher.STATE_READY;
 
   exParse.call(this, dir.path);
 
@@ -60,9 +57,11 @@ function Watcher(vm, dir) {
       //向上查找
       scope = scope.$parent;
     }
-    path = paths.join('.');
-    curVm._watchers[path] = curVm._watchers[path] || [];
-    curVm._watchers[path].push(this);
+    if(dir.watch) {
+      path = paths.join('.');
+      curVm._watchers[path] = curVm._watchers[path] || [];
+      curVm._watchers[path].push(this);
+    }
   }
 
   //没有变量 / 变量不在当前作用域的表达式立即求值
@@ -80,7 +79,7 @@ function Watcher(vm, dir) {
   //}
 }
 
-Watcher.unwatch = function(vm, key, callback) {
+function unwatch (vm, key, callback) {
   var summary;
   try {
     summary = evaluate.summary(parse(key))
@@ -100,6 +99,15 @@ Watcher.unwatch = function(vm, key, callback) {
     }
   })
 }
+
+function addWatcher(dir) {
+  if(dir.path) {
+    return new Watcher(this, dir);
+  }
+}
+
+Watcher.unwatch = unwatch;
+Watcher.addWatcher = addWatcher;
 
 function watcherUpdate (val) {
   try{
@@ -128,7 +136,6 @@ extend(Watcher.prototype, {
       watcherUpdate.call(this, newVal);
     }
 
-    this.state = Watcher.STATE_CALLED;
   }
 });
 

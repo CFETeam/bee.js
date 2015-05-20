@@ -16,9 +16,11 @@ module.exports = {
     this.vm = vm;
 
     while(cstr.__super__){
-      cstr = this.cstr = cstr.__super__.constructor;
+      cstr = cstr.__super__.constructor;
     }
 
+    //只继承静态的默认参数
+    this.cstr = cstr.extend({}, this.cstr)
 
     this.curArr = [];
     this.list = [];//[{el:el, vm: vm}]
@@ -37,6 +39,7 @@ module.exports = {
       });
 
       //删除元素
+      //TODO 删除引用父级的 watchers
       arrDiff(curArr, items).forEach(function(item) {
         var pos = curArr.indexOf(item)
         curArr.splice(pos, 1)
@@ -55,7 +58,6 @@ module.exports = {
 
         //新增元素
         if(oldPos < 0) {
-
 
           el = this.el.cloneNode(true)
 

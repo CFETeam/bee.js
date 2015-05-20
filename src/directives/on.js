@@ -7,7 +7,8 @@ var utils = require('../utils')
 
 //TODO 移除时的情况
 module.exports = {
-  link: function(vm) {
+  watch: false
+, link: function(vm) {
     //this.events = {};
     this.vm = vm;
   }
@@ -15,8 +16,8 @@ module.exports = {
     var selector, eventType;
     for(var name in events) {
       selector = name.split(/\s+/);
-      eventType = selector[0];
-      selector = selector[1];
+      eventType = selector.shift();
+      selector = selector.join(' ');
       eventBind.addEvent(this.el, eventType, callHandler(this, selector, events[name]));
     }
   }

@@ -1,7 +1,6 @@
 "use strict";
 
-var env = require('./env.js')
-  , doc = env.document
+var doc = require('./env.js').document
   , utils = require('./utils.js')
   , Event = require('./event.js')
   , Class = require('./class.js')
@@ -10,14 +9,13 @@ var env = require('./env.js')
   , Watcher = require('./watcher.js')
 
   , dirs = require('./directives')
-  , token = require('./token.js')
   , domUtils = require('./dom-utils.js')
+  , checkBinding = require('./check-binding.js')
   ;
 
 
 var isObject = utils.isObject
   , isUndefined = utils.isUndefined
-  , isFunction = utils.isFunction
   , isPlainObject = utils.isPlainObject
   , parseKeyPath = utils.parseKeyPath
   , deepSet = utils.deepSet
@@ -25,15 +23,6 @@ var isObject = utils.isObject
   , extend = utils.extend
   , create = utils.create
   ;
-
-
-var NODETYPE = {
-    ELEMENT: 1
-  , ATTR: 2
-  , TEXT: 3
-  , COMMENT: 8
-  , FRAGMENT: 11
-};
 
 //设置 directive 前缀
 function setPrefix(newPrefix) {
@@ -109,8 +98,8 @@ function Bee(tpl, props) {
 
   this.$el.bee = this;
 
-  this.$content && walk.call(this.$root, this.$content);
-  walk.call(this, this.$el);
+  this.$content && checkBinding.walk.call(this.$root, this.$content);
+  checkBinding.walk.call(this, this.$el);
 
   for(var key in this.$watchers) {
     this.$watch(key, this.$watchers[key])
@@ -266,12 +255,10 @@ extend(Bee.prototype, Event, {
     var watchers;
 
     while(key = keys.join('.')) {
-      watchers = this._watchers[key];
+      watchers = this._watchers[key] || [];
 
-      if (watchers) {
-        for (var i = 0, l = watchers.length; i < l; i++) {
-          watchers[i].update();
-        }
+      for (var i = 0, l = watchers.length; i < l; i++) {
+        watchers[i].update();
       }
 
       if(isBubble) {
@@ -284,6 +271,7 @@ extend(Bee.prototype, Event, {
         break;
       }
     }
+
     attrs = this.$get(keyPath);
 
     //同时更新子路径
@@ -313,7 +301,7 @@ extend(Bee.prototype, Event, {
     if(callback) {
       var update = callback.bind(this);
       update._originFn = callback;
-      addWatcher.call(this, new Dir('watcher', {path: keyPath, update: update}))
+      Watcher.addWatcher.call(this, new Dir('watcher', {path: keyPath, update: update}))
     }
   }
 , $unwatch: function (keyPath, callback) {
@@ -343,148 +331,6 @@ function update (keyPath, data) {
     this.$update(path, true);
   }
 
-}
-doc.createElement('template')
-//遍历 dom 树
-function walk(el) {
-
-  if(el.nodeType === NODETYPE.FRAGMENT) {
-    el = el.childNodes;
-  }
-
-  if(('length' in el) && isUndefined(el.nodeType)){
-    //node list
-    //对于 nodelist 如果其中有包含 {{text}} 直接量的表达式, 文本节点会被分割, 其节点数量可能会动态增加
-    for(var i = 0; i < el.length; i++) {
-      walk.call(this, el[i]);
-    }
-    return;
-  }
-
-  switch (el.nodeType) {
-    case NODETYPE.ELEMENT:
-        break;
-    case NODETYPE.COMMENT:
-      //注释节点
-      return;
-        break;
-    case NODETYPE.TEXT:
-      //文本节点
-      checkText.call(this, el);
-      return;
-        break;
-  }
-
-  if(el.nodeName.toLowerCase() === 'template') {
-    //template shim
-    if(!el.content) {
-      el.content = doc.createDocumentFragment();
-      while(el.childNodes[0]) {
-        el.content.appendChild(el.childNodes[0])
-      }
-    }
-  }
-
-  if(checkAttr.call(this, el)){
-    return;
-  }
-
-  if(el.nodeName.toLowerCase() === 'template') {
-    walk.call(this, el.content)
-  }
-
-  for(var child = el.firstChild, next; child; ){
-    next = child.nextSibling;
-    walk.call(this, child);
-    child = next;
-  }
-}
-
-//遍历属性
-function checkAttr(el) {
-  var cstr = this.constructor
-    , prefix = cstr.prefix
-    , dirs = cstr.directive.getDir(el, cstr.directives, cstr.components, prefix)
-    , dir
-    , terminalPriority, terminal
-    , result = {};
-    ;
-
-  for (var i = 0, l = dirs.length; i < l; i++) {
-    dir = dirs[i];
-    dir.dirs = dirs;
-
-    //对于 terminal 为 true 的 directive, 在解析完其相同权重的 directive 后中断遍历该元素
-    if(terminalPriority > dir.priority) {
-      break;
-    }
-
-    el.removeAttribute(dir.nodeName);
-
-    setBinding.call(this, dir);
-
-    if(dir.terminal) {
-      terminal = true;
-      terminalPriority = dir.priority;
-    }
-  }
-
-  result.dirs = dirs;
-
-  return terminal
-}
-
-//处理文本节点中的绑定占位符({{...}})
-function checkText(node) {
-  if(token.hasToken(node.nodeValue)) {
-    var tokens = token.parseToken(node.nodeValue)
-      , textMap = tokens.textMap
-      , el = node.parentNode
-      , dirs = this.constructor.directives
-      , t, dir
-      ;
-
-    //将{{key}}分割成单独的文本节点
-    if(textMap.length > 1) {
-      textMap.forEach(function(text) {
-        var tn = doc.createTextNode(text);
-        el.insertBefore(tn, node);
-        checkText.call(this, tn);
-      }.bind(this));
-      el.removeChild(node);
-    }else{
-      t = tokens[0];
-      //内置各占位符处理.
-      dir = create(t.escape ? dirs.text : dirs.html);
-      setBinding.call(this, extend(dir, t, {
-        el: node
-      }));
-    }
-  }
-}
-
-function setBinding(dir) {
-  if(dir.replace) {
-    var el = dir.el;
-    if(isFunction(dir.replace)) {
-      dir.node = dir.replace();
-    }else if(dir.replace){
-      dir.node = doc.createTextNode('');
-    }
-
-    dir.el = dir.el.parentNode;
-    dir.el.replaceChild(dir.node, el);
-  }
-
-  dir.link(this);
-
-  addWatcher.call(this, dir)
-}
-
-function addWatcher(dir) {
-  if(dir.path && dir.watch) {
-    return new Watcher(this, dir);
-  }
 }
 
 Bee.version = '%VERSION';
