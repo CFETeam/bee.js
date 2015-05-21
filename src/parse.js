@@ -543,6 +543,13 @@ var make_parse = function (vars) {
 		return this;
 	});
 
+  infix(',', 10, function(left) {
+    this.first = left;
+    this.second = expression(0);
+    this.arity = "binary"
+    return this;
+  });
+
 	prefix("!");
 	prefix("-");
 	prefix("typeof");

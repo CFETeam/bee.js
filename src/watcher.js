@@ -46,7 +46,7 @@ function Watcher(vm, dir) {
             paths.shift();
           }
           break;
-        }else if(localKey === '$index') {
+        }else if(localKey === '$index' || localKey === '$parent') {
           break;
         }
       }else if(localKey in scope){

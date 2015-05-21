@@ -169,7 +169,7 @@ extend(Bee.prototype, Event, {
             // 具名 repeat 不会直接查找自身作用域
             scope = {};
             scope[headPath] = this.$data;
-          }else if(headPath === '$index') {
+          }else if(headPath === '$index' || headPath === '$parent') {
             scope = this;
           }else{
             return this.$parent.$get(keyPath, strict)

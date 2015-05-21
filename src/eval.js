@@ -34,6 +34,7 @@ var operators = {
   , '!==': function(l, r) { return l !== r; }
   , '&&': function(l, r) { return l && r; }
   , '||': function(l, r) { return l || r; }
+  , ',': function(l, r) { return l, r; }
 
   , '.': function(l, r) {
       if(r){
