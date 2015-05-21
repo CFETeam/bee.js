@@ -17,7 +17,6 @@ function exParse() {
 
   summary = evaluate.summary(dir.ast);
   extend(dir, summary);
-  extend(this, summary);
 }
 
 function Watcher(vm, dir) {
@@ -30,8 +29,8 @@ function Watcher(vm, dir) {
 
   exParse.call(this, dir.path);
 
-  for(var i = 0, l = this.paths.length; i < l; i++) {
-    paths = utils.parseKeyPath(this.paths[i]);
+  for(var i = 0, l = this.dir.paths.length; i < l; i++) {
+    paths = utils.parseKeyPath(this.dir.paths[i]);
     localKey = paths[0];
 
     while(scope) {
@@ -65,8 +64,8 @@ function Watcher(vm, dir) {
   }
 
   //没有变量 / 变量不在当前作用域的表达式立即求值
-  //for(var i = 0, l = this.locals.length; i < l; i++) {
-  //  if(utils.isObject(this.vm.$data) && (this.locals[i] in this.vm.$data)) {
+  //for(var i = 0, l = this.dir.locals.length; i < l; i++) {
+  //  if(utils.isObject(this.vm.$data) && (this.dir.locals[i] in this.vm.$data)) {
   //    break;
   //  }
   //}

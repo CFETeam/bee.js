@@ -52,7 +52,7 @@ MVVM
 ---
 
 Bee 实例实际上是一个 ViewModel 对象, 其混合了 view 及 model 的属性.
-在使用的时候应注意不要让 `$data` 中的数据和实例方法在命名上冲突. 
+在使用的时候应注意不要让 `$data` 中的数据和实例方法在命名上冲突.
 
 
 组件化
@@ -64,7 +64,7 @@ Bee 实例实际上是一个 ViewModel 对象, 其混合了 view 及 model 的�
 页面中的这些自定义标签将变成该组件的实例. 为了理解这点请想想 HTML 中的 `img`
 标签和 JavaScript 中的 `Image` 构造函数的关系.
 
-创建组件通过 `Bee.tag` 方法完成.
+自定义标签与组件的关联通过 `Bee.tag` 方法完成.
 ```js
 var Ant = Bee.extend({
   $tpl: tpl.innerHTML,
@@ -83,3 +83,11 @@ Bee.tag('x-bee', Ant);
 ```
 
 运行效果请见: http://codepen.io/justan/pen/MwKwWQ
+
+### 组件组合
+
+```
+<x-bee>
+  <x-ant></x-ant>
+</x-bee>
+```
