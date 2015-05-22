@@ -283,6 +283,7 @@ var make_parse = function (vars) {
 	};
 
   //表达式
+  //rbp: right binding power 右侧约束力
 	var expression = function (rbp) {
 		var left;
 		var t = token;
@@ -393,6 +394,7 @@ var make_parse = function (vars) {
 	//Operator Precedence:
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
 
+  infix(',', 1);
 	infix("?", 20, function (left) {
 		this.first = left;
 		this.second = expression(0);
@@ -454,7 +456,7 @@ var make_parse = function (vars) {
 		}
 		if (token.id !== ")") {
 			while (true) {
-				a.push(expression(0));
+				a.push(expression(1));
 				if (token.id !== ",") {
 					break;
 				}
@@ -506,13 +508,6 @@ var make_parse = function (vars) {
 		return this;
 	});
 
-  infix(',', 10, function(left) {
-    this.first = left;
-    this.second = expression(0);
-    this.arity = "binary"
-    return this;
-  });
-
 	prefix("!");
 	prefix("-");
 	prefix("typeof");
@@ -527,7 +522,7 @@ var make_parse = function (vars) {
 		var a = [];
 		if (token.id !== "]") {
 			while (true) {
-				a.push(expression(0));
+				a.push(expression(1));
 				if (token.id !== ",") {
 					break;
 				}
@@ -550,7 +545,7 @@ var make_parse = function (vars) {
 				}
 				advance();
 				advance(":");
-				v = expression(0);
+				v = expression(1);
 				v.key = n.value;
 				a.push(v);
 				if (token.id !== ",") {
@@ -573,7 +568,7 @@ var make_parse = function (vars) {
 			this.arity = 'binary';
 			this.second = a;
 			while (true) {
-				a.push(expression(0));
+				a.push(expression(1));
 				if (token.id !== ",") {
 					break;
 				}

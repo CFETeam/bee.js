@@ -40,6 +40,15 @@ test('literal 直接量', function(t) {
     t.end();
   });
 
+  t.test('Object: {a: 1, b: 2}', function(t){
+    var o = evalu(parse("{a: 1, b: 2}"));
+
+    t.equal(o.a, 1)
+    t.equal(o.b, 2)
+    t.notOk(o.c)
+    t.end()
+  })
+
   t.test('字符串中的符号', function(t) {
     var symbols = ["+", "-", "*", "/", "true", "false", "%"]
     symbols.forEach(function(s) {
