@@ -201,44 +201,6 @@ var tokenize = function (code, prefix, suffix) {
 			result.push(make('string', str));
 			c = code.charAt(i);
 
-			// regexp
-		}else if(c === '/' && false){
-			i += 1;
-			str = '';
-			f = '';
-			for(; ; ) {
-				c = code.charAt(i);
-
-				// Look for close slash
-
-				if(c === '/') {
-					for(; ; ) {
-						c = code.charAt(i + 1);
-						if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '$' || c === '_') {
-							f += c;
-							i += 1;
-						}else{
-							break;
-						}
-					}
-					break;
-				}
-
-				if(c === '\\') {
-					i += 1;
-					if (i >= length) {
-						error("Unterminated regexp", make('string', str));
-					}
-					c = code.charAt(i);
-					c = '\\' + c;
-				}
-				str += c;
-				i += 1;
-			}
-			i += 1;
-			result.push(make('regexp', new RegExp(str, f)));
-			c = code.charAt(i);
-
 			// combining
 
 		} else if (prefix.indexOf(c) >= 0) {
@@ -320,6 +282,7 @@ var make_parse = function (vars) {
 		return token;
 	};
 
+  //表达式
 	var expression = function (rbp) {
 		var left;
 		var t = token;
@@ -622,19 +585,6 @@ var make_parse = function (vars) {
 		}
 		return this;
 	});
-
-  //prefix('/', function() {
-  //  var a = [], n, v;
-  //  if(token.id !== '/') {
-  //    while(true) {
-  //      n = token;
-  //      advance();
-  //    }
-  //  }
-  //  advance('/');
-  //  this.first = a;
-  //  return this;
-  //})
 
 	//_source: 表达式代码字符串
 	//_context: 表达式的语句环境
