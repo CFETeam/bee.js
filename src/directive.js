@@ -66,7 +66,9 @@ Directive.prototype = {
     }
   }
   //表达式求值
-, getValue: function(scope) {
+  //forgive[true]: 是否将 undefined 及 null 转为空字符
+, getValue: function(scope, forgive) {
+    forgive = forgive !== false;
     var val;
 
     try{
@@ -75,7 +77,7 @@ Directive.prototype = {
       val = '';
       console.error(e);
     }
-    if(utils.isUndefined(val) || val === null) {
+    if(forgive && (utils.isUndefined(val) || val === null)) {
       val = '';
     }
     return val;

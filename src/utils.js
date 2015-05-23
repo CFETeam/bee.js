@@ -99,6 +99,21 @@ var create = Object.create || function (o) {
   return new F();
 };
 
+var deepGet = function (keyStr, obj) {
+  var chain, cur = obj, key;
+  if(keyStr){
+    chain = parseKeyPath(keyStr);
+    for(var i = 0, l = chain.length; i < l; i++) {
+      key = chain[i];
+      if(cur){
+        cur = cur[key];
+      }else{
+        return;
+      }
+    }
+  }
+  return cur;
+}
 
 var utils = {
   noop: function (){}
@@ -180,21 +195,6 @@ var utils = {
       extend(obj, value);
     }
     return obj;
-  }
-, deepGet: function (keyStr, obj) {
-    var chain, cur = obj, key;
-    if(keyStr){
-      chain = parseKeyPath(keyStr);
-      for(var i = 0, l = chain.length; i < l; i++) {
-        key = chain[i];
-        if(cur){
-          cur = cur[key];
-        }else{
-          return;
-        }
-      }
-    }
-    return cur;
   }
 , extend: extend
 , create: create

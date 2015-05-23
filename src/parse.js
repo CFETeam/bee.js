@@ -25,7 +25,6 @@ var tokenize = function (code, prefix, suffix) {
 	var n; // The number value.
 	var q; // The quote character.
 	var str; // The string value.
-	var f; //The regexp flag.
 
 	var result = []; // An array to hold the results.
 

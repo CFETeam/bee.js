@@ -34,7 +34,7 @@ module.exports = {
 
     if(utils.isArray(items)) {
       // 在 repeat 指令表达式中
-      this.listPath = this.locals.filter(function(path) {
+      this.listPath = this.summary.locals.filter(function(path) {
         return !utils.isFunction(that.vm.$get(path))
       });
 
@@ -62,7 +62,7 @@ module.exports = {
           el = this.el.cloneNode(true)
 
           vm = new this.cstr(el, {
-            $data: item, _assignments: this.assignments, $index: pos,
+            $data: item, _assignments: this.summary.assignments, $index: pos,
             $root: this.vm.$root, $parent: this.vm,
             __repeat: true
           });

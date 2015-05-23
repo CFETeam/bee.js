@@ -11,6 +11,7 @@ var doc = require('./env.js').document
   , dirs = require('./directives')
   , domUtils = require('./dom-utils.js')
   , checkBinding = require('./check-binding.js')
+  , scope = require('./scope')
   ;
 
 
@@ -19,7 +20,6 @@ var isObject = utils.isObject
   , isPlainObject = utils.isPlainObject
   , parseKeyPath = utils.parseKeyPath
   , deepSet = utils.deepSet
-  , deepGet = utils.deepGet
   , extend = utils.extend
   , create = utils.create
   ;
@@ -62,7 +62,7 @@ function Bee(tpl, props) {
   , $root: this
 
     //私有属性/方法
-  , _watchers: this._watchers || {}
+  , _watchers: {}
   , _assignments: null//当前 vm 的别名
   , _relativePath: []
   , _isRendered: false
@@ -147,41 +147,17 @@ for(var dir in dirs) {
 extend(Bee.prototype, Event, {
   $init: utils.noop
   /**
-   * 获取属性/方法
-   * @param {String} keyPath 路径
-   * @param {Boolean} [strict=false] 是否严格在自身中查找.
+   * 获取属性/方法--
+   * @param {String} keyPath 路径/表达式
    * @return {*}
    */
-, $get: function(keyPath, strict) {
-    strict = strict === true;
-
-    var scope = this
-      , path = keyPath
-      , paths, headPath
-      ;
-
-    if(!strict) {
-      if(this.__repeat) {
-        paths = parseKeyPath(path);
-        headPath = paths[0]
-        if(scope._assignments && scope._assignments.length) {
-          if(headPath === this._assignments[0]) {
-            // 具名 repeat 不会直接查找自身作用域
-            scope = {};
-            scope[headPath] = this.$data;
-          }else if(headPath === '$index' || headPath === '$parent') {
-            scope = this;
-          }else{
-            return this.$parent.$get(keyPath, strict)
-          }
-        }else{
-          //匿名 repeat
-          return (headPath in this) ? this.$get(keyPath) : this.$parent.$get(keyPath, strict)
-        }
-      }
-    }
-
-    return deepGet(path, scope);
+, $get: function(keyPath) {
+    var dir = new Dir('$get', {
+      path: keyPath
+    , watch: false
+    });
+    dir.parse();
+    return dir.getValue(this, false)
   }
 
   /**
@@ -234,10 +210,8 @@ extend(Bee.prototype, Event, {
       hasKey = true;
       keys = parseKeyPath(key);
       if(keys[0] !== '$data') {
-        deepSet(key, null, this.$data);
         deepSet(key, val, this.$data);
       }
-      deepSet(key, null, this);
       deepSet(key, val, this);
     }
     hasKey ? update.call(this, key, val) : update.call(this, key);
@@ -301,7 +275,7 @@ extend(Bee.prototype, Event, {
     if(callback) {
       var update = callback.bind(this);
       update._originFn = callback;
-      Watcher.addWatcher.call(this, new Dir('watcher', {path: keyPath, update: update}))
+      Watcher.addWatcher.call(this, new Dir('$watch', {path: keyPath, update: update}))
     }
   }
 , $unwatch: function (keyPath, callback) {

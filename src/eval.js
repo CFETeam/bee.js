@@ -167,13 +167,7 @@ function reset(scope, that) {
 }
 
 //在作用域中查找值
-var getValue = function (key, scope) {
-  if(scope.$get) {
-    return scope.$get(key, false)
-  }else{
-    return scope[key]
-  }
-}
+var getValue = require('./scope').getValue
 
 //表达式求值
 //tree: parser 生成的 ast
