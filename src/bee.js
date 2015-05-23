@@ -168,6 +168,7 @@ extend(Bee.prototype, Event, {
    */
 , $set: function(key, val) {
     var add, keys, hasKey = false;
+    var reformed, reKey, reVm = this;
     if(isUndefined(key)){ return this; }
 
     if(arguments.length === 1){
@@ -179,15 +180,18 @@ extend(Bee.prototype, Event, {
       }
     }else{
       hasKey = true;
-      keys = parseKeyPath(key);
-      add = deepSet(key, val, {});
+      reformed = scope.reformScope(this, key)
+      reKey = reformed.path;
+      reVm = reformed.vm;
+      keys = parseKeyPath(reKey);
+      add = deepSet(reKey, val, {});
       if(keys[0] === '$data') {
         add = add.$data
       }
-      extend(true, this.$data, add);
-      extend(true, this, add);
+      extend(true, reVm.$data, add);
+      extend(true, reVm, add);
     }
-    hasKey ? update.call(this, key, val) : update.call(this, key);
+    hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
     return this;
   }
   /**
@@ -195,6 +199,7 @@ extend(Bee.prototype, Event, {
    */
 , $replace: function (key, val) {
     var keys, hasKey = false;
+    var reformed, reKey, reVm = this;
 
     if(isUndefined(key)){ return this; }
 
@@ -208,13 +213,16 @@ extend(Bee.prototype, Event, {
       this.$data = key;
     }else{
       hasKey = true;
-      keys = parseKeyPath(key);
+      reformed = scope.reformScope(this, key)
+      reKey = reformed.path;
+      reVm = reformed.vm;
+      keys = parseKeyPath(reKey);
       if(keys[0] !== '$data') {
-        deepSet(key, val, this.$data);
+        deepSet(reKey, val, reVm.$data);
       }
-      deepSet(key, val, this);
+      deepSet(reKey, val, reVm);
     }
-    hasKey ? update.call(this, key, val) : update.call(this, key);
+    hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
     return this;
   }
   /**
