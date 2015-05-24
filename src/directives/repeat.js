@@ -23,7 +23,7 @@ module.exports = {
     this.cstr = cstr.extend({}, this.cstr)
 
     this.curArr = [];
-    this.list = [];//[{el:el, vm: vm}]
+    this.list = [];//子 VM list
 
     this.el.parentNode.removeChild(this.el);
   }
@@ -43,7 +43,8 @@ module.exports = {
       arrDiff(curArr, items).forEach(function(item) {
         var pos = curArr.indexOf(item)
         curArr.splice(pos, 1)
-        parentNode.removeChild(list[pos].el)
+        parentNode.removeChild(list[pos].$el)
+        list[pos].__destroy()
         list.splice(pos, 1)
       })
 
@@ -66,8 +67,8 @@ module.exports = {
             $root: this.vm.$root, $parent: this.vm,
             __repeat: true
           });
-          parentNode.insertBefore(vm.$el, list[pos] && list[pos].el || this.anchors.end)
-          list.splice(pos, 0, {el: el, vm: vm});
+          parentNode.insertBefore(vm.$el, list[pos] && list[pos].$el || this.anchors.end)
+          list.splice(pos, 0, vm);
           curArr.splice(pos, 0, item)
 
           //延时赋值给 `_relativePath`, 避免出现死循环
@@ -77,21 +78,21 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(list[oldPos].el, list[pos] && list[pos].el || that.anchor.end)
-            parentNode.insertBefore(list[pos].el, list[oldPos + 1] && list[oldPos + 1].el || that.anchor.end)
+            parentNode.insertBefore(list[oldPos].$el, list[pos] && list[pos].$el || that.anchor.end)
+            parentNode.insertBefore(list[pos].$el, list[oldPos + 1] && list[oldPos + 1].$el || that.anchor.end)
             list[oldPos] = [list[pos], list[pos] = list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
-            list[pos].vm.$index = pos
-            list[pos].vm.$update('$index')
+            list[pos].$index = pos
+            list[pos].$update('$index')
           }
         }
       }.bind(this))
 
       //更新索引
-      this.list.forEach(function(item, i) {
-        item.vm.$index = i
-        item.el.$index = i
-        item.vm.$update('$index', false)
+      this.list.forEach(function(vm, i) {
+        vm.$index = i
+        vm.$el.$index = i
+        vm.$update('$index', false)
       });
 
       if(!items.__dirs__){
@@ -99,12 +100,12 @@ module.exports = {
         utils.extend(items, {
           $set: function(i, item) {
             items.__dirs__.forEach(function(dir) {
-              dir.list[i].vm.$set(item);
+              dir.list[i].$set(item);
             })
           },
           $replace: function(i, item) {
             items.__dirs__.forEach(function(dir) {
-              dir.list[i].vm.$replace(item)
+              dir.list[i].$replace(item)
             })
           },
           $remove: function(i) {

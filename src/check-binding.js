@@ -18,7 +18,7 @@ doc.createElement('template')
 
 //遍历 dom 树
 function walk(el) {
-
+  var watchers = [], dirResult;
   if(el.nodeType === NODETYPE.FRAGMENT) {
     el = el.childNodes;
   }
@@ -27,9 +27,9 @@ function walk(el) {
     //node list
     //对于 nodelist 如果其中有包含 {{text}} 直接量的表达式, 文本节点会被分割, 其节点数量可能会动态增加
     for(var i = 0; i < el.length; i++) {
-      walk.call(this, el[i]);
+      watchers = watchers.concat( walk.call(this, el[i]) );
     }
-    return;
+    return watchers;
   }
 
   switch (el.nodeType) {
@@ -37,13 +37,12 @@ function walk(el) {
       break;
     case NODETYPE.COMMENT:
       //注释节点
-      return;
+      return watchers;
       break;
     case NODETYPE.TEXT:
       //文本节点
-      checkText.call(this, el);
-      return;
-      break;
+      watchers = watchers.concat( checkText.call(this, el) );
+      return watchers;
   }
 
   if(el.nodeName.toLowerCase() === 'template') {
@@ -56,19 +55,23 @@ function walk(el) {
     }
   }
 
-  if(checkAttr.call(this, el)){
-    return;
+  dirResult = checkAttr.call(this, el);
+  watchers = watchers.concat(dirResult.watchers)
+  if(dirResult.terminal){
+    return watchers;
   }
 
   if(el.nodeName.toLowerCase() === 'template') {
-    walk.call(this, el.content)
+    watchers = watchers.concat( walk.call(this, el.content) )
   }
 
   for(var child = el.firstChild, next; child; ){
     next = child.nextSibling;
-    walk.call(this, child);
+    watchers = watchers.concat( walk.call(this, child) );
     child = next;
   }
+
+  return watchers
 }
 
 //遍历属性
@@ -77,7 +80,7 @@ function checkAttr(el) {
     , prefix = cstr.prefix
     , dirs = cstr.directive.getDir(el, cstr.directives, cstr.components, prefix)
     , dir
-    , terminalPriority, terminal
+    , terminalPriority, watchers = []
     , result = {};
   ;
 
@@ -92,21 +95,22 @@ function checkAttr(el) {
 
     el.removeAttribute(dir.nodeName);
 
-    setBinding.call(this, dir);
+    watchers = watchers.concat( setBinding.call(this, dir) );
 
     if(dir.terminal) {
-      terminal = true;
+      result.terminal = true;
       terminalPriority = dir.priority;
     }
   }
 
-  result.dirs = dirs;
+  result.watchers = watchers
 
-  return terminal
+  return result
 }
 
 //处理文本节点中的绑定占位符({{...}})
 function checkText(node) {
+  var watchers = [];
   if(token.hasToken(node.nodeValue)) {
     var tokens = token.parseToken(node.nodeValue)
       , textMap = tokens.textMap
@@ -120,21 +124,23 @@ function checkText(node) {
       textMap.forEach(function(text) {
         var tn = doc.createTextNode(text);
         el.insertBefore(tn, node);
-        checkText.call(this, tn);
+        watchers = watchers.concat(checkText.call(this, tn));
       }.bind(this));
       el.removeChild(node);
     }else{
       t = tokens[0];
       //内置各占位符处理.
       dir = utils.create(t.escape ? dirs.text : dirs.html);
-      setBinding.call(this, utils.extend(dir, t, {
+      watchers = setBinding.call(this, utils.extend(dir, t, {
         el: node
       }));
     }
   }
+  return watchers
 }
 
 function setBinding(dir) {
+  var watcher
   if(dir.replace) {
     var el = dir.el;
     if(utils.isFunction(dir.replace)) {
@@ -149,9 +155,17 @@ function setBinding(dir) {
 
   dir.link(this);
 
-  Watcher.addWatcher.call(this, dir)
+  watcher = Watcher.addWatcher.call(this, dir)
+  return watcher ? [watcher] : []
+}
+
+function unBinding(watchers) {
+  watchers.forEach(function(watcher) {
+    watcher.unwatch()
+  })
 }
 
 module.exports = {
-  walk: walk
+  walk: walk,
+  unBinding: unBinding
 };

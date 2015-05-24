@@ -4,6 +4,9 @@ var utils = require('../utils.js');
 module.exports = {
   priority: -10
 , watch: false
+, unLink: function() {
+    this.component && this.component.__destroy()
+  }
 , link: function(vm) {
     var el = this.el;
     var comName = this.path;
@@ -54,7 +57,7 @@ module.exports = {
         $data[attrs[0].nodeName] = attrs[0].value;
       }
 
-      comp = new Comp({
+      this.component = comp = new Comp({
         $target: el,
         //$root: vm.$root,
         $data: utils.extend({}, Comp.prototype.$data, $data)
@@ -62,6 +65,7 @@ module.exports = {
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
       if(vm.$el === el) {
+        vm.__ref = comp;
         vm.$el = comp.$el;
       }
       return true;

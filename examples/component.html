@@ -79,12 +79,13 @@
     <li><button b-on="{click: events.jsToggle}" class="js-toggle">Toggle</button> Javascript 用法 </li>
   </ul>
 
-  <x-dialog title="温馨提示">
+  <x-dialog title="温馨提示" b-repeat="item in list">
     <x-mdeditor></x-mdeditor>
   </x-dialog>
 </div>
 <script>
-  new Bee(document.getElementById('demo'), {
+  var bee = new Bee(document.getElementById('demo'), {
+    $data: { list: [1, 2] },
     events: {
       'tagToggle': function() {
         this.$el.querySelector('[data-role=dialog]').bee.$toggle()

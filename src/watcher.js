@@ -7,10 +7,12 @@ var evaluate = require('./eval.js')
   ;
 
 function Watcher(vm, dir) {
-  var reformed, path, curVm = vm;
+  var reformed, path, curVm = vm, watchers = [];
 
+  this.state = 1;
   this.dir = dir;
   this.vm = vm;
+  this.watchers = [];
 
   this.val = NaN;
 
@@ -24,18 +26,23 @@ function Watcher(vm, dir) {
     if(dir.watch) {
       curVm._watchers[path] = curVm._watchers[path] || [];
       curVm._watchers[path].push(this);
+      watchers = curVm._watchers[path];
+    }else{
+      watchers = [this];
     }
+    this.watchers.push( watchers );
   }
 
   this.update();
 }
 
-function unwatch (vm, key, callback) {
+//根据表达式移除当前 vm 中的 watcher
+function unwatch (vm, exp, callback) {
   var summary;
   try {
-    summary = evaluate.summary(parse(key))
+    summary = evaluate.summary(parse(exp))
   }catch (e){
-    e.message = 'SyntaxError in "' + key + '" | ' + e.message;
+    e.message = 'SyntaxError in "' + exp + '" | ' + e.message;
     console.error(e);
   }
   summary.paths.forEach(function(path) {
@@ -85,6 +92,20 @@ utils.extend(Watcher.prototype, {
     }else{
       watcherUpdate.call(this, newVal);
     }
+  },
+  unwatch: function() {
+    this.watchers.forEach(function(watchers) {
+      for(var i = watchers.length - 1; i >= 0; i--){
+        if(watchers[i] === this){
+          if(this.state){
+            watchers[i].dir.unLink();
+            this.state = 0;
+          }
+          watchers.splice(i, 1);
+        }
+      }
+    }.bind(this))
+    this.watchers = [];
   }
 });
 

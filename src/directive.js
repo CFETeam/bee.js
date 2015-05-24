@@ -32,6 +32,7 @@ function Directive(key, opts) {
 Directive.prototype = {
   priority: 0//权重
 , link: utils.noop//初始化方法
+, unLink: utils.noop//销毁回调
 , update: utils.noop//更新方法
 , tearDown: utils.noop
 , terminal: false//是否终止

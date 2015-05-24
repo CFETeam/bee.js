@@ -1,5 +1,9 @@
 var test = require('tape');
 var Bee = require('../');
+var $ = require('jquery')
+if(typeof window === 'undefined') {
+  $ = $(Bee.doc.parentWindow)
+}
 
 test('$set', function(t) {
   var bee = new Bee({$data: {a: {b: 2}, c: 3}});
@@ -35,6 +39,30 @@ test('$set', function(t) {
   t.equal(bee.$get('f'), 8)
   t.equal(bee.f, 8)
 
+  t.test('$set in repeat', function(t) {
+    var tpl = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item.checked"/>{{test(name)}}</li></ul>'
+    var newName = 'bee'
+    var bee = new Bee({
+      $tpl: tpl,
+      $data: {
+        name: newName,
+        list: [{}]
+      },
+      test: function(name)  {
+        t.equal(name, newName)
+        t.notEqual(this, bee)
+        var checked = !this.checked
+        this.$set('item.checked', checked)
+        t.equal(this.$get('item.checked'), checked)
+        t.equal(this.$data.checked, checked)
+        t.equal(this.checked, checked)
+      }
+    });
+
+    newName = 'ant'
+    bee.$set('name', newName)
+    t.end()
+  })
 
   t.end()
 })

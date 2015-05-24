@@ -109,7 +109,12 @@ Bee.extend({
 ---
 
 ### $get
-获取当前实例的数据.
+获取当前实例的数据. 支持模板中的表达式写法.
+```
+var bee = new Bee({$data: {list: [1, 2, 3], size: 5}});
+bee.$get('list.length'); //3
+bee.$get('list.length * size') //15
+```
 
 ### $set
 更新当前实例的数据. 用 `$set` 方法总是扩展(添加或修改)数据.

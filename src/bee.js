@@ -65,6 +65,7 @@ function Bee(tpl, props) {
   , _watchers: {}
   , _assignments: null//当前 vm 的别名
   , _relativePath: []
+  , __links: []
   , _isRendered: false
   };
 
@@ -83,7 +84,7 @@ function Bee(tpl, props) {
 
   //合并所有到当前空间下
   extend(this, defaults);
-  extend(this, this.$data);
+  isObject(this.$data) && extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
   el = domUtils.tplParse(tpl, this.$target, this.$content);
@@ -98,8 +99,10 @@ function Bee(tpl, props) {
 
   this.$el.bee = this;
 
-  this.$content && checkBinding.walk.call(this.$root, this.$content);
-  checkBinding.walk.call(this, this.$el);
+  if(this.$content){
+    this.__links = checkBinding.walk.call(this.$root, this.$content);
+  }
+  this.__links = this.__links.concat( checkBinding.walk.call(this, this.$el) );
 
   for(var key in this.$watchers) {
     this.$watch(key, this.$watchers[key])
@@ -285,9 +288,17 @@ extend(Bee.prototype, Event, {
       update._originFn = callback;
       Watcher.addWatcher.call(this, new Dir('$watch', {path: keyPath, update: update}))
     }
+    return this;
   }
 , $unwatch: function (keyPath, callback) {
     Watcher.unwatch(this, keyPath, callback)
+    return this;
+  }
+, __destroy: function() {
+    this.__links.forEach(function(wacher) {
+      wacher.unwatch()
+    })
+    this.__links = [];
   }
 });
 
