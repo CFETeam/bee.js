@@ -149,6 +149,7 @@ for(var dir in dirs) {
 //----
 extend(Bee.prototype, Event, {
   $init: utils.noop
+, $destroy: utils.noop
   /**
    * 获取属性/方法--
    * @param {String} keyPath 路径/表达式
@@ -299,6 +300,7 @@ extend(Bee.prototype, Event, {
       wacher.unwatch()
     })
     this.__links = [];
+    this.$destroy()
   }
 });
 
