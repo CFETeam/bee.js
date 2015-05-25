@@ -18,17 +18,21 @@ module.exports = {
     var styleStr = '';
     var dashKey, val;
 
-    for(var key in styles) {
-      val = styles[key];
+    if(typeof styles === 'string') {
+      styleStr = styles;
+    }else {
+      for (var key in styles) {
+        val = styles[key];
 
-      dashKey = key.replace(camelReg, function (upperChar) {
-        return '-' + upperChar.toLowerCase();
-      });
+        dashKey = key.replace(camelReg, function (upperChar) {
+          return '-' + upperChar.toLowerCase();
+        });
 
-      if(!isNaN(val) && pixelAttrs.indexOf(dashKey) >= 0) {
-        val += 'px';
+        if (!isNaN(val) && pixelAttrs.indexOf(dashKey) >= 0) {
+          val += 'px';
+        }
+        styleStr += dashKey + ': ' + val + '; ';
       }
-      styleStr += dashKey + ': ' + val + '; ';
     }
     if(el.style.setAttribute){
       //老 IE
