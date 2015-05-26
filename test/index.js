@@ -1,5 +1,6 @@
 require('./test.constructor.js');
 require('./test.defaults.js');
+require('./test.mixins.js');
 require('./test.parse.js');
 require('./test.repeat.js');
 require('./test.replace.js');

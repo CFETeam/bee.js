@@ -36,7 +36,8 @@ var mergeProps = {
 };
 
 var lifeCycles = {
-  
+  $init: utils.noop
+, $destroy: utils.noop
 };
 
 /**
@@ -54,13 +55,14 @@ function Bee(tpl, props) {
 
   var defaults = {
     //$ 开头的是共有属性/方法
-    $data: this.$data || {}
-  , $filters: this.$filters || {}
-  , $watchers: this.$watchers || {}
+    $data: {}
+  , $filters: {}
+  , $watchers: {}
+  , $mixins: []
 
-  , $el: this.$el || null
-  , $target: this.$target || null
-  , $tpl: this.$tpl || '<div></div>'
+  , $el: null
+  , $target: null
+  , $tpl: '<div></div>'
   , $content: null
   , $parent: null
   , $root: this
@@ -75,19 +77,26 @@ function Bee(tpl, props) {
 
   var el;
 
-  //保持对传入属性的引用
-  for(var propKey in props) {
-    if((propKey in mergeProps) && isObject(props[propKey])) {
-      //mergeProps 中的属性会被默认值扩展
-      extend(defaults[propKey], props[propKey])
-      defaults[propKey] = extend(props[propKey], defaults[propKey]);
-    }else{
-      defaults[propKey] = props[propKey];
-    }
-  }
+  var mixins = ([defaults].concat(this.$mixins || [])).concat([props])
 
-  //合并所有到当前空间下
-  extend(this, defaults);
+  mixins.forEach(function(mixin) {
+    var prop;
+    for(var propKey in mixin) {
+      if(mixin.hasOwnProperty(propKey)) {
+        if ((propKey in mergeProps) && isObject(mixin[propKey])) {
+          //保持对传入属性的引用
+          //mergeProps 中的属性会被默认值扩展
+          prop = extend({}, this[propKey], mixin[propKey])
+          this[propKey] = extend(mixin[propKey], prop)
+        } else if (propKey in lifeCycles) {
+          this[propKey] = utils.afterFn(this[propKey], mixin[propKey])
+        } else {
+          this[propKey] = mixin[propKey];
+        }
+      }
+    }
+  }.bind(this))
+
   isObject(this.$data) && extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
@@ -151,15 +160,13 @@ for(var dir in dirs) {
 
 //实例方法
 //----
-extend(Bee.prototype, /*Event,*/ {
-  $init: utils.noop
-, $destroy: utils.noop
+extend(Bee.prototype, /*Event,*/ lifeCycles, {
   /**
    * 获取属性/方法--
    * @param {String} keyPath 路径/表达式
    * @return {*}
    */
-, $get: function(keyPath) {
+  $get: function(keyPath) {
     var dir = new Dir('$get', {
       path: keyPath
     , watch: false
