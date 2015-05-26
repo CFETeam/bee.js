@@ -60,10 +60,11 @@ function Bee(tpl, props) {
   , $watchers: {}
   , $mixins: []
 
-  , $el: null
-  , $target: null
-  , $tpl: '<div></div>'
-  , $content: null
+  , $el: this.$el || null
+  , $target: this.$target || null
+  , $tpl: this.$tpl || '<div></div>'
+  , $content: this.$content || null
+    
   , $parent: null
   , $root: this
 
