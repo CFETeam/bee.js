@@ -2,7 +2,7 @@
 
 var doc = require('./env.js').document
   , utils = require('./utils.js')
-  , Event = require('./event.js')
+  //, Event = require('./event.js')
   , Class = require('./class.js')
   , Dir = require('./directive.js')
   , Com = require('./component.js')
@@ -33,6 +33,10 @@ function setPrefix(newPrefix) {
 
 var mergeProps = {
   $data: 1, $filter: 1, $watchers: 1
+};
+
+var lifeCycles = {
+  
 };
 
 /**
@@ -118,7 +122,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
   //每个构造函数都有自己的 directives 和 components 引用
   sub.directives = create(this.directives);
   sub.components = create(this.components);
-})}, Dir, Com, {
+}), utils: utils}, Dir, Com, {
   setPrefix: setPrefix
 , prefix: ''
 , doc: doc
@@ -147,7 +151,7 @@ for(var dir in dirs) {
 
 //实例方法
 //----
-extend(Bee.prototype, Event, {
+extend(Bee.prototype, /*Event,*/ {
   $init: utils.noop
 , $destroy: utils.noop
   /**
