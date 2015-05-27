@@ -1,3 +1,5 @@
+//表达式执行
+
 "use strict";
 
 var operators = {
@@ -50,13 +52,14 @@ var operators = {
     }
 
   , '(': function(l, r){ return l.apply(context.locals, r) }
-  , '|': function(l, r){ return r.call(context.locals, l) }//filter. name|filter
+    //filter. name|filter
+  , '|': function(l, r){ return callFilter(l, r, []) }
   , 'new': function(l, r){
       return l === Date ? new Function('return new Date(' + r.join(', ') + ')')() : new (Function.prototype.bind.apply(l, r));
     }
 
   , 'in': function(l, r){
-      if(this.assignment) {
+      if(this.repeat) {
         //repeat
         return r;
       }else{
@@ -69,10 +72,20 @@ var operators = {
     '?': function(f, s, t) { return f ? s : t; }
   , '(': function(f, s, t) { return f[s].apply(f, t) }
 
-  //filter. name | filter : arg2 : arg3
-  , '|': function(f, s, t){ return s.apply(context.locals, [f].concat(t)); }
+    //filter. name | filter : arg2 : arg3
+  , '|': function(f, s, t){ return callFilter(f, s, t) }
   }
 };
+
+function callFilter(arg, filter, args) {
+  if(arg && arg.then) {
+    return arg.then(function(data) {
+      return filter.apply(context.locals, [data].concat(args))
+    });
+  }else{
+    return filter.apply(context.locals, [arg].concat(args))
+  }
+}
 
 var argName = ['first', 'second', 'third']
   , context, summary, summaryCall
@@ -128,7 +141,7 @@ var evaluate = function(tree) {
     case 'literal':
       res = value;
     break;
-    case 'assignment':
+    case 'repeat':
       summary.assignments[value] = true;
     break;
     case 'name':

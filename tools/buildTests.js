@@ -9,7 +9,7 @@ var testPath = path.join(__dirname, '../test')
 module.exports = function() {
   return new Promise(function(resolve, reject) {
     var files = fs.readdirSync(testPath);
-    var tests = [];
+    var tests = ['require("es6-promise").polyfill();'];
 
     files.forEach(function(filename) {
       if(/^test.*\.js$/.test(filename)) {

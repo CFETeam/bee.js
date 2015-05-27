@@ -32,7 +32,7 @@ function setPrefix(newPrefix) {
 }
 
 var mergeProps = {
-  $data: 1, $filter: 1, $watchers: 1
+  $data: 1, $filters: 1, $watchers: 1
 };
 
 var lifeCycles = {

@@ -25,7 +25,8 @@
     "tape": "^4.0.0",
     "through2": "^0.6.5",
     "vinyl-source-stream": "^1.1.0",
-    "zuul": "^3.0.0"
+    "zuul": "^3.0.0",
+    "jsdom": "^0.10.6"
   },
   "browser": {
     "jsdom": false
