@@ -17,11 +17,9 @@ var reformScope = function (vm, path) {
         if (local === '$index' || local === '$parent') {
           break;
         } else if (local === ass[0]) {
-          scope = {}
-          scope[path] = cur.$data
           //修正key
           if (paths.length === 1) {
-            local = '$data';
+            paths[0] = '$data';
           } else {
             paths.shift()
           }

@@ -1,8 +1,13 @@
-- 组件分组
-- 生命周期方法补全
-- transition
-- repeat 中的 trackby
-- mixin 支持
-- filter 对 promise 的管道支持?
-- template标签 在 repeat 中的支持
-- 文档, 文档, 测试, 测试
+0.3
+---
+
+[x] 组件销毁
+[ ] 内置指令的销毁
+[ ] 组件分组
+[ ] 生命周期方法补全
+[ ] transition
+[ ] repeat 中的 trackby
+[x] mixin 支持
+[ ] filter 对 promise 的管道支持?
+[ ] template标签 在 repeat 中的支持
+[ ] 文档, 文档, 测试, 测试

@@ -61,6 +61,27 @@ test('$set', function(t) {
 
     newName = 'ant'
     bee.$set('name', newName)
+
+    var tpl2 = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item"/>{{test(name)}}</li></ul>'
+    newName = 'bee';
+    var bee2 = new Bee({
+      $tpl: tpl,
+      $data: {
+        name: newName,
+        list: [true, false]
+      },
+      test: function(name) {
+        t.equal(name, newName)
+        t.notEqual(this, bee2)
+        var checked = !this.$data
+        this.$set('item', checked)
+        t.equal(this.$get('item'), checked)
+        t.equal(this.$data, checked)
+      }
+    })
+    newName = 'ant';
+    bee2.$set('name', newName)
+
     t.end()
   })
 

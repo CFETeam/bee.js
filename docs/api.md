@@ -155,11 +155,13 @@ Directive
 ```
 
 ### b-repeat
-Repeat 指令. 用于展示数组内容
+Repeat 指令. 用于展示数组内容.
+
+Repeat 指令会创建一个匿名的 bee 实例, 并且会添加一个 `$index` 变量标示在数组中的索引.
 
 ```html
 <ul>
-  <li b-repeat="item in list">{{item}}</li>
+  <li b-repeat="item in list">{{$index + 1}}. {{item}}</li>
 </ul>
 ```
 

@@ -64,7 +64,7 @@ function Bee(tpl, props) {
   , $target: this.$target || null
   , $tpl: this.$tpl || '<div></div>'
   , $content: this.$content || null
-    
+
   , $parent: null
   , $root: this
 
@@ -204,8 +204,12 @@ extend(Bee.prototype, /*Event,*/ lifeCycles, {
       if(keys[0] === '$data') {
         add = add.$data
       }
-      extend(true, reVm.$data, add);
-      extend(true, reVm, add);
+      if(isObject(reVm.$data)) {
+        extend(true, reVm.$data, add);
+        extend(true, reVm, add);
+      }else{
+        reVm.$data = add;
+      }
     }
     hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
     return this;
