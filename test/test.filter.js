@@ -12,7 +12,7 @@ test('filter', function(t) {
     $tpl: '<div><span b-content="filterTest"></span></div>',
     $filters: {
       filter1: function(arg) {
-        return arg + 1;
+        return (arg  + 1) || '';
       },
       filter2: function(arg, arg1, arg2) {
         return arg + arg1 + arg2;
@@ -76,7 +76,7 @@ test('filter', function(t) {
       $filters: {
         filter1: function(arg) {
           return new Promise(function(resolve) {
-            resolve( arg + 1)
+            resolve( (arg  + 1) || '')
           })
         },
         filter2: function(arg, arg1, arg2) {
