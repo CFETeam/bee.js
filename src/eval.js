@@ -66,6 +66,15 @@ var operators = {
         return l in r;
       }
     }
+  , 'trackby': function(l, r) { return l; }
+  , 'catchby': function(l, r) {
+      if(l.catch) {
+        return l.catch(r.bind(context.locals))
+      }else{
+        console.error('catchby expect a promise')
+        return l;
+      }
+    }
   }
 
 , 'ternary': {
