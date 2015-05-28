@@ -94,7 +94,7 @@ test('filter', function(t) {
       setTimeout(function() {
         t.equal($(bee.$el).text(), '2')
         t.end()
-      }, 0)
+      }, 10)
     })
 
     t.test('multi arg async filter', function(t){
@@ -103,7 +103,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '7')
           t.end()
-        }, 0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -111,7 +111,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '8')
           t.end()
-        }, 0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -119,7 +119,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '9')
           t.end()
-        }, 0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -127,7 +127,7 @@ test('filter', function(t) {
         setTimeout(function () {
           t.equal($(bee.$el).text(), '10')
           t.end()
-        }, 0)
+        }, 10)
       })
 
     })
@@ -138,7 +138,7 @@ test('filter', function(t) {
         setTimeout(function () {
           t.equal($(bee.$el).text(), '8')
           t.end();
-        }, 0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -146,7 +146,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '9')
           t.end()
-        },0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -154,7 +154,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '10')
           t.end()
-        }, 0)
+        }, 10)
       })
 
       t.test(function(t) {
@@ -162,7 +162,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '11')
           t.end()
-        }, 0)
+        }, 10)
       })
 
     })

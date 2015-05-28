@@ -5,9 +5,8 @@
 var camelReg = /([A-Z])/g;
 
 //默认单位为 px 的属性
-//TODO 待完善
 var pixelAttrs = [
-  'width','height',
+  'width','height','min-width', 'min-height', 'max-width', 'max-height',
   'margin', 'margin-top', 'margin-right', 'margin-left', 'margin-bottom',
   'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left'
 ]
@@ -24,6 +23,7 @@ module.exports = {
       for (var key in styles) {
         val = styles[key];
 
+        //marginTop -> margin-top
         dashKey = key.replace(camelReg, function (upperChar) {
           return '-' + upperChar.toLowerCase();
         });
