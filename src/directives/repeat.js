@@ -19,6 +19,9 @@ module.exports = {
       cstr = cstr.__super__.constructor;
     }
 
+    this.trackBy = this.el.getAttribute('track-by')
+    this.el.removeAttribute('track-by')
+
     //只继承静态的默认参数
     this.cstr = cstr.extend({}, this.cstr)
 
