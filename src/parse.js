@@ -429,8 +429,6 @@ var make_parse = function (vars) {
 		return this;
 	});
 
-  infix('trackby', 45);
-
 	infix("+", 50);
 	infix("-", 50);
 

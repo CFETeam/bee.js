@@ -84,13 +84,16 @@ utils.extend(Watcher.prototype, {
 
     newVal = this.dir.getValue(this.vm);
 
-    if(newVal && newVal.then) {
-      //a promise
-      newVal.then(function(val) {
-        watcherUpdate.call(that, val);
-      });
-    }else{
-      watcherUpdate.call(this, newVal);
+    //简单过滤重复更新
+    if(newVal !== this.val || utils.isObject(newVal)){
+      if(newVal && newVal.then) {
+        //a promise
+        newVal.then(function(val) {
+          watcherUpdate.call(that, val);
+        });
+      }else{
+        watcherUpdate.call(this, newVal);
+      }
     }
   },
   unwatch: function() {

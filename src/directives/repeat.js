@@ -19,6 +19,9 @@ module.exports = {
       cstr = cstr.__super__.constructor;
     }
 
+    this.trackId = this.el.getAttribute('track-by')
+    this.el.removeAttribute('track-by')
+
     //只继承静态的默认参数
     this.cstr = cstr.extend({}, this.cstr)
 
@@ -31,17 +34,18 @@ module.exports = {
     var curArr = this.curArr;
     var parentNode = this.anchors.end.parentNode;
     var that = this, list = this.list;
+    var trackId = this.trackId;
 
     if(utils.isArray(items)) {
-      // 在 repeat 指令表达式中
+      // 在 repeat 指令表达式中相关变量
       this.listPath = this.summary.locals.filter(function(path) {
         return !utils.isFunction(that.vm.$get(path))
       });
 
       //删除元素
       //TODO 删除引用父级的 watchers
-      arrDiff(curArr, items).forEach(function(item) {
-        var pos = curArr.indexOf(item)
+      arrDiff(curArr, items, trackId).forEach(function(item) {
+        var pos = indexByTrackId(item, curArr, trackId)
         curArr.splice(pos, 1)
         parentNode.removeChild(list[pos].$el)
         list[pos].__destroy()
@@ -49,8 +53,8 @@ module.exports = {
       })
 
       items.forEach(function(item, i) {
-        var pos = items.indexOf(item, i)
-          , oldPos = curArr.indexOf(item, i)
+        var pos = indexByTrackId(item, items, trackId, i)
+          , oldPos = indexByTrackId(item, curArr, trackId, i)
           , vm, el
           ;
 
@@ -78,8 +82,8 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(list[oldPos].$el, list[pos] && list[pos].$el || that.anchor.end)
-            parentNode.insertBefore(list[pos].$el, list[oldPos + 1] && list[oldPos + 1].$el || that.anchor.end)
+            parentNode.insertBefore(list[oldPos].$el, list[pos] && list[pos].$el || that.anchors.end)
+            parentNode.insertBefore(list[pos].$el, list[oldPos + 1] && list[oldPos + 1].$el || that.anchors.end)
             list[oldPos] = [list[pos], list[pos] = list[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
             list[pos].$index = pos
@@ -140,10 +144,10 @@ module.exports = {
 };
 
 
-function arrDiff(arr1, arr2) {
+function arrDiff(arr1, arr2, trackId) {
   var arr2Copy = arr2.slice();
   return arr1.filter(function(el) {
-    var result, index = arr2Copy.indexOf(el)
+    var result, index = indexByTrackId(el, arr2Copy, trackId)
     if(index < 0) {
       result = true
     }else{
@@ -151,4 +155,18 @@ function arrDiff(arr1, arr2) {
     }
     return result
   })
+}
+
+function indexByTrackId(item, list, trackId, startIndex) {
+  startIndex = startIndex || 0;
+  if(trackId){
+    for(var i = startIndex, item1; item1 = list[i]; i++) {
+      if(item[trackId] ===  item1[trackId] && !utils.isUndefined(item[trackId])){
+        return i;
+      }
+    }
+    return -1;
+  }else{
+    return list.indexOf(item, startIndex)
+  }
 }
