@@ -103,7 +103,7 @@ module.exports = {
     });
 
     //根据表单元素的初始化默认值设置对应 model 的值
-    if(el[value] && isSetDefaut){
+    if(el[value]){
        handler(true);
     }
 

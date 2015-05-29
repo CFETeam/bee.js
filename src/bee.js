@@ -2,7 +2,6 @@
 
 var doc = require('./env.js').document
   , utils = require('./utils.js')
-  //, Event = require('./event.js')
   , Class = require('./class.js')
   , Dir = require('./directive.js')
   , Com = require('./component.js')
@@ -161,7 +160,7 @@ for(var dir in dirs) {
 
 //实例方法
 //----
-extend(Bee.prototype, /*Event,*/ lifeCycles, {
+extend(Bee.prototype, lifeCycles, {
   /**
    * 获取属性/方法--
    * @param {String} keyPath 路径/表达式

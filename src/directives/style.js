@@ -8,7 +8,8 @@ var camelReg = /([A-Z])/g;
 var pixelAttrs = [
   'width','height','min-width', 'min-height', 'max-width', 'max-height',
   'margin', 'margin-top', 'margin-right', 'margin-left', 'margin-bottom',
-  'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left'
+  'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+  'top', 'left', 'right', 'bottom'
 ]
 
 module.exports = {

@@ -21,7 +21,7 @@ function parseKeyPath(keyPath){
  * @param {Boolean} [deep=false] 是否深度合并
  * @param {Object} target 目标对象
  * @param {Object} [object...] 来源对象
- * @return {Function} 合并后的 target 对象
+ * @return {Object} 合并后的 target 对象
  */
 function extend(/* deep, target, object... */) {
   var options
@@ -39,10 +39,6 @@ function extend(/* deep, target, object... */) {
     // skip the boolean and the target
     target = arguments[ i ] || {};
     i++;
-  }
-
-  if(utils.isFunction(arguments[length - 1])) {
-    length--;
   }
 
   // Handle case when target is a string or something (possible in deep copy)
