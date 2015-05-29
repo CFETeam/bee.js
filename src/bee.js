@@ -140,7 +140,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
 , components: {}
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
-    var Comp = this.components[el.tagName.toLowerCase()];
+    var Comp = this.getComponent(el.tagName.toLowerCase());
     var instance
     if(Comp) {
       instance = new Comp(extend({$target: el}, props))

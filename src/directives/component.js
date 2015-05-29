@@ -1,6 +1,17 @@
 //component as directive
 var utils = require('../utils.js');
 
+//html 中属性名不区分大小写, 并且会全部转成小写.
+//这里会将连字符写法转成驼峰式
+//attr-name --> attrName
+//attr--name --> attr-name
+var hyphensReg = /-(-?)([a-z])/ig;
+var hyphenToCamel = function(attrName) {
+  return attrName.replace(hyphensReg, function(s, dash, char) {
+    return dash ? dash + char : char.toUpperCase();
+  })
+}
+
 module.exports = {
   priority: -10
 , watch: false
@@ -9,17 +20,16 @@ module.exports = {
   }
 , link: function(vm) {
     var el = this.el;
-    var comName = this.path;
-    var components = vm.constructor.components;
-    var Comp, comp;
+    var cstr = vm.constructor;
+    var comp;
     var dirs = [], $data = {};
     var attrs;
+    var Comp = cstr.getComponent(this.path)
 
-    if(comName in components) {
-      Comp = components[comName];
+    if(Comp) {
 
       //TODO
-      if(Comp === vm.constructor) {
+      if(Comp === cstr) {
         return;
       }
 
@@ -54,7 +64,7 @@ module.exports = {
       attrs = el.attributes;
       //普通属性
       for(var i = attrs.length - 1; i >= 0; i--) {
-        $data[attrs[0].nodeName] = attrs[0].value;
+        $data[hyphenToCamel(attrs[i].nodeName)] = attrs[i].value;
       }
 
       this.component = comp = new Comp({
@@ -70,7 +80,7 @@ module.exports = {
       }
       return true;
     }else{
-      console.warn('Component: ' + comName + ' not defined! Ignore');
+      console.warn('Component: ' + this.path + ' not defined! Ignore');
     }
   }
 };

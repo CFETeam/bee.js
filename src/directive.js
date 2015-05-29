@@ -88,18 +88,17 @@ Directive.prototype = {
 var attrPostReg = /\?$/;
 
 //获取一个元素上所有用 HTML 属性定义的指令
-function getDir(el, directives, components, prefix) {
-  prefix = prefix || '';
-  directives = directives || {};
-
+function getDir(el, cstr){
   var attr, attrName, dirName, proto
     , dirs = [], dir, anchors = {}
     , parent = el.parentNode
     , nodeName = el.nodeName.toLowerCase()
+    , directives = cstr.directives
+    , prefix = cstr.prefix
     ;
 
   //对于自定义标签, 将其转为 directive
-  if(nodeName in components) {
+  if(cstr.getComponent(nodeName)) {
     el.setAttribute(prefix + 'component', nodeName);
   }
 

@@ -2,7 +2,6 @@
 
 var doc = require('../env.js').document
   , utils = require('../utils.js')
-  , token = require('../token.js')
   ;
 
 var dirs = {};

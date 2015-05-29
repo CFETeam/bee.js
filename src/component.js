@@ -19,4 +19,17 @@ function tag(tagName, Component, statics) {
   return tags[tagName] = Component;
 }
 
+/**
+ * 查询某构造函数下的注册组件
+ */
+function getComponent(compName) {
+  var paths = utils.parseKeyPath(compName);
+  var CurCstr = this;
+  paths.forEach(function(comName) {
+    CurCstr = CurCstr.components[comName]
+  });
+  return CurCstr;
+}
+
 exports.tag = exports.component = tag;
+exports.getComponent = getComponent;

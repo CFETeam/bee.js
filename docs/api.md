@@ -62,6 +62,10 @@ bee.$el === el;    //true
 #### $watchers
 用来初始快速调用 `$watch` 方法.
 
+#### $mixins
+
+#### $filters
+
 
 #### props 与实例属性
 一般来说, `props` 传入的参数都将作为实例属性出现, 并且保持同一引用. 但是有几个特例:
@@ -189,8 +193,8 @@ HTML 属性指令.
 ### b-text b-html b-content
 这三种指令都用于展示内容.
 
-- `b-text` 用于展示普通文本内容. 等同于双括号表达式. 比如 `<span b-text="some.key"><span>` 等同于 `{{some.key}}`
-- `b-html` 用于展示为转义 HTML 内容. 等同于三括号表达式. 比如 `<span b-html="some.key"><span>` 等同于 `{{{some.key}}}`
+- `b-text` 用于展示普通文本内容. 等同于双花括号表达式. 比如在文本中 `<span b-text="some.key"><span>` 等同于 `{{some.key}}`
+- `b-html` 用于展示为转义 HTML 内容. 等同于三花括号表达式. 比如 `<span b-html="some.key"><span>` 等同于 `{{{some.key}}}`
 - `b-content` 可用于展示 DOM 内容.
 
 ### b-component
