@@ -7,10 +7,12 @@ new Bee('<div>{{name}}</div>', {$data: { name: 'Bee' }})
 
 参数:
 
-- **tpl** `String|Element` 可选. HTML 模板
+- **tpl** `String|Element` 可选. HTML 模板, 同 `props.$tpl`.
 - **props** `Object` 可选
 
-Bee 构造函数是 Bee 的起点. 接受两个参数: `tpl`, `props`.
+Bee 构造函数是 Bee 的起点. 一个 Bee 实例既是一个 `ViewModel` 实例, 同时混入了 `View` 及 `Model` 属性的一个对象.
+
+Bee 构造函数接受两个参数: `tpl`, `props`.
 第一个参数 `tpl` 表示模板, 可以是模板字符串或 dom 元素.
 
 在模板中可以通过各种指令使用 Bee 实例的数据及方法.
@@ -54,16 +56,16 @@ var bee = new Bee('<div>{{name}}</div>', { $el: el, $data: { name: 'Bee' } });
 bee.$el === el;    //true
 ```
 
-#### $content
+#### $content [String|Element|NodeList]
 传入的 `$content` 内容会被转成一个 documentFragment 存放在对应属性中. 配合 `content` 指令可以将其内容展示出来.
 
 当有定义 `$target` 时, `$content` 会被 `$target` 中的内容替代.
 
-#### $watchers
+#### $watchers [Object]
 用来初始快速调用 `$watch` 方法.
 
-#### $mixins
-
+#### $mixins [Array]
+除了构造函数继承外, `$mixins`  是另外一种继承方式. 一些可复用的方法集合可通过 `$mixins` 并入 Bee 实例中.
 
 #### props 与实例属性
 一般来说, `props` 传入的参数都将作为实例属性出现, 并且保持同一引用. 但是有几个特例:
@@ -80,7 +82,7 @@ bee.$el === el;    //true
 创建一个继承 Bee 的构造函数.
 
 ```js
-Bee.extend({
+var Ant = Bee.extend({
   //原型属性/方法
   constructor: function() {
     //doSth
@@ -93,6 +95,10 @@ Bee.extend({
   //静态属性/方法
 })
 ```
+
+子构造函数的 `__super__` 属性指向父构造函数的 `prototype` 对象. 父构造函数的原型属性和静态属性会被子构造函数的同名属性覆盖,
+除了 `directives, components, filters` 三个静态属性除外. 子构造函数会继承父构造函数 `directives, components, filters` 属性,
+并且会并入 `extend` 方法中传入的相应内容.
 
 ### Bee.directive
 
@@ -111,6 +117,10 @@ Bee.extend({
 ---
 
 ### $get
+
+参数:
+- **expression** `String`
+
 获取当前实例的数据. 支持模板中的表达式写法.
 ```
 var bee = new Bee({$data: {list: [1, 2, 3], size: 5}});
@@ -119,6 +129,11 @@ bee.$get('list.length * size') //15
 ```
 
 ### $set
+
+参数:
+- **keyPath** `String` 可选
+- **value** `AnyType`
+
 更新当前实例的数据. 用 `$set` 方法总是扩展(添加或修改)数据.
 
 ```
@@ -130,11 +145,58 @@ bee.$set('key', 1);
 替换当前实例的数据. 参数同 `.$set`
 
 ### $watch
-监听某个表达式的变化.
+
+参数:
+- **expression** `String`
+- **callback** `Function`
+
+监听某个表达式的变化. 调用后 `callback` 回调会立即执行一次.
 
 ### $unwatch
-取消监听.
 
+参数:
+- **expression** `String`
+- **callback** `Function`
+
+取消监听表达式中出现的变量对应的回调.
+
+### $destroy
+
+参数:
+- **removeElement** `Boolean` 可选. 缺省为 `false`. 为真时将从 DOM 树移除 `$el` 元素.
+
+销毁当前实例. 销毁后该实例下所有的绑定都会失效.
+
+### 生命周期方法
+
+- `$beforeInit` 该方法在解析模板之前调用. 可以在该方法中添加额外的数据之类的
+- `$afterInit` 初始化渲染结束后调用.
+- `$beforeUpdate` 调用 `$set, $replace` 方法更新 dom 树前.
+- `$afterUpdate` 调用 `$set, $replace` 方法更新 dom 树后.
+- `$beforeDestroy` Bee 实例销毁之前回调
+- `$afterDestroy` Bee 实例销毁之后回调
+
+> 关于生命周期方法还有一点需要注意的是: 各个阶段定义的生命周期方法并不会互相覆盖.
+
+```js
+var Ant = Bee.extend({
+    $beforeInit: function() {
+        console.log(1);
+    },
+    $mixins: [{
+        $beforeInit: function() {
+            console.log(2);
+        }
+    }]
+});
+
+new Ant({
+    $beforeInit: function() {
+        console.log(3)
+    }
+});
+//1, 2, 3 会全部依次打印出来
+```
 
 Directive
 ---

@@ -168,12 +168,12 @@ for(var dir in dirs) {
 extend(Bee.prototype, lifeCycles, {
   /**
    * 获取属性/方法--
-   * @param {String} keyPath 路径/表达式
+   * @param {String} expression 路径/表达式
    * @return {*}
    */
-  $get: function(keyPath) {
+  $get: function(expression) {
     var dir = new Dir('$get', {
-      path: keyPath
+      path: expression
     , watch: false
     });
     dir.parse();
@@ -216,7 +216,6 @@ extend(Bee.prototype, lifeCycles, {
       }
     }
     hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
-    return this;
   }
   /**
    * 数据替换
@@ -247,7 +246,6 @@ extend(Bee.prototype, lifeCycles, {
       deepSet(reKey, val, reVm);
     }
     hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
-    return this;
   }
   /**
    * 手动更新某部分数据
@@ -300,20 +298,16 @@ extend(Bee.prototype, lifeCycles, {
     if(utils.isArray(attrs)) {
       this.$update(keyPath + '.length', false);
     }
-
-    return this;
   }
-, $watch: function (keyPath, callback) {
+, $watch: function (expression, callback) {
     if(callback) {
       var update = callback.bind(this);
       update._originFn = callback;
-      Watcher.addWatcher.call(this, new Dir('$watch', {path: keyPath, update: update}))
+      return Watcher.addWatcher.call(this, new Dir('$watch', {path: expression, update: update}))
     }
-    return this;
   }
-, $unwatch: function (keyPath, callback) {
-    Watcher.unwatch(this, keyPath, callback)
-    return this;
+, $unwatch: function (expression, callback) {
+    Watcher.unwatch(this, expression, callback)
   }
 , $destroy: function(removeEl) {
     this.$beforeDestroy()
