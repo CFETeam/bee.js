@@ -67,8 +67,8 @@ var operators = {
       }
     }
   , 'catchby': function(l, r) {
-      if(l.catch) {
-        return l.catch(r.bind(context.locals))
+      if(l['catch']) {
+        return l['catch'](r.bind(context.locals))
       }else{
         console.error('catchby expect a promise')
         return l;

@@ -35,8 +35,12 @@ var mergeProps = {
 };
 
 var lifeCycles = {
-  $init: utils.noop
-, $destroy: utils.noop
+  $beforeInit: utils.noop
+, $afterInit: utils.noop
+, $beforeUpdate: utils.noop
+, $afterUpdate: utils.noop
+, $beforeDestroy: utils.noop
+, $afterDestroy: utils.noop
 };
 
 /**
@@ -110,6 +114,7 @@ function Bee(tpl, props) {
   this.$tpl = el.tpl;
   this.$content = el.content;
 
+  this.$beforeInit()
   this.$el.bee = this;
 
   if(this.$content){
@@ -121,9 +126,8 @@ function Bee(tpl, props) {
     this.$watch(key, this.$watchers[key])
   }
 
-  this.$replace(this.$data);
   this._isRendered = true;
-  this.$init();
+  this.$afterInit();
 }
 
 //静态属性
@@ -310,18 +314,20 @@ extend(Bee.prototype, lifeCycles, {
     Watcher.unwatch(this, keyPath, callback)
     return this;
   }
-, __destroy: function() {
+, $destroy: function(removeEl) {
+    this.$beforeDestroy()
     this.__links.forEach(function(wacher) {
       wacher.unwatch()
     })
+    removeEl && this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
     this.__links = [];
-    this.$destroy()
+    this.$afterDestroy()
   }
 });
 
 function update (keyPath, data) {
   var keyPaths;
-
+  this.$beforeUpdate(this.$data)
   if(arguments.length === 1) {
     data = keyPath;
   }else{
@@ -340,7 +346,7 @@ function update (keyPath, data) {
   for(var i = 0, path; path = keyPaths[i]; i++){
     this.$update(path, true);
   }
-
+  this.$afterUpdate(this.$data)
 }
 
 Bee.version = '%VERSION';

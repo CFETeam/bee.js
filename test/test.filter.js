@@ -67,7 +67,7 @@ test('filter', function(t) {
     t.end()
   })
 
-  0 && t.test('promise in filter', function(t) {
+  t.test('promise in filter', function(t) {
 
     bee = new Ant({
       $data: {

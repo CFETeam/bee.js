@@ -11,6 +11,11 @@ module.exports = {
   priority: 1000
 , anchor: true
 , terminal: true
+, unLink: function(){
+    this.list.forEach(function(vm){
+      vm.$destroy()
+    })
+  }
 , link: function(vm) {
     var cstr = this.cstr = vm.constructor;
     this.vm = vm;
@@ -43,12 +48,11 @@ module.exports = {
       });
 
       //删除元素
-      //TODO 删除引用父级的 watchers
       arrDiff(curArr, items, trackId).forEach(function(item) {
         var pos = indexByTrackId(item, curArr, trackId)
         curArr.splice(pos, 1)
         parentNode.removeChild(list[pos].$el)
-        list[pos].__destroy()
+        list[pos].$destroy()
         list.splice(pos, 1)
       })
 
@@ -114,11 +118,6 @@ module.exports = {
           },
           $remove: function(i) {
             items.splice(i, 1);
-            items.__dirs__.forEach(function(dir) {
-              dir.listPath.forEach(function (path) {
-                dir.vm.$update(path)
-              });
-            })
           }
         });
         arrayMethods.forEach(function(method) {

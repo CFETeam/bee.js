@@ -2,6 +2,7 @@ require("es6-promise").polyfill();
 require('./test.constructor.js');
 require('./test.defaults.js');
 require('./test.filter.js');
+require('./test.lifecycles.js');
 require('./test.mixins.js');
 require('./test.parse.js');
 require('./test.repeat.js');

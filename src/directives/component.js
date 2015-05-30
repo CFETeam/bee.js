@@ -16,7 +16,7 @@ module.exports = {
   priority: -10
 , watch: false
 , unLink: function() {
-    this.component && this.component.__destroy()
+    this.component && this.component.$destroy()
   }
 , link: function(vm) {
     var el = this.el;
