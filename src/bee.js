@@ -31,7 +31,7 @@ function setPrefix(newPrefix) {
 }
 
 var mergeProps = {
-  $data: 1, $filters: 1, $watchers: 1
+  $data: 1, $watchers: 1
 };
 
 var lifeCycles = {
@@ -59,7 +59,6 @@ function Bee(tpl, props) {
   var defaults = {
     //$ 开头的是共有属性/方法
     $data: {}
-  , $filters: {}
   , $watchers: {}
   , $mixins: []
 
@@ -132,15 +131,17 @@ function Bee(tpl, props) {
 
 //静态属性
 extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
-  //每个构造函数都有自己的 directives 和 components 引用
-  sub.directives = create(this.directives);
-  sub.components = create(this.components);
+  //每个构造函数都有自己的 directives ,components, filters 引用
+  sub.directives = extend(create(this.directives), sub.directives);
+  sub.components = extend(create(this.components), sub.components);
+  sub.filters = extend(create(this.filters), sub.filters);
 }), utils: utils}, Dir, Com, {
   setPrefix: setPrefix
 , prefix: ''
 , doc: doc
 , directives: {}
 , components: {}
+, filters: {}
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
     var Comp = this.getComponent(el.tagName.toLowerCase());

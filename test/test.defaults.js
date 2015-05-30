@@ -6,7 +6,6 @@ test(function(t) {
     var a1 = 1, c1 = 3;
     var Ant = Bee.extend({
       $data: {a: a1, c: c1},
-      $filters: {f : function() {}},
       $tpl: '<span>abc</span>'
     });
 

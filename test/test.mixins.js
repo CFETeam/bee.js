@@ -39,25 +39,25 @@ test(function(t) {
   t.test('life cycle method mixins', function(t){
     t.plan(4)
     var obj1 = {
-      $init: function() {
+      $afterInit: function() {
         t.ok(true, 'minx1 called')
       }
     };
     var obj2 = {
-      $init: function() {
+      $afterInit: function() {
         t.ok(true, 'minx2 called')
       }
     }
 
     var Ant = Bee.extend({
       $mixins: [obj1, obj2],
-      $init: function() {
+      $afterInit: function() {
         t.ok(true, 'defaults called')
       }
     })
 
     new Ant({
-      $init: function() {
+      $afterInit: function() {
         t.ok(true, 'defined $init called')
       }
     })

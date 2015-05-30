@@ -175,7 +175,7 @@ function reset(scope, that) {
   summaryCall = true;
   if(scope) {
     summaryCall = false;
-    context = {locals: scope || {}, filters: scope.$filters || {}};
+    context = {locals: scope || {}, filters: scope.constructor.filters || {}};
   }else{
     context = {filters: {}, locals: {}};
   }

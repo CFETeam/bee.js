@@ -14,6 +14,7 @@ function testConstructor(Bee, name) {
       t.equal(typeof Bee.extend, 'function');
       t.equal(typeof Bee.directives, 'object');
       t.equal(typeof Bee.components, 'object');
+      t.equal(typeof Bee.filters, 'object');
       t.end()
     })
 
@@ -36,7 +37,6 @@ test(function(t) {
     t.equal(bee.$tpl, '<div></div>')
     t.equal(bee.$el.outerHTML.toLowerCase().trim(), bee.$tpl)
     t.equal(Object.keys(bee.$data).length, 0)
-    t.equal(Object.keys(bee.$filters).length, 0)
     t.equal(bee.$parent, null)
     t.equal(bee.$root, bee)
 
@@ -60,16 +60,24 @@ test(function(t) {
   })
 
   t.test('Bee.extend', function(t) {
-    var proto = {pro: Math.random()}, staticProp = {sta: Math.random()};
+    var proto = {pro: Math.random()}, staticProp = {sta: Math.random(), filters: {b: function(){}}};
     var Ant = Bee.extend(proto, staticProp)
     t.equal(Ant.sta, staticProp.sta);
     t.equal(Ant.prototype.pro, proto.pro);
     t.equal(Ant.extend, Bee.extend);
     t.equal(Ant.tag, Bee.tag);
     t.equal(Ant.directive, Bee.directive);
+    t.ok(Ant.filters.b)
 
     t.notOk(Bee.sta)
     t.notOk(Bee.prototype.pro)
+    t.notOk(Bee.filters.b)
+
+    var Cicada = Ant.extend({}, {filters: {c: function() {}}})
+    t.ok(Cicada.filters.c)
+    t.equal(Cicada.filters.b, Ant.filters.b)
+
+    t.notOk(Ant.filters.c)
 
     testConstructor(Ant, 'Ant');
 

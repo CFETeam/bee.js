@@ -9,8 +9,9 @@ if(typeof window === 'undefined') {
 
 test('filter', function(t) {
   var Ant = Bee.extend({
-    $tpl: '<div><span b-content="filterTest"></span></div>',
-    $filters: {
+    $tpl: '<div><span b-content="filterTest"></span></div>'
+  }, {
+    filters: {
       filter1: function(arg) {
         return (arg  + 1) || '';
       },
@@ -68,12 +69,8 @@ test('filter', function(t) {
   })
 
   t.test('promise in filter', function(t) {
-
-    bee = new Ant({
-      $data: {
-        filterTest: '{{arg | filter1}}'
-      },
-      $filters: {
+    var Cicada = Ant.extend({}, {
+      filters: {
         filter1: function(arg) {
           return new Promise(function(resolve) {
             resolve( (arg  + 1) || '')
@@ -84,6 +81,11 @@ test('filter', function(t) {
             resolve( arg + arg1 + arg2 )
           })
         }
+      }
+    })
+    bee = new Cicada({
+      $data: {
+        filterTest: '{{arg | filter1}}'
       }
     })
 
