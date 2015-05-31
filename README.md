@@ -1,6 +1,6 @@
 # Bee.js
 
-轻量级 MVVM 库
+轻量级 MVVM 库. [![npm version](https://badge.fury.io/js/beejs.svg)](http://badge.fury.io/js/beejs)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/ckr189.svg)](https://travis-ci.org/CFETeam/bee.js)
 
