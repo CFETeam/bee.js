@@ -62,5 +62,4 @@ function setAttr(el, attr, val){
 
 function removeAttr(el, attr) {
   el.removeAttribute(attr);
-  delete el[attr];
 }
