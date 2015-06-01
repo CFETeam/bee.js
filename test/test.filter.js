@@ -96,7 +96,7 @@ test('filter', function(t) {
       setTimeout(function() {
         t.equal($(bee.$el).text(), '2')
         t.end()
-      }, 10)
+      }, 100)
     })
 
     t.test('multi arg async filter', function(t){
