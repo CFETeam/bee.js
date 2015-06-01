@@ -158,14 +158,14 @@ function arrDiff(arr1, arr2, trackId) {
 
 function indexByTrackId(item, list, trackId, startIndex) {
   startIndex = startIndex || 0;
-  if(trackId){
+  var index = list.indexOf(item, startIndex);
+  if(index === -1 && trackId){
     for(var i = startIndex, item1; item1 = list[i]; i++) {
       if(item[trackId] ===  item1[trackId] && !utils.isUndefined(item[trackId])){
-        return i;
+        index = i;
+        break;
       }
     }
-    return -1;
-  }else{
-    return list.indexOf(item, startIndex)
   }
+  return index;
 }
