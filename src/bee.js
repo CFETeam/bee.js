@@ -78,7 +78,7 @@ function Bee(tpl, props) {
   , _isRendered: false
   };
 
-  var el;
+  var elInfo;
 
   var mixins = ([defaults].concat(this.$mixins || [])).concat([props])
 
@@ -103,15 +103,15 @@ function Bee(tpl, props) {
   isObject(this.$data) && extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
-  el = domUtils.tplParse(tpl, this.$target, this.$content);
+  elInfo = domUtils.tplParse(tpl, this.$target, this.$content);
 
   if(this.$el){
-    this.$el.appendChild(el.el);
+    this.$el.appendChild(elInfo.el);
   }else{
-    this.$el = el.el;
+    this.$el = elInfo.el;
   }
-  this.$tpl = el.tpl;
-  this.$content = el.content;
+  this.$tpl = elInfo.tpl;
+  this.$content = elInfo.content;
 
   this.$beforeInit()
   this.$el.bee = this;
