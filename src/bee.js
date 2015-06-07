@@ -193,7 +193,6 @@ extend(Bee.prototype, lifeCycles, {
 , $set: function(key, val) {
     var add, keys, hasKey = false;
     var reformed, reKey, reVm = this;
-    if(isUndefined(key)){ return this; }
 
     if(arguments.length === 1){
       if(isObject(key)) {
@@ -225,31 +224,40 @@ extend(Bee.prototype, lifeCycles, {
    * 数据替换
    */
 , $replace: function (key, val) {
-    var keys, hasKey = false;
+    var keys, last, hasKey = false;
     var reformed, reKey, reVm = this;
 
-    if(isUndefined(key)){ return this; }
-
     if(arguments.length === 1){
-      if(isObject(key)) {
-        Object.keys(this.$data).forEach(function(key) {
-          delete this[key];
-        }.bind(this))
-        extend(this, key);
-      }
-      this.$data = key;
+      val = key;
+      reKey = '$data';
+      keys = [reKey];
     }else{
       hasKey = true;
       reformed = scope.reformScope(this, key)
       reKey = reformed.path;
       reVm = reformed.vm;
       keys = parseKeyPath(reKey);
-      if(keys[0] !== '$data') {
-        deepSet(reKey, val, reVm.$data);
-      }
-      deepSet(reKey, val, reVm);
     }
-    hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
+
+    last = reVm.$get(reKey);
+
+    if (keys[0] === '$data') {
+      if(reKey === '$data') {
+        if(isObject(this.$data)) {
+          Object.keys(this.$data).forEach(function (k) {
+            delete this[k];
+          }.bind(this))
+        }
+        extend(reVm, val);
+      }else {
+        deepSet(keys.shift().join('.'), val, reVm)
+      }
+    } else {
+      deepSet(reKey, val, reVm.$data);
+    }
+    deepSet(reKey, val, reVm)
+
+    hasKey ? update.call(reVm, reKey, extend({}, last, val)) : update.call(reVm, extend({}, last, val));
   }
   /**
    * 手动更新某部分数据
@@ -259,7 +267,7 @@ extend(Bee.prototype, lifeCycles, {
 , $update: function (keyPath, isBubble) {
     isBubble = isBubble !== false;
 
-    var keys = parseKeyPath(keyPath.replace(/^\$data\./, '')), key, attrs;
+    var keys = parseKeyPath(keyPath.replace(/^\$data\./, '')), key;
     var watchers;
 
     while(key = keys.join('.')) {
@@ -280,15 +288,12 @@ extend(Bee.prototype, lifeCycles, {
       }
     }
 
-    attrs = this.$get(keyPath);
-
     //同时更新子路径
-    if(isObject(attrs) && !utils.isArray(attrs)) {
-      Object.keys(attrs).forEach(function(attr) {
-        this.$update(keyPath + '.' + attr, false);
-      }.bind(this))
-    }
+    Watcher.getWatchers(this, keyPath).forEach(function(watcher) {
+      watcher.update();
+    }.bind(this))
 
+    //数组冒泡的情况
     if(isBubble) {
       if(this.$parent) {
         //同步更新父 vm 对应部分
@@ -296,11 +301,6 @@ extend(Bee.prototype, lifeCycles, {
           this.$parent.$update(path);
         }.bind(this))
       }
-    }
-
-    //更新数组长度
-    if(utils.isArray(attrs)) {
-      this.$update(keyPath + '.length', false);
     }
   }
 , $watch: function (expression, callback) {

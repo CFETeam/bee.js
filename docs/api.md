@@ -246,8 +246,14 @@ HTML 属性指令.
 ### b-style b-src
 `b-style`, 用于设定样式. `b-src` 用于图片 `src`
 
+IE 浏览器会校验 `style` 属性值, 所以直接使用 `style='{{"color: white"}}'` 这种写法在 IE 中没有效果. 为了兼容 IE 浏览器,
+ 可以使用 `b-style` 指令, 指令值可以为字符串或对象.
+
+直接使用 `src='{{src}}'` 这种写法有可能会想服务器发送一条无效的 `404` 请求, 为了避免这种情况应该使用 `b-src` 指令代替.
+
 ```html
 <div b-style="{color: color, width: 50}"></div>
+<div b-style="'color: ' + color + '; width: 50px;'"></div>
 ```
 
 ### b-text b-html b-content

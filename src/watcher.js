@@ -66,6 +66,19 @@ function addWatcher(dir) {
 Watcher.unwatch = unwatch;
 Watcher.addWatcher = addWatcher;
 
+//获取某 keyPath 子路径的 watchers
+Watcher.getWatchers = function getWatchers(vm, keyPath) {
+  var _watchers = vm._watchers, watchers = [];
+  var point;
+  for(var key in _watchers) {
+    point = key.charAt(keyPath.length);
+    if(key.indexOf(keyPath) === 0 && (point === '.')) {
+      watchers = watchers.concat(_watchers[key])
+    }
+  }
+  return watchers
+}
+
 function watcherUpdate (val) {
   try{
     this.dir.update(val, this.val);
