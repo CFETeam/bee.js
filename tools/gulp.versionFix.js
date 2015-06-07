@@ -1,6 +1,7 @@
 var through = require('through2')
 var fs = require('fs')
-var pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+var pt = require('path')
+var pkg = JSON.parse(fs.readFileSync(pt.join(__filename, '../../', 'package.json'), 'utf8'))
 
 module.exports = function (file) {
 
