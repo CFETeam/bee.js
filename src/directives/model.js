@@ -81,7 +81,7 @@ module.exports = {
             for(var i = 0, l = el.options.length; i < l; i++){
               if(el.options[i].selected){ vals.push(el.options[i].value) }
             }
-            ant.$set(keyPath, vals);
+            ant.$replace(keyPath, vals);
           };
           callback = function(vals){
             if(vals && vals.length){
