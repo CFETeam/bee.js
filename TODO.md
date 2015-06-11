@@ -1,3 +1,4 @@
+- [ ] component 的 reference
 - [ ] transition
 - [ ] 多元素 repeat
 - [ ] 文档, 文档, 测试, 测试

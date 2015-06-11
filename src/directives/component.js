@@ -43,9 +43,8 @@ module.exports = {
         var curPath, comPath;
 
         curPath = dir.path;
-        if(dir.type === 'with' || dir.dirName === 'attr') {
-          //这里 attr 及 with 指令效果一样
-          comPath = '$data'
+        if(dir.type === 'with') {
+          //comPath = '$data'
           utils.extend($data, vm.$get(curPath))
         }else{
           comPath = dir.dirName;
@@ -56,7 +55,7 @@ module.exports = {
         vm.$watch(curPath, function (val) {
           if(comp){
             val = dir.textMap ? dir.textMap.join('') : val;
-            comp.$set(comPath, val);
+            comPath ? comp.$set(comPath, val) : comp.$set(val);
           }
         })
       });

@@ -303,11 +303,11 @@ extend(Bee.prototype, lifeCycles, {
       }
     }
   }
-, $watch: function (expression, callback) {
+, $watch: function (expression, callback, initUpdate) {
     if(callback) {
       var update = callback.bind(this);
       update._originFn = callback;
-      return Watcher.addWatcher.call(this, new Dir('$watch', {path: expression, update: update}))
+      return Watcher.addWatcher.call(this, new Dir('$watch', {path: expression, update: update, initUpdate: initUpdate}))
     }
   }
 , $unwatch: function (expression, callback) {
