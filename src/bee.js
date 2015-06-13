@@ -146,6 +146,9 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
     json: function(obj, replacer, space) {
       return JSON.stringify(obj, replacer, space) }
   }
+, filter: function(filterName, filter) {
+    this.filters[filterName] = filter;
+  }
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
     var Comp = this.getComponent(el.tagName.toLowerCase());
@@ -303,16 +306,17 @@ extend(Bee.prototype, lifeCycles, {
       }
     }
   }
-, $watch: function (expression, callback, initUpdate) {
+, $watch: function (expression, callback, immediate) {
     if(callback) {
       var update = callback.bind(this);
       update._originFn = callback;
-      return Watcher.addWatcher.call(this, new Dir('$watch', {path: expression, update: update, initUpdate: initUpdate}))
+      return Watcher.addWatcher.call(this, new Dir('$watch', {path: expression, update: update, immediate : !!immediate}))
     }
   }
 , $unwatch: function (expression, callback) {
     Watcher.unwatch(this, expression, callback)
   }
+  //销毁当前实例
 , $destroy: function(removeEl) {
     this.$beforeDestroy()
     this.__links.forEach(function(wacher) {

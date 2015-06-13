@@ -169,6 +169,24 @@ test('filter', function(t) {
 
     })
 
+    t.test('Bee.filter', function(t) {
+      t.plan(2)
+      var key = Math.random()
+      var data = {name: "Bee"}
+      var testfilter = function(name) {
+        t.equal(name, data.name)
+        return key;
+      }
+
+      Bee.filter('test', testfilter)
+
+      var bee = new Bee('<span>{{ name | test }}</span>', {
+        $data: data
+      })
+
+      t.equal($(bee.$el).text(), key + '')
+    })
+
   })
 
 })

@@ -33,7 +33,7 @@ function Watcher(vm, dir) {
     this.watchers.push( watchers );
   }
 
-  dir.initUpdate !== false && this.update();
+  dir.immediate !== false && this.update();
 }
 
 //根据表达式移除当前 vm 中的 watcher

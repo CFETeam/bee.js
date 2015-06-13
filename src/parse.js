@@ -393,7 +393,7 @@ var make_parse = function (vars) {
 	//Operator Precedence:
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
 
-  infix(',', 1);
+  //infix(',', 1);
 	infix("?", 20, function (left) {
 		this.first = left;
 		this.second = expression(0);

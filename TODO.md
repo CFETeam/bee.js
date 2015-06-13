@@ -1,4 +1,6 @@
 - [ ] component 的 reference
+- [ ] 移除反模式的原型属性默认值特性 `$data, $watchers`
+- [ ] addon
 - [ ] transition
 - [ ] 多元素 repeat
 - [ ] 文档, 文档, 测试, 测试
