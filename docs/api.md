@@ -61,9 +61,6 @@ bee.$el === el;    //true
 
 当有定义 `$target` 时, `$content` 会被 `$target` 中的内容替代.
 
-#### $watchers [Object]
-用来初始快速调用 `$watch` 方法.
-
 #### $mixins [Array]
 除了构造函数继承外, `$mixins`  是另外一种继承方式. 一些可复用的方法集合可通过 `$mixins` 并入 Bee 实例中.
 
@@ -71,8 +68,8 @@ bee.$el === el;    //true
 一般来说, `props` 传入的参数都将作为实例属性出现, 并且保持同一引用. 但是有几个特例:
 
 - `$tpl` 可以通过 props 传入 DOM 元素或字符串模板, 但其实例属性始终是字符串
-- `$data, $watchers` 作为实例属性会和传入值保持同一引用, 但是会并入默认项
 - `$content` 接受字符串 / DOM元素 / nodeList 参数, 但是会被转成 "documentFragment"
+- 生命周期方法. 通过 `props` 传入的生命周期方法不会通构造函数及 `mixins` 中定义的互相覆盖, 它们全部有效.
 
 构造函数方法
 ---
@@ -111,6 +108,10 @@ var Ant = Bee.extend({
 ### Bee.mount
 
 加载某个组件. 如果 `Bee.mount` 一个普通元素(非关联的自定义标签), 则效果与 `new Bee` 一样.
+
+### Bee.filter
+
+创建一个自定义 `filter`
 
 
 实例方法

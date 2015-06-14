@@ -52,7 +52,7 @@ function extend(/* deep, target, object... */) {
       // Extend the base object
       for ( name in options ) {
         //android 2.3 browser can enum the prototype of constructor...
-        if(options.hasOwnProperty(name) && name !== 'prototype'){
+        if(name !== 'prototype'){
           src = target[ name ];
           copy = options[ name ];
 

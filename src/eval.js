@@ -70,7 +70,7 @@ var operators = {
       if(l['catch']) {
         return l['catch'](r.bind(context.locals))
       }else{
-        console.error('catchby expect a promise')
+        summaryCall || console.error('catchby expect a promise')
         return l;
       }
     }

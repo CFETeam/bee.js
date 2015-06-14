@@ -498,7 +498,7 @@ var make_parse = function (vars) {
 			this.third = a = [];
 			while (true) {
 				advance(':');
-				a.push(expression(0));
+				a.push(expression(10));
 				if (token.id !== ":") {
 					break;
 				}

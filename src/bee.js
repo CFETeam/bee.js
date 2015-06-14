@@ -15,7 +15,6 @@ var doc = require('./env.js').document
 
 
 var isObject = utils.isObject
-  , isUndefined = utils.isUndefined
   , isPlainObject = utils.isPlainObject
   , parseKeyPath = utils.parseKeyPath
   , deepSet = utils.deepSet
@@ -30,6 +29,7 @@ function setPrefix(newPrefix) {
   }
 }
 
+//TODO 清理这个
 var mergeProps = {
   $data: 1, $watchers: 1
 };
@@ -141,6 +141,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
 , doc: doc
 , directives: {}
 , components: {}
+, defaults: {}
 , filters: {
     //build in filter
     json: function(obj, replacer, space) {

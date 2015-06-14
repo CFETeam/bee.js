@@ -68,6 +68,26 @@ test('filter', function(t) {
     t.end()
   })
 
+  t.test('multi sync filter 2', function(t){
+    Ant.filter('filter3', function(arg) {
+      return arg * 2
+    })
+    bee.$set({'filterTest': '{{ arg | filter2 : arg1 : arg2 | filter3}}', arg:1, arg1: 2, arg2: 4})
+
+    t.equal($(bee.$el).text(), '14')
+
+    bee.$set('arg', 2)
+    t.equal($(bee.$el).text(), '16')
+
+    bee.$set('arg1', 3)
+    t.equal($(bee.$el).text(), '18')
+
+    bee.$set('arg2', 5)
+    t.equal($(bee.$el).text(), '20')
+
+    t.end()
+  })
+
   t.test('promise in filter', function(t) {
     var Cicada = Ant.extend({}, {
       filters: {
