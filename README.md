@@ -18,6 +18,12 @@ Demo
 ---
 示例请直接在 examples 目录下查看
 
+使用文档
+---
+
+- [教程](http://justan.github.io/beejs-tutor)
+- [API](./docs/api.md)
+
 给开发者
 ---
 ### 依赖安装:
