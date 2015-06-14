@@ -109,5 +109,6 @@ dirs.style = require('./style.js');
 dirs.on = require('./on.js');
 dirs.component = require('./component.js');
 dirs.content = require('./content.js')
+dirs.ref = require('./ref.js')
 
 module.exports = dirs;

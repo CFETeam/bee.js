@@ -60,6 +60,7 @@ function Bee(tpl, props) {
     //$ 开头的是共有属性/方法
     $data: {}
   , $watchers: {}
+  , $refs: {}
   , $mixins: []
 
   , $el: this.$el || null

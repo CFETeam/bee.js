@@ -144,7 +144,7 @@ function setBinding(dir) {
     var el = dir.el;
     if(utils.isFunction(dir.replace)) {
       dir.node = dir.replace();
-    }else if(dir.replace){
+    }else{
       dir.node = doc.createTextNode('');
     }
 
