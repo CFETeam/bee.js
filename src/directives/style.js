@@ -1,7 +1,7 @@
 "use strict";
 
 //样式指令
-
+var utils = require('../utils')
 var camelReg = /([A-Z])/g;
 
 //默认单位为 px 的属性
@@ -24,15 +24,17 @@ module.exports = {
       for (var key in styles) {
         val = styles[key];
 
-        //marginTop -> margin-top
+        //marginTop -> margin-top. 驼峰转连接符式
         dashKey = key.replace(camelReg, function (upperChar) {
           return '-' + upperChar.toLowerCase();
         });
 
-        if (!isNaN(val) && pixelAttrs.indexOf(dashKey) >= 0) {
+        if (pixelAttrs.indexOf(dashKey) >= 0 && utils.isNumeric(val)) {
           val += 'px';
         }
-        styleStr += dashKey + ': ' + val + '; ';
+        if(!utils.isUndefined(val)){
+          styleStr += dashKey + ': ' + val + '; ';
+        }
       }
     }
     if(el.style.setAttribute){

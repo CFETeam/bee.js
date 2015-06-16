@@ -135,7 +135,9 @@ var utils = {
       return Array.isArray(val);
     }
   }
-
+, isNumeric: function(val) {
+    return !utils.isArray(val) && val - parseFloat(val) + 1 >= 0;
+  }
   //简单对象的简易判断
 , isPlainObject: function (o){
     if (!o || ({}).toString.call(o) !== '[object Object]' || o.nodeType || o === o.window) {
