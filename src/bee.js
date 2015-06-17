@@ -201,8 +201,8 @@ extend(Bee.prototype, lifeCycles, {
 
     if(arguments.length === 1){
       if(isObject(key)) {
-        extend(true, this.$data, key);
-        extend(true, this, key);
+        extend(this.$data, key);
+        extend(this, key);
       }else{
         this.$data = key;
       }
