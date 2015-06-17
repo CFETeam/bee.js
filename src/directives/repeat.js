@@ -12,7 +12,7 @@ module.exports = {
 , anchor: true
 , terminal: true
 , unLink: function(){
-    this.list.forEach(function(vm){
+    this.vmList.forEach(function(vm){
       vm.$destroy()
     })
   }
@@ -31,14 +31,14 @@ module.exports = {
     this.cstr = cstr.extend({}, this.cstr)
 
     this.curArr = [];
-    this.list = [];//子 VM list
+    this.vmList = [];//子 VM list
 
     this.el.parentNode.removeChild(this.el);
   }
 , update: function(items) {
     var curArr = this.curArr;
     var parentNode = this.anchors.end.parentNode;
-    var that = this, list = this.list;
+    var that = this, list = this.vmList;
     var trackId = this.trackId;
 
     if(utils.isArray(items)) {
@@ -97,7 +97,7 @@ module.exports = {
       }.bind(this))
 
       //更新索引
-      this.list.forEach(function(vm, i) {
+      list.forEach(function(vm, i) {
         vm.$index = i
         vm.$el.$index = i
         vm.$update('$index', false)

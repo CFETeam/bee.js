@@ -581,16 +581,22 @@ var make_parse = function (vars) {
 		return this;
 	});
 
+  var cache = {};
 	//_source: 表达式代码字符串
 	//_context: 表达式的语句环境
 	return function (_source, _context) {
-    source = _source;
-		tokens = tokenize(_source, '=<>!+-*&|/%^', '=<>&|');
-		token_nr = 0;
-		context = _context;
-		advance();
-		var s = expression(0);
-		advance("(end)");
+    var s = cache[_source]
+    if(!s || s._context !== _context) {
+      source = _source;
+      tokens = tokenize(_source, '=<>!+-*&|/%^', '=<>&|');
+      token_nr = 0;
+      context = _context;
+      advance();
+      var s = expression(0);
+      advance("(end)");
+      cache[_source] = s;
+      s._context = _context;
+    }
 		return s;
 	};
 };

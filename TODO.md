@@ -1,6 +1,7 @@
-- [ ] component 的 reference
+- [x] component 的 reference
+- [x] addons
+- [ ] 同步数组多实例时, 内部的更新的同步问题
 - [ ] 移除反模式的原型属性默认值特性 `$data, $watchers`
-- [ ] addon
 - [ ] transition
 - [ ] 多元素 repeat
 - [ ] 文档, 文档, 测试, 测试
