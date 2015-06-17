@@ -103,39 +103,42 @@ module.exports = {
         vm.$update('$index', false)
       });
 
-      if(!items.__dirs__){
-        //数组操作方法
-        utils.extend(items, {
-          $set: function(i, item) {
-            items.__dirs__.forEach(function(dir) {
-              dir.list[i].$set(item);
-            })
-          },
-          $replace: function(i, item) {
-            items.__dirs__.forEach(function(dir) {
-              dir.list[i].$replace(item)
-            })
-          },
-          $remove: function(i) {
-            items.splice(i, 1);
-          }
-        });
-        arrayMethods.forEach(function(method) {
-          items[method] = utils.afterFn(items[method], function() {
-            items.__dirs__.forEach(function(dir) {
-              dir.listPath.forEach(function(path) {
-                dir.vm.$update(path)
+      this.summary.locals.forEach(function(localKey) {
+        var local = that.vm.$get(localKey);
+        var dirs = local.__dirs__;
+        if(utils.isArray(local)) {
+          if(!dirs){
+            //数组操作方法
+            utils.extend(local, {
+              $set: function(i, item) {
+                local.splice(i, 1, utils.isObject(item) ? utils.extend({}, local[i], item) : item)
+              },
+              $replace: function(i, item) {
+                local.splice(i, 1, item)
+              },
+              $remove: function(i) {
+                local.splice(i, 1);
+              }
+            });
+            arrayMethods.forEach(function(method) {
+              local[method] = utils.afterFn(local[method], function() {
+                dirs.forEach(function(dir) {
+                  dir.listPath.forEach(function(path) {
+                    dir.vm.$update(path)
+                  })
+                })
               })
-            })
-          })
-        });
-        items.__dirs__  = [];
-      }
-      //一个数组多处使用
-      //TODO 移除时的情况
-      if(items.__dirs__.indexOf(that) === -1) {
-        items.__dirs__.push(that)
-      }
+            });
+            dirs = local.__dirs__  = [];
+          }
+          //一个数组多处使用
+          //TODO 移除时的情况
+          if(dirs.indexOf(that) === -1) {
+            dirs.push(that)
+          }
+        }
+      })
+
     }else{
       //TODO 普通对象的遍历
     }
