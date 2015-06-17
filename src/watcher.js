@@ -6,9 +6,11 @@ var evaluate = require('./eval.js')
   , reformScope = require('./scope').reformScope
   ;
 
+var summaryCache = {};
+
 function Watcher(vm, dir) {
   var reformed, path, curVm = vm, watchers = [];
-
+  var summary = summaryCache[dir.path]
   this.state = 1;
   this.dir = dir;
   this.vm = vm;
@@ -17,7 +19,13 @@ function Watcher(vm, dir) {
   this.val = NaN;
 
   dir.parse();
-  dir.summary = evaluate.summary(dir.ast);
+
+  if(!summary || summary._type !== dir.type){
+    summary = evaluate.summary(dir.ast);
+    summary._type = dir.type;
+    summaryCache[dir.path] = summary;
+  }
+  dir.summary = summary
 
   for(var i = 0, l = dir.summary.paths.length; i < l; i++) {
     reformed = reformScope(vm, dir.summary.paths[i])

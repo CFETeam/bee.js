@@ -29,6 +29,8 @@ function Directive(key, opts) {
   utils.extend(this, opts);
 }
 
+var astCache = {};
+
 Directive.prototype = {
   priority: 0//权重
 , link: utils.noop//初始化方法
@@ -58,12 +60,19 @@ Directive.prototype = {
   }
   //解析表达式
 , parse: function() {
-    try{
-      this.ast = parse(this.path, this.type);
-    }catch(e) {
-      this.ast = {};
-      e.message = 'SyntaxError in "' + this.path + '" | ' + e.message;
-      console.error(e);
+    var cache = astCache[this.path]
+    if(cache && cache._type === this.type){
+      this.ast = cache
+    }else {
+      try {
+        this.ast = parse(this.path, this.type);
+        this.ast._type = this.type;
+        astCache[this.path] = this.ast;
+      } catch (e) {
+        this.ast = {};
+        e.message = 'SyntaxError in "' + this.path + '" | ' + e.message;
+        console.error(e);
+      }
     }
   }
   //表达式求值
