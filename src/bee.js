@@ -81,7 +81,7 @@ function Bee(tpl, props) {
 
   var elInfo;
 
-  var mixins = ([defaults].concat(this.$mixins || [])).concat([props])
+  var mixins = [defaults].concat(this.$mixins).concat(props.$mixins).concat([props])
 
   mixins.forEach(function(mixin) {
     var prop;

@@ -2,6 +2,7 @@
 
 var doc = require('../env.js').document
   , utils = require('../utils.js')
+  , scope = require('../scope')
   ;
 
 //这些数组操作方法被重写成自动触发更新
@@ -43,7 +44,7 @@ module.exports = {
 
     if(utils.isArray(items)) {
       // 在 repeat 指令表达式中相关变量
-      this.listPath = this.summary.locals.filter(function(path) {
+      this.listPath = this.summary.paths.filter(function(path) {
         return !utils.isFunction(that.vm.$get(path))
       });
 
@@ -103,7 +104,7 @@ module.exports = {
         vm.$update('$index', false)
       });
 
-      this.summary.locals.forEach(function(localKey) {
+      this.summary.paths.forEach(function(localKey) {
         var local = that.vm.$get(localKey);
         var dirs = local.__dirs__;
         if(utils.isArray(local)) {
@@ -124,7 +125,8 @@ module.exports = {
               local[method] = utils.afterFn(local[method], function() {
                 dirs.forEach(function(dir) {
                   dir.listPath.forEach(function(path) {
-                    dir.vm.$update(path)
+                    var reformed = scope.reformScope(dir.vm, path)
+                    reformed.vm.$update(reformed.path)
                   })
                 })
               })
