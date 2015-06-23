@@ -8,14 +8,16 @@ if(typeof window === 'undefined') {
 }
 
 test('b-style', function(t) {
-  var $el = $('<div>');
+  var $el = $('<div style="font-size: 2em">');
   var el = $el[0]
-
   var dir = $.extend({ el: el }, style)
+
+  dir.link()
 
   dir.update('width: 12px')
   t.equal($el.css('width'), '12px', 'string style')
 
+  t.equal(el.style.fontSize, '2em', 'sss')
   t.test('object style', function(t){
     dir.update({
       marginTop: '14px'

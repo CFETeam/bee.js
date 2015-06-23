@@ -12,14 +12,19 @@ var pixelAttrs = [
   'top', 'left', 'right', 'bottom'
 ]
 
+//对于 IE6, IE7 浏览器需要使用 `el.style.getAttribute('cssText')` 与 `el.style.setAttribute('cssText')` 来读写 style 字符属性
+
 module.exports = {
+  link: function() {
+    this.initStyle = this.el.style.getAttribute ? this.el.style.getAttribute('cssText') : this.el.getAttribute('style')
+  },
   update: function(styles) {
     var el = this.el;
-    var styleStr = '';
+    var styleStr = this.initStyle ? this.initStyle.replace(/;?$/, ';') : '';
     var dashKey, val;
 
     if(typeof styles === 'string') {
-      styleStr = styles;
+      styleStr += styles;
     }else {
       for (var key in styles) {
         val = styles[key];

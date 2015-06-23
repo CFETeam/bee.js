@@ -108,3 +108,37 @@ test('repeat: 数组转换', function(t) {
 
   t.end()
 })
+
+test('repeat: 深层嵌套', function(t) {
+  var list = [
+    {name: '00-a', list: [{ name: '10-a' }, {name: '10-b'}]},
+    {name: '01-a', list: [{ name: '11-a' }, {name: '11-b'}]}
+  ];
+  var bee = new Bee('<ul data-lv0>' +
+    '<li b-repeat="item in list" data-index="{{$index}}" data-name="{{item.name}}">' +
+    '<ul data-lv1><li b-repeat="item1 in item.list" data-index="{{$index}}" data-parent-index="{{$parent.$index}}" data-name="{{item1.name}}" data-item-name="{{item.name}}"></li></ul>' +
+    '</li></ul>', {
+      $data: {
+        list: list
+      }
+    });
+
+  var $el = $(bee.$el);
+
+  t.equal($el.find('ul[data-lv1]:first>li').length, list[0].list.length)
+
+  list.forEach(function(item, i) {
+    t.equal($el.children('li').eq(i).attr('data-name'), item.name, 'item.name: ' + i)
+    item.list.push({
+      name: '1' + i + '-b'
+    })
+    item.list.forEach(function(item1, j) {
+      t.equal($el.find('ul[data-lv1]').eq(i).find('li').eq(j).attr('data-name'), item1.name, 'item1.name: ' + j)
+      t.equal($el.find('ul[data-lv1]').eq(i).find('li').eq(j).attr('data-item-name'), item.name, 'item.name: ' + j)
+      t.equal($el.find('ul[data-lv1]').eq(i).find('li').eq(j).attr('data-parent-index') * 1, i, '$parent.$index: ' + j)
+    })
+
+  })
+
+  t.end()
+})
