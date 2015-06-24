@@ -154,8 +154,10 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
     var Comp = this.getComponent(el.tagName.toLowerCase());
-    var instance
+    var instance;
+    props = props || {};
     if(Comp) {
+      props.$data = extend(domUtils.getAttrs(el), props.$data)
       instance = new Comp(extend({$target: el}, props))
     }else{
       instance = new Bee(el, props);

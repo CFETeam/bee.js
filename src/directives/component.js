@@ -1,16 +1,7 @@
 //component as directive
 var utils = require('../utils.js');
+var domUtils = require('../dom-utils')
 
-//html 中属性名不区分大小写, 并且会全部转成小写.
-//这里会将连字符写法转成驼峰式
-//attr-name --> attrName
-//attr--name --> attr-name
-var hyphensReg = /-(-?)([a-z])/ig;
-var hyphenToCamel = function(attrName) {
-  return attrName.replace(hyphensReg, function(s, dash, char) {
-    return dash ? dash + char : char.toUpperCase();
-  })
-}
 
 module.exports = {
   priority: -10
@@ -23,7 +14,6 @@ module.exports = {
     var cstr = vm.constructor;
     var comp, refName;
     var dirs = [], $data = {};
-    var attrs;
     var Comp = cstr.getComponent(this.path)
 
     if(Comp) {
@@ -63,16 +53,10 @@ module.exports = {
         })
       });
 
-      attrs = el.attributes;
-      //普通属性
-      for(var i = attrs.length - 1; i >= 0; i--) {
-        $data[hyphenToCamel(attrs[i].nodeName)] = attrs[i].value;
-      }
-
       this.component = comp = new Comp({
         $target: el,
         //$root: vm.$root,
-        $data: utils.extend({}, Comp.prototype.$data, $data)
+        $data: utils.extend({}, Comp.prototype.$data, $data, domUtils.getAttrs(el))
       });
 
       if(refName) {

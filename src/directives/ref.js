@@ -11,6 +11,8 @@ module.exports = {
 , link: function(vm) {
     this.vm = vm;
 
+    //在 `repeat` 元素上的 `ref` 会指向匿名 `viewmodel`
+    //组件的 `ref` 会在组件初始化时写入
     if(vm.__repeat){
       if(!vm.$index) {
         vm.$parent.$refs[this.path] = [];

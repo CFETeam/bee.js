@@ -4,6 +4,7 @@ require('./test.defaults.js');
 require('./test.filter.js');
 require('./test.lifecycles.js');
 require('./test.mixins.js');
+require('./test.mount.js');
 require('./test.parse.js');
 require('./test.repeat.js');
 require('./test.replace.js');
