@@ -4,6 +4,8 @@
 
 "use strict";
 
+var scope = require('./scope')
+
 var operators = {
   'unary': {
     '+': function(v) { return +v; }
@@ -53,6 +55,7 @@ var operators = {
       return l[r];
     }
 
+    //TODO 模板中方法的 this 应该指向 root
   , '(': function(l, r){ return l.apply(context.locals, r) }
     //filter. name|filter
   , '|': function(l, r){ return callFilter(l, r, []) }
@@ -70,7 +73,7 @@ var operators = {
     }
   , 'catchby': function(l, r) {
       if(l['catch']) {
-        return l['catch'](r.bind(context.locals))
+        return l['catch'](r.bind(root))
       }else{
         summaryCall || console.error('catchby expect a promise')
         return l;
@@ -90,10 +93,10 @@ var operators = {
 function callFilter(arg, filter, args) {
   if(arg && arg.then) {
     return arg.then(function(data) {
-      return filter.apply(context.locals, [data].concat(args))
+      return filter.apply(root, [data].concat(args))
     });
   }else{
-    return filter.apply(context.locals, [arg].concat(args))
+    return filter.apply(root, [arg].concat(args))
   }
 }
 
@@ -101,6 +104,7 @@ var argName = ['first', 'second', 'third']
   , context, summary, summaryCall
   , path
   , self
+  , root
   ;
 
 //遍历 ast
@@ -176,6 +180,7 @@ function getOperator(arity, value){
 function reset(scope, that) {
   summaryCall = true;
   if(scope) {
+    root = scope.$root;
     summaryCall = false;
     context = {locals: scope || {}, filters: scope.constructor.filters || {}};
   }else{
@@ -190,7 +195,10 @@ function reset(scope, that) {
 }
 
 //在作用域中查找值
-var getValue = require('./scope').getValue
+var getValue = function(key, vm) {
+  var reformed = scope.reformScope(vm, key)
+  return reformed.vm[reformed.path]
+}
 
 //表达式求值
 //tree: parser 生成的 ast

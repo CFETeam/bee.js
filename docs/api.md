@@ -168,6 +168,11 @@ bee.$set('key', 1);
 
 销毁当前实例. 销毁后该实例下所有的绑定都会失效.
 
+### $refs
+
+`$refs` 中包含了对 `b-ref` 指令关联元素或组件的引用.
+
+
 ### 生命周期方法
 
 - `$beforeInit` 该方法在解析模板之前调用. 可以在该方法中添加额外的数据之类的
@@ -213,7 +218,7 @@ Directive
 ```
 
 ### b-if
-条件指令.控制元素是否出现在 DOM 树种.
+条件指令.控制元素是否出现在 DOM 树中.
 
 ```html
 <div b-if="some.expression"> </div>
@@ -264,8 +269,11 @@ IE 浏览器会校验 `style` 属性值, 所以直接使用 `style='{{"color: wh
 - `b-html` 用于展示为转义 HTML 内容. 等同于三花括号表达式. 比如 `<span b-html="some.key"><span>` 等同于 `{{{some.key}}}`
 - `b-content` 可用于展示 DOM 内容.
 
+### b-ref
+对指定元素或组件建立一个快速的引用. `b-ref` 标记引用以供 `$refs` 使用.
+
+
 ### b-component
 用于组件化自定义标签. 等同于自定义标签. 如 `<span b-compoent="x-component">content</span>` 等同于 `<x-component>content</x-component>`
 
 需要注意的是, IE8 中的自定义标签 bug 极多, 在某些情况下甚至不能正常工作. 所以如果要兼容 IE8, 请尽量使用 `b-component`  代替自定义标签.
-

@@ -6,10 +6,10 @@ var utils = require('./utils');
 var reformScope = function (vm, path) {
   var paths = utils.parseKeyPath(path);
   var cur = vm, local = paths[0];
-  var scope = cur, ass, curVm = cur;
+  var ass, curVm = cur;
 
   while(cur) {
-    curVm = scope = cur;
+    curVm = cur;
     ass = cur._assignments;
     if( cur.__repeat) {
       if (ass && ass.length) {
@@ -35,16 +35,8 @@ var reformScope = function (vm, path) {
     cur = cur.$parent;
   }
 
-  return { scope: scope, vm:curVm, path: paths.join('.') }
+  return { vm: curVm, path: paths.join('.') }
 };
 
-//根据 vm 及 key 求值
-//求值的结果在 js 及模板中保持一致
-var getValue = function(key, scope) {
-  var reformed = reformScope(scope, key)
-
-  return reformed.scope[reformed.path]
-};
 
 exports.reformScope = reformScope;
-exports.getValue = getValue;

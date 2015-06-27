@@ -40,7 +40,7 @@ test('$set', function(t) {
   t.equal(bee.f, 8)
 
   t.test('$set in repeat', function(t) {
-    var tpl = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item.checked"/>{{test(name)}}</li></ul>'
+    var tpl = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item.checked"/>{{test(name, this)}}</li></ul>'
     var newName = 'bee'
     var bee = new Bee({
       $tpl: tpl,
@@ -48,21 +48,21 @@ test('$set', function(t) {
         name: newName,
         list: [{}]
       },
-      test: function(name)  {
+      test: function(name, repeatVm)  {
         t.equal(name, newName)
-        t.notEqual(this, bee)
-        var checked = !this.checked
-        this.$set('item.checked', checked)
-        t.equal(this.$get('item.checked'), checked)
-        t.equal(this.$data.checked, checked)
-        t.equal(this.checked, checked)
+        t.notEqual(repeatVm, bee)
+        var checked = !repeatVm.checked
+        repeatVm.$set('item.checked', checked)
+        t.equal(repeatVm.$get('item.checked'), checked, 'item.checked')
+        t.equal(repeatVm.$data.checked, checked)
+        t.equal(repeatVm.checked, checked)
       }
     });
 
     newName = 'ant'
     bee.$set('name', newName)
 
-    var tpl2 = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item"/>{{test(name)}}</li></ul>'
+    var tpl2 = '<ul><li b-repeat="item in list"><input type="checkbox" b-model="item"/>{{test(name, this)}}</li></ul>'
     newName = 'bee';
     var bee2 = new Bee({
       $tpl: tpl,
@@ -70,13 +70,13 @@ test('$set', function(t) {
         name: newName,
         list: [true, false]
       },
-      test: function(name) {
+      test: function(name, repeatVm) {
         t.equal(name, newName)
-        t.notEqual(this, bee2)
-        var checked = !this.$data
-        this.$set('item', checked)
-        t.equal(this.$get('item'), checked)
-        t.equal(this.$data, checked)
+        t.notEqual(repeatVm, bee2)
+        var checked = !repeatVm.$data
+        repeatVm.$set('item', checked)
+        t.equal(repeatVm.$get('item'), checked)
+        t.equal(repeatVm.$data, checked)
       }
     })
     newName = 'ant';
