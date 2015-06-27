@@ -21,7 +21,7 @@ function parseKeyPath(keyPath){
  * @param {Boolean} [deep=false] 是否深度合并
  * @param {Object} target 目标对象
  * @param {Object} [object...] 来源对象
- * @return {Object} 合并后的 target 对象
+ * @returns {Object} 合并后的 target 对象
  */
 function extend(/* deep, target, object... */) {
   var options

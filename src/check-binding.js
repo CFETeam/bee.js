@@ -16,7 +16,13 @@ var NODETYPE = {
 
 doc.createElement('template')
 
-//遍历 dom 树
+/**
+ * 遍历 dom 树
+ * @private
+ * @param {Element|NodeList} el
+ * @returns {Array} 节点下所有的绑定
+ */
+
 function walk(el) {
   var watchers = [], dirResult;
   if(el.nodeType === NODETYPE.FRAGMENT) {
@@ -152,7 +158,8 @@ function setBinding(dir) {
     dir.el.replaceChild(dir.node, el);
   }
 
-  dir.link(this);
+  dir.vm = this;
+  dir.link();
 
   watcher = Watcher.addWatcher.call(this, dir)
   return watcher ? [watcher] : []

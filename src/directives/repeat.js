@@ -17,9 +17,8 @@ module.exports = {
       vm.$destroy()
     })
   }
-, link: function(vm) {
-    var cstr = this.cstr = vm.constructor;
-    this.vm = vm;
+, link: function() {
+    var cstr = this.cstr = this.vm.constructor;
 
     while(cstr.__super__){
       cstr = cstr.__super__.constructor;

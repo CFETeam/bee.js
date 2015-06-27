@@ -6,6 +6,7 @@ require('./test.lifecycles.js');
 require('./test.mixins.js');
 require('./test.mount.js');
 require('./test.parse.js');
+require('./test.ref.js');
 require('./test.repeat.js');
 require('./test.replace.js');
 require('./test.set.js');

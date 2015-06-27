@@ -8,10 +8,6 @@ var utils = require('../utils')
 //TODO 移除时的情况
 module.exports = {
   watch: false
-, link: function(vm) {
-    //this.events = {};
-    this.vm = vm;
-  }
 , update: function(events) {
     var selector, eventType;
     for(var name in events) {
@@ -24,6 +20,7 @@ module.exports = {
 }
 
 //委托事件
+//要求 IE8+
 function callHandler (dir, selector, callback) {
   return function(e) {
     var cur = e.target || e.srcElement;

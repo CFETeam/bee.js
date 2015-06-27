@@ -180,7 +180,7 @@ extend(Bee.prototype, lifeCycles, {
   /**
    * 获取属性/方法--
    * @param {String} expression 路径/表达式
-   * @return {*}
+   * @returns {*}
    */
   $get: function(expression) {
     var dir = new Dir('$get', {

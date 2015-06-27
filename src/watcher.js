@@ -8,6 +8,11 @@ var evaluate = require('./eval.js')
 
 var summaryCache = {};
 
+/**
+ * 每个 directive 对应一个 watcher
+ * @param {Bee} vm  directive 所处的环境
+ * @param {Directive} dir
+ */
 function Watcher(vm, dir) {
   var reformed, path, curVm = vm, watchers = [];
   var summary = summaryCache[dir.path]
@@ -27,6 +32,7 @@ function Watcher(vm, dir) {
   }
   dir.summary = summary
 
+  //将该 watcher 与每一个属性建立引用关系
   for(var i = 0, l = dir.summary.paths.length; i < l; i++) {
     reformed = reformScope(vm, dir.summary.paths[i])
     curVm = reformed.vm
@@ -38,9 +44,11 @@ function Watcher(vm, dir) {
     }else{
       watchers = [this];
     }
+    //将每个 key 对应的 watchers 都塞进来
     this.watchers.push( watchers );
   }
 
+  //是否在初始化时更新
   dir.immediate !== false && this.update();
 }
 
@@ -59,7 +67,7 @@ function unwatch (vm, exp, callback) {
     for(var i = watchers.length - 1; i >= 0; i--){
       update = watchers[i].dir.update;
       if(update === callback || update._originFn === callback){
-        watchers.splice(i, 1);
+        watchers[i].unwatch()
       }
     }
   })
@@ -97,7 +105,7 @@ function watcherUpdate (val) {
 }
 
 utils.extend(Watcher.prototype, {
-  //表达式执行
+  //表达式执行并更新 view
   update: function() {
     var that = this
       , newVal
@@ -117,6 +125,7 @@ utils.extend(Watcher.prototype, {
       }
     }
   },
+  //移除
   unwatch: function() {
     this.watchers.forEach(function(watchers) {
       for(var i = watchers.length - 1; i >= 0; i--){

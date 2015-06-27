@@ -5,19 +5,30 @@ var utils = require('../utils.js')
   , events = require('../event-bind.js')
   ;
 
+var linkers = {
+  input: {
+    set: function() {
+
+    }
+  , get: function() {
+
+    }
+  }
+}
+
 module.exports = {
   teminal: true
 , priority: 1
-, link: function(vm) {
+, link: function() {
     var keyPath = this.path;
+    var vm = this.vm;
 
     if(!keyPath) { return false; }
 
     var el = this.el
       , ev = 'change'
       , attr, value = attr = 'value'
-      , ant = vm
-      , isSetDefaut = utils.isUndefined(ant.$get(keyPath))//界面的初始值不会覆盖 model 的初始值
+      , isSetDefaut = utils.isUndefined(vm.$get(keyPath))//界面的初始值不会覆盖 model 的初始值
       , crlf = /\r\n/g//IE 8 下 textarea 会自动将 \n 换行符换成 \r\n. 需要将其替换回来
       , callback = function(val) {
           var newVal = (val || '') + ''
@@ -30,7 +41,7 @@ module.exports = {
           var val = el[value];
 
           val.replace && (val = val.replace(crlf, '\n'));
-          ant.$set(keyPath, val);
+          vm.$set(keyPath, val);
         }
       , callHandler = function(e) {
           if(e && e.propertyName && e.propertyName !== attr) {
@@ -62,7 +73,7 @@ module.exports = {
             isSetDefaut = el.checked;
           break;
           default:
-            if(!ant.$lazy){
+            if(!vm.$lazy){
               if('oninput' in el){
                 ev += ' input';
               }
@@ -81,7 +92,7 @@ module.exports = {
             for(var i = 0, l = el.options.length; i < l; i++){
               if(el.options[i].selected){ vals.push(el.options[i].value) }
             }
-            ant.$replace(keyPath, vals);
+            vm.$replace(keyPath, vals);
           };
           callback = function(vals){
             if(vals && vals.length){

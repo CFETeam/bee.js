@@ -7,8 +7,7 @@ var domUtils = require('../dom-utils')
 module.exports = {
   replace: true
 , anchor: true
-, link: function(vm) {
-    this.vm = vm;
+, link: function() {
     this.watchers = [];
   }
 , unLink: function() {

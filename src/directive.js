@@ -39,7 +39,7 @@ Directive.prototype = {
 , tearDown: utils.noop
 , terminal: false//是否终止
 , replace: false//是否替换当前元素. 如果是, 将用一个空的文本节点替换当前元素
-, watch: true//是否监控 key 的变化
+, watch: true//是否监控 key 的变化. 如果为 false 的话, update 方法默认只会在初始化后调用一次
 
 , anchor: false
 , anchors: null

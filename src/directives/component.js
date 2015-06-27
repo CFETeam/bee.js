@@ -4,15 +4,17 @@ var domUtils = require('../dom-utils')
 
 
 module.exports = {
-  priority: -10
+  priority: -1
 , watch: false
 , unLink: function() {
     this.component && this.component.$destroy()
   }
-, link: function(vm) {
+, link: function() {
+    var vm = this.vm;
     var el = this.el;
     var cstr = vm.constructor;
-    var comp, refName;
+    var comp;
+    //var refName;
     var dirs = [], $data = {};
     var Comp = cstr.getComponent(this.path)
 
@@ -26,9 +28,9 @@ module.exports = {
       dirs = this.dirs;
 
       dirs = dirs.filter(function (dir) {
-        if(dir.type === 'ref') {
-          refName = dir.path;
-        }
+        // if(dir.type === 'ref') {
+        //   refName = dir.path;
+        // }
         return dir.type == 'attr' || dir.type == 'with';
       });
 
@@ -58,10 +60,11 @@ module.exports = {
         //$root: vm.$root,
         $data: utils.extend({}, Comp.prototype.$data, $data, domUtils.getAttrs(el))
       });
+      el.bee = comp;
 
-      if(refName) {
-        vm.$refs[refName] = comp;
-      }
+      // if(refName) {
+      //   vm.$refs[refName] = comp;
+      // }
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
       if(vm.$el === el) {

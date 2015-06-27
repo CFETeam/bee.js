@@ -2,6 +2,7 @@
 
 var doc = require('../env.js').document
   , utils = require('../utils.js')
+  , checkBinding = require('../check-binding')
   ;
 
 var dirs = {};
@@ -42,30 +43,32 @@ dirs.html = {
 
 dirs['if'] = {
   anchor: true
+, terminal: true
 , link: function() {
+    this.watchers = [];
     if(this.el.content) {
       this.frag = this.el.content;
       this.el.parentNode.removeChild(this.el);
     }else{
       this.frag = doc.createDocumentFragment()
-      this.hide();
+      this.remove();
     }
   }
 , update: function(val) {
     if(val) {
-      if(!this.state) { this.show() }
+      if(!this.state) { this.add() }
     }else{
-      if(this.state) { this.hide(); }
+      if(this.state) { this.remove(); }
     }
     this.state = val;
   }
 
-, show: function() {
+, add: function() {
     var anchor = this.anchors.end;
-
+    this.watchers = checkBinding.walk.call(this.vm, this.frag);
     anchor.parentNode && anchor.parentNode.insertBefore(this.frag, anchor);
   }
-, hide: function() {
+, remove: function() {
     var nodes = this.getNodes();
 
     if(nodes) {
@@ -73,27 +76,14 @@ dirs['if'] = {
         this.frag.appendChild(nodes[i]);
       }
     }
+    this.watchers.forEach(function(watcher) {
+      watcher.unwatch()
+    })
+    this.watcher = [];
   }
 };
 
-dirs.template = {
-  priority: 10000
-, link: function() {
-    var nodes = this.el.childNodes
-      , frag = doc.createDocumentFragment()
-      ;
-
-    while(nodes[0]) {
-      frag.appendChild(nodes[0]);
-    }
-
-    this.el.content = frag;
-
-    //this.el.setAttribute(this.nodeName, '');
-  }
-};
-
-//图片用, 避免加载大括号的原始模板内容
+//图片用, 避免加载 URL 中带有大括号的原始模板内容
 dirs.src = {
   update: function(val) {
     this.el.src = val;
