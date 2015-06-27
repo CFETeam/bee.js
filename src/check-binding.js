@@ -83,7 +83,7 @@ function walk(el) {
 //遍历属性
 function checkAttr(el) {
   var cstr = this.constructor
-    , dirs = cstr.directive.getDir(el, cstr)
+    , dirs = cstr.directive.getDirs(el, cstr)
     , dir
     , terminalPriority, watchers = []
     , result = {};

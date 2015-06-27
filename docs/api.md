@@ -243,10 +243,13 @@ HTML 属性指令.
 ```
 
 ### b-on
-事件绑定
+事件监听指令. 标准的 `b-on` 指令接收 [backbone 风格](http://backbonejs.org/#View-extend)的事件处理对象.
+
+另外你也可以简单使用 `b-on-click, b-on-mousedown` 等特定事件指令直接在模板中完成调用.
 
 ```html
-<div b-on="{click: handler}"></div>
+<div b-on="{'click a': handler}"></div>
+<div b-on-click="list.push(1)"></div>
 ```
 
 ### b-style b-src

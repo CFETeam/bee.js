@@ -33,6 +33,9 @@ var astCache = {};
 
 Directive.prototype = {
   priority: 0//权重
+, type: '' //指令类型
+, subType: '' //子类型. 比如 `b-on-click` 的 type 为 `on`, subType 为 `click`
+, sub: false //是否允许子类型指令
 , link: utils.noop//初始化方法
 , unLink: utils.noop//销毁回调
 , update: utils.noop//更新方法
@@ -40,6 +43,7 @@ Directive.prototype = {
 , terminal: false//是否终止
 , replace: false//是否替换当前元素. 如果是, 将用一个空的文本节点替换当前元素
 , watch: true//是否监控 key 的变化. 如果为 false 的话, update 方法默认只会在初始化后调用一次
+, immediate: true //是否在 dir 初始化时立即执行 update 方法
 
 , anchor: false
 , anchors: null
@@ -96,8 +100,13 @@ Directive.prototype = {
 
 var attrPostReg = /\?$/;
 
-//获取一个元素上所有用 HTML 属性定义的指令
-function getDir(el, cstr){
+/**
+ * 获取一个元素上所有用 HTML 属性定义的指令
+ * @param  {Element} el   指令所在元素
+ * @param  {Bee} cstr 组件构造函数
+ * @return {directeve[]}      `el` 上所有的指令
+ */
+function getDirs(el, cstr){
   var attr, attrName, dirName, proto
     , dirs = [], dir, anchors = {}
     , parent = el.parentNode
@@ -118,9 +127,8 @@ function getDir(el, cstr){
     proto = {el: el, node: attr, nodeName: attrName, path: attr.value};
     dir = null;
 
-    if(attrName.indexOf(prefix) === 0 && (dirName in directives)) {
+    if(attrName.indexOf(prefix) === 0 && (dir = getDir(dirName, directives))) {
       //指令
-      dir = create(directives[dirName]);
       dir.dirName = dirName//dir 名
     }else if(token.hasToken(attr.value)) {
       //属性表达式可能有多个表达式区
@@ -157,7 +165,30 @@ function getDir(el, cstr){
   return dirs;
 }
 
+function getDir(dirName, dirs) {
+  var dir, subType;
+  for(var key in dirs) {
+    if(dirName === key){
+      dir = dirs[key]
+      break
+    }else if(dirName.indexOf(key + '-') === 0){
+      dir = dirs[key]
+      if(!dir.sub){
+        dir = null
+      }else{
+        subType = dirName.slice(key.length + 1)
+      }
+      break;
+    }
+  }
+  if(dir) {
+    dir = create(dir);
+    dir.subType = subType;
+  }
+  return dir;
+}
+
 Directive.directive = directive;
-directive.getDir = getDir;
+directive.getDirs = getDirs;
 
 module.exports = Directive;

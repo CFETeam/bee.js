@@ -16,6 +16,9 @@ var summaryCache = {};
 function Watcher(vm, dir) {
   var reformed, path, curVm = vm, watchers = [];
   var summary = summaryCache[dir.path]
+
+  dir.watcher = this;
+
   this.state = 1;
   this.dir = dir;
   this.vm = vm;
