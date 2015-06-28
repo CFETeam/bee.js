@@ -1,7 +1,7 @@
 //component as directive
 var utils = require('../utils.js');
 var domUtils = require('../dom-utils')
-
+var checkBinding = require('../check-binding')
 
 module.exports = {
   priority: -1
@@ -13,7 +13,7 @@ module.exports = {
     var vm = this.vm;
     var el = this.el;
     var cstr = vm.constructor;
-    var comp;
+    var comp, content;
     //var refName;
     var dirs = [], $data = {};
     var Comp = cstr.getComponent(this.path)
@@ -55,16 +55,18 @@ module.exports = {
         })
       });
 
+      content = domUtils.createContent(el.childNodes);
+
+      //组件内容属于其容器
+      vm.__links = vm.__links.concat(checkBinding.walk.call(vm, content));
+
+      el.appendChild(content)
+
       this.component = comp = new Comp({
         $target: el,
-        //$root: vm.$root,
         $data: utils.extend({}, Comp.prototype.$data, $data, domUtils.getAttrs(el))
       });
       el.bee = comp;
-
-      // if(refName) {
-      //   vm.$refs[refName] = comp;
-      // }
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
       if(vm.$el === el) {

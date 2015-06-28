@@ -117,9 +117,10 @@ function Bee(tpl, props) {
   this.$beforeInit()
   this.$el.bee = this;
 
-  if(this.$content){
-    this.__links = checkBinding.walk.call(this.$root, this.$content);
-  }
+  // if(this.$content){
+  //   this.__links = checkBinding.walk.call(this, this.$content);
+  // }
+  //__links 包含了 $el 下所有的绑定引用
   this.__links = this.__links.concat( checkBinding.walk.call(this, this.$el) );
 
   for(var key in this.$watchers) {

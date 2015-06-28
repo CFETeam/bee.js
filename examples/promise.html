@@ -15,17 +15,31 @@
     ES6Promise.polyfill();
   </script>
   <script type="text/javascript" src="../build/bee.js"></script>
+
+	<!-- 下拉输入组件 -->
+	<script type="text/x-tpl" id="selectInputTpl">
+	<div>
+		<input type="text" b-model="keyword">
+		<select b-model="keyword">
+			<option value="基地">基地</option>
+			<option value="第二基地">第二基地</option>
+			<option value="基地与地球">基地与地球</option>
+		</select>
+	</div>
+	</script>
+	<script>
+		Bee.tag('select-input', {
+			$tpl: document.getElementById('selectInputTpl').innerHTML,
+			$valuekey: 'keyword'
+		})
+	</script>
+	<!-- 下拉输入组件 end-->
+
 </head>
 <body>
   <h1>promise</h1>
 	<div id=template>
-    <input type="text" value="基地" b-model="title"/>
-    <select b-model="title">
-      <option value="从0到1">从0到1</option>
-      <option value="黑客与画家">黑客与画家</option>
-      <option value="三体">三体</option>
-      <option value="基地">基地</option>
-    </select>
+		<select-input b-model="title"></select-input>
     <a href="javascript:;"  b-on="{click: toggleData}">查看JSON数据</a>
     <pre style="display: none">{{title | getData | json : null : 2 }}</pre>
     <div>

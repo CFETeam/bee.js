@@ -18,6 +18,9 @@
       <option value="第二基地">第二基地</option>
       <option value="基地与地球">基地与地球</option>
     </select>
+    <select class="" name="">
+      <option b-content="$content"></span>
+    </select>
   </div>
   </script>
   <script>
@@ -31,8 +34,10 @@
 </head>
 <body>
 <div id="demo">
-  <h1>{{title}}</h1>
-  <select-input b-model="title"></select-input>
+  <select-input b-model="title">
+    <option value="1">{{title}}</option>
+    <option value="2">{{title.split('').reverse().join('')}}</option>
+  </select-input>
 </div>
 <script>
   var bee = Bee.mount('demo')

@@ -50,7 +50,6 @@ module.exports = {
     if(comp.bee) {
       // 组件的双向绑定
       comp = comp.bee;
-      ev = '';
       value = comp.$valuekey;
       if(value) {
         callback = function(val) {
@@ -61,7 +60,7 @@ module.exports = {
         }
         comp.$watch(value, function() {
           handler()
-        })
+        }, true)
       }
     }else{
       //HTML 原生控件的双向绑定
@@ -123,14 +122,12 @@ module.exports = {
         events.removeEvent(comp, e, callHandler);
         events.addEvent(comp, e, callHandler);
       });
+      //根据表单元素的初始化默认值设置对应 model 的值
+      if(comp[value] && isSetDefaut){
+         handler();
+      }
     }
 
     this.update = callback;
-
-    //根据表单元素的初始化默认值设置对应 model 的值
-    if(comp[value] && isSetDefaut){
-       handler();
-    }
-
   }
 };
