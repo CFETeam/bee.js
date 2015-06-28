@@ -11,6 +11,15 @@
   <script type="text/javascript" src="./third-part/json2.js"></script>
   <![endif]-->
   <script type="text/javascript" src="../build/bee.js"></script>
+	<script>
+
+
+	var Test = Bee.tag('x-test', {});
+  var tpl = '<span><x-test b-ref="test"></x-test></span>'
+
+  var bee = new Bee(tpl, {$data: {flag: true}})
+
+	</script>
 </head>
 <body>
   <h1>属性及样式绑定 </h1>
@@ -27,20 +36,6 @@
       <label for="disabled">条件属性<input type="checkbox" b-model="disabled" id="disabled"/></label>
     </div>
   </div>
-<script type="text/javascript" id=js>
-  var bee = new Bee(window.template, {
-    $data: {
-      attr: {
-        onclick: 'alert(this.onclick)'
-      },
-      style: {
-          color: '#dd0707'
-      }
-    }
-  , toJSON: function(obj) {
-          return JSON.stringify(obj)
-    }
-  });
-</script>
+
 </body>
 </html>

@@ -53,6 +53,7 @@ dirs['if'] = {
       this.frag = doc.createDocumentFragment()
       this.remove();
     }
+    this.watchers = checkBinding.walk.call(this.vm, this.frag);
   }
 , update: function(val) {
     if(val) {
@@ -65,7 +66,10 @@ dirs['if'] = {
 
 , add: function() {
     var anchor = this.anchors.end;
-    this.watchers = checkBinding.walk.call(this.vm, this.frag);
+    this.watchers.forEach(function(watcher) {
+      watcher.hide = false;
+      watcher.update()
+    })
     anchor.parentNode && anchor.parentNode.insertBefore(this.frag, anchor);
   }
 , remove: function() {
@@ -77,9 +81,9 @@ dirs['if'] = {
       }
     }
     this.watchers.forEach(function(watcher) {
-      watcher.unwatch()
+      watcher.hide = true;
     })
-    this.watcher = [];
+    // this.watcher = [];
   }
 };
 

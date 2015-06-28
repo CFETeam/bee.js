@@ -114,6 +114,9 @@ utils.extend(Watcher.prototype, {
       , newVal
       ;
 
+    if(this.hide) {
+      return;
+    }
     newVal = this.dir.getValue(this.vm);
 
     //简单过滤重复更新
