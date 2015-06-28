@@ -211,7 +211,7 @@ Directive
 `Beejs` 中内置了若干 `directive` 来方便我们的程序处理.
 
 ### b-model
-用于双向绑定. 只限于使用在表单输入元素上.
+用于双向绑定. 用于表单输入元素上或自定义组件中. 对于自定义组件, 激活双向绑定需要将其 `$valuekey` 属性指向需要绑定的 data 路径
 
 ```html
 <input b-model="some.key" type="text" />

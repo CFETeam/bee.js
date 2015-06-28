@@ -5,40 +5,35 @@ var utils = require('../utils.js')
   , events = require('../event-bind.js')
   ;
 
-var linkers = {
-  input: {
-    set: function() {
-
-    }
-  , get: function() {
-
-    }
-  }
-}
 
 module.exports = {
   teminal: true
-, priority: 1
+, priority: -2
 , link: function() {
     var keyPath = this.path;
     var vm = this.vm;
 
     if(!keyPath) { return false; }
 
-    var el = this.el
+    var comp = this.el
       , ev = 'change'
-      , attr, value = attr = 'value'
+      , attr
+      , value = attr = 'value'
       , isSetDefaut = utils.isUndefined(vm.$get(keyPath))//界面的初始值不会覆盖 model 的初始值
       , crlf = /\r\n/g//IE 8 下 textarea 会自动将 \n 换行符换成 \r\n. 需要将其替换回来
+
+        //更新组件
       , callback = function(val) {
           var newVal = (val || '') + ''
-            , val = el[attr]
+            , val = comp[attr]
             ;
           val && val.replace && (val = val.replace(crlf, '\n'));
-          if(newVal !== val){ el[attr] = newVal; }
+          if(newVal !== val){ comp[attr] = newVal; }
         }
-      , handler = function(isInit) {
-          var val = el[value];
+
+        //更新 viewModel
+      , handler = function() {
+          var val = comp[value];
 
           val.replace && (val = val.replace(crlf, '\n'));
           vm.$set(keyPath, val);
@@ -52,70 +47,89 @@ module.exports = {
       , ie = utils.ie
       ;
 
-    switch(el.tagName) {
-      default:
-        value = attr = 'innerHTML';
-        //ev += ' blur';
-      case 'INPUT':
-      case 'TEXTAREA':
-        switch(el.type) {
-          case 'checkbox':
-            value = attr = 'checked';
-            //IE6, IE7 下监听 propertychange 会挂?
-            if(ie) { ev += ' click'; }
-          break;
-          case 'radio':
-            attr = 'checked';
-            if(ie) { ev += ' click'; }
-            callback = function(val) {
-              el.checked = el.value === val + '';
+    if(comp.bee) {
+      // 组件的双向绑定
+      comp = comp.bee;
+      ev = '';
+      value = comp.$valuekey;
+      if(value) {
+        callback = function(val) {
+          comp.$replace(value, val)
+        };
+        handler = function() {
+          vm.$replace(keyPath, comp.$get(value))
+        }
+        comp.$watch(value, function() {
+          handler()
+        })
+      }
+    }else{
+      //HTML 原生控件的双向绑定
+      switch(comp.tagName) {
+        default:
+          value = attr = 'innerHTML';
+          //ev += ' blur';
+        case 'INPUT':
+        case 'TEXTAREA':
+          switch(comp.type) {
+            case 'checkbox':
+              value = attr = 'checked';
+              //IE6, IE7 下监听 propertychange 会挂?
+              if(ie) { ev += ' click'; }
+            break;
+            case 'radio':
+              attr = 'checked';
+              if(ie) { ev += ' click'; }
+              callback = function(val) {
+                comp.checked = comp.value === val + '';
+              };
+              isSetDefaut = comp.checked;
+            break;
+            default:
+              if(!vm.$lazy){
+                if('oninput' in comp){
+                  ev += ' input';
+                }
+                //IE 下的 input 事件替代
+                if(ie) {
+                  ev += ' keyup propertychange cut';
+                }
+              }
+            break;
+          }
+        break;
+        case 'SELECT':
+          if(comp.multiple){
+            handler = function() {
+              var vals = [];
+              for(var i = 0, l = comp.options.length; i < l; i++){
+                if(comp.options[i].selected){ vals.push(comp.options[i].value) }
+              }
+              vm.$replace(keyPath, vals);
             };
-            isSetDefaut = el.checked;
-          break;
-          default:
-            if(!vm.$lazy){
-              if('oninput' in el){
-                ev += ' input';
+            callback = function(vals){
+              if(vals && vals.length){
+                for(var i = 0, l = comp.options.length; i < l; i++){
+                  comp.options[i].selected = vals.indexOf(comp.options[i].value) !== -1;
+                }
               }
-              //IE 下的 input 事件替代
-              if(ie) {
-                ev += ' keyup propertychange cut';
-              }
-            }
-          break;
-        }
-      break;
-      case 'SELECT':
-        if(el.multiple){
-          handler = function(isInit) {
-            var vals = [];
-            for(var i = 0, l = el.options.length; i < l; i++){
-              if(el.options[i].selected){ vals.push(el.options[i].value) }
-            }
-            vm.$replace(keyPath, vals);
-          };
-          callback = function(vals){
-            if(vals && vals.length){
-              for(var i = 0, l = el.options.length; i < l; i++){
-                el.options[i].selected = vals.indexOf(el.options[i].value) !== -1;
-              }
-            }
-          };
-        }
-        isSetDefaut = isSetDefaut && !hasToken(el[value]);
-      break;
+            };
+          }
+          isSetDefaut = isSetDefaut && !hasToken(comp[value]);
+        break;
+      }
+
+      ev.split(/\s+/g).forEach(function(e){
+        events.removeEvent(comp, e, callHandler);
+        events.addEvent(comp, e, callHandler);
+      });
     }
 
     this.update = callback;
 
-    ev.split(/\s+/g).forEach(function(e){
-      events.removeEvent(el, e, callHandler);
-      events.addEvent(el, e, callHandler);
-    });
-
     //根据表单元素的初始化默认值设置对应 model 的值
-    if(el[value] && isSetDefaut){
-       handler(true);
+    if(comp[value] && isSetDefaut){
+       handler();
     }
 
   }

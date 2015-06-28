@@ -100,8 +100,8 @@ Watcher.getWatchers = function getWatchers(vm, keyPath) {
 
 function watcherUpdate (val) {
   try{
-    this.dir.update(val, this.val);
     this.val = val;
+    this.dir.update(val, this.val);
   }catch(e){
     console.error(e);
   }
