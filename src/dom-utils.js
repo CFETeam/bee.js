@@ -82,5 +82,9 @@ module.exports = {
     }
 
     return attrs;
+  },
+
+  hasAttr: function(el, attrName) {
+    return el.hasAttribute ? el.hasAttribute(attrName) : !utils.isUndefined(el[attrName]);
   }
 };

@@ -143,8 +143,7 @@ function getDirs(el, cstr){
     }
 
     if(dir) {
-      if(dir.anchor && !anchors.start) {
-        //同一个元素上的 directive 共享同一对锚点
+      if(dir.anchor) {
         anchors.start = doc.createComment(dir.dirName + ' start');
         parent.insertBefore(anchors.start, el);
 

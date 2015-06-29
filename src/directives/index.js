@@ -40,53 +40,6 @@ dirs.html = {
   }
 };
 
-
-dirs['if'] = {
-  anchor: true
-, terminal: true
-, link: function() {
-    this.watchers = [];
-    if(this.el.content) {
-      this.frag = this.el.content;
-      this.el.parentNode.removeChild(this.el);
-    }else{
-      this.frag = doc.createDocumentFragment()
-      this.remove();
-    }
-    this.watchers = checkBinding.walk.call(this.vm, this.frag);
-  }
-, update: function(val) {
-    if(val) {
-      if(!this.state) { this.add() }
-    }else{
-      if(this.state) { this.remove(); }
-    }
-    this.state = val;
-  }
-
-, add: function() {
-    var anchor = this.anchors.end;
-    this.watchers.forEach(function(watcher) {
-      watcher.hide = false;
-      watcher.update()
-    })
-    anchor.parentNode && anchor.parentNode.insertBefore(this.frag, anchor);
-  }
-, remove: function() {
-    var nodes = this.getNodes();
-
-    if(nodes) {
-      for(var i = 0, l = nodes.length; i < l; i++) {
-        this.frag.appendChild(nodes[i]);
-      }
-    }
-    this.watchers.forEach(function(watcher) {
-      watcher.hide = true;
-    })
-    // this.watcher = [];
-  }
-};
-
 //图片用, 避免加载 URL 中带有大括号的原始模板内容
 dirs.src = {
   update: function(val) {
@@ -96,13 +49,14 @@ dirs.src = {
 
 dirs['with'] = {};
 
-dirs.repeat = require('./repeat.js');
-dirs.attr = require('./attr.js');
-dirs.model = require('./model.js');
-dirs.style = require('./style.js');
-dirs.on = require('./on.js');
-dirs.component = dirs.tag = require('./component.js');
-dirs.content = require('./content.js')
-dirs.ref = require('./ref.js')
+dirs['if'] = require('./if')
+dirs.repeat = require('./repeat');
+dirs.attr = require('./attr');
+dirs.model = require('./model');
+dirs.style = require('./style');
+dirs.on = require('./on');
+dirs.component = dirs.tag = require('./component');
+dirs.content = require('./content')
+dirs.ref = require('./ref')
 
 module.exports = dirs;

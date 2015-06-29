@@ -36,6 +36,7 @@ module.exports = {
 
 //委托事件
 //要求 IE8+
+//请注意这里的 event.currentTarget 和 event.delegateTarget 同 jQuery 的刚好相反
 function callHandler (dir, selector, callback) {
   return function(e) {
     var cur = e.target || e.srcElement;
