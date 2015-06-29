@@ -117,9 +117,6 @@ function Bee(tpl, props) {
   this.$beforeInit()
   this.$el.bee = this;
 
-  // if(this.$content){
-  //   this.__links = checkBinding.walk.call(this, this.$content);
-  // }
   //__links 包含了 $el 下所有的绑定引用
   this.__links = this.__links.concat( checkBinding.walk.call(this, this.$el) );
 
@@ -154,8 +151,18 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
   }
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
-    var Comp = this.getComponent(el.tagName.toLowerCase());
     var instance;
+    var dirs = this.directive.getDirs(el, this);
+    var Comp, dir;
+
+    dir = dirs.filter(function(dir) {
+      return  dir.type === 'tag' || dir.type === 'component'
+    })[0];
+
+    if(dir) {
+      Comp = this.getComponent(dir.path)
+    }
+
     props = props || {};
     if(Comp) {
       props.$data = extend(domUtils.getAttrs(el), props.$data)

@@ -13,7 +13,16 @@ test('Bee.mount', function(t) {
     Bee.tag('test', {})
     var $el = $('<test attr="1">')
     var bee = Bee.mount($el[0])
-    t.equal(bee.attr, '1')
+    t.equal(bee.attr, '1', '<test>')
+
+    $el = $('<div b-component="test" attr="2">')
+    bee = Bee.mount($el[0])
+    t.equal(bee.attr, '2', 'b-component="test"')
+
+    $el = $('<div b-tag="test" attr="3">')
+    bee = Bee.mount($el[0])
+    t.equal(bee.attr, '3', 'b-tag="test"')
+
     t.end()
   })
 

@@ -18,9 +18,9 @@
       <option value="第二基地">第二基地</option>
       <option value="基地与地球">基地与地球</option>
     </select>
-    <select class="" name="">
-      <option b-content="$content"></span>
-    </select>
+    <ul>
+      <span b-content="$content"></span>
+    </ul>
   </div>
   </script>
   <script>
@@ -35,8 +35,8 @@
 <body>
 <div id="demo">
   <select-input b-model="title">
-    <option value="1">{{title}}</option>
-    <option value="2">{{title.split('').reverse().join('')}}</option>
+    <li>{{title}}</li>
+    <li>{{title.split('').reverse().join('')}}</li>
   </select-input>
 </div>
 <script>

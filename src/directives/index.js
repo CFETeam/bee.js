@@ -101,7 +101,7 @@ dirs.attr = require('./attr.js');
 dirs.model = require('./model.js');
 dirs.style = require('./style.js');
 dirs.on = require('./on.js');
-dirs.component = require('./component.js');
+dirs.component = dirs.tag = require('./component.js');
 dirs.content = require('./content.js')
 dirs.ref = require('./ref.js')
 
