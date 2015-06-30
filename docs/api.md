@@ -74,6 +74,10 @@ bee.$el === el;    //true
 构造函数方法
 ---
 
+### Bee.defaults
+
+定义默认值, 该构造函数都将带上这些默认值.
+
 ### Bee.extend
 
 创建一个继承 Bee 的构造函数.

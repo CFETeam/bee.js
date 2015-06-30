@@ -10,14 +10,16 @@ var Class = {
    */
   extend: function (protoProps, staticProps) {
     protoProps = protoProps || {};
-    var constructor = protoProps.hasOwnProperty('constructor') ? protoProps.constructor : function(){ return sup.apply(this, arguments); }
+    var constructor = protoProps.hasOwnProperty('constructor') ?
+          protoProps.constructor : function(){ return sup.apply(this, arguments); }
     var sup = this;
     var Fn = function() { this.constructor = constructor; };
+    var supRef = {__super__: sup.prototype};
 
     Fn.prototype = sup.prototype;
     constructor.prototype = new Fn();
-    extend(constructor.prototype, protoProps);
-    extend(constructor, sup, staticProps, {__super__: sup.prototype});
+    extend(constructor.prototype, supRef, protoProps);
+    extend(constructor, sup, supRef, staticProps);
 
     return constructor;
   }
