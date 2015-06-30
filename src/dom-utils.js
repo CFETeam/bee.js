@@ -56,16 +56,7 @@ function createContent(tpl) {
   return content;
 }
 
-//html 中属性名不区分大小写, 并且会全部转成小写.
-//这里会将连字符写法转成驼峰式
-//attr-name --> attrName
-//attr--name --> attr-name
-var hyphensReg = /-(-?)([a-z])/ig;
-var hyphenToCamel = function(attrName) {
-  return attrName.replace(hyphensReg, function(s, dash, char) {
-    return dash ? dash + char : char.toUpperCase();
-  })
-}
+
 
 module.exports = {
   tplParse: tplParse,
@@ -78,7 +69,7 @@ module.exports = {
 
     for(var i = attributes.length - 1; i >= 0; i--) {
       //连接符转驼峰写法
-      attrs[hyphenToCamel(attributes[i].nodeName)] = attributes[i].value;
+      attrs[utils.hyphenToCamel(attributes[i].nodeName)] = attributes[i].value;
     }
 
     return attrs;

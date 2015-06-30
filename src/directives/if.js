@@ -6,6 +6,7 @@ var checkBinding = require('../check-binding')
 
 module.exports = {
   anchor: true
+, priority: 900
 , terminal: true
 , sub: true
 , link: function() {
@@ -36,7 +37,6 @@ module.exports = {
     }
     this.frag = doc.createDocumentFragment()
     this.remove();
-    this.watchers = checkBinding.walk.call(this.vm, this.frag);
   }
 , update: function(val) {
     if(val) {
@@ -49,9 +49,16 @@ module.exports = {
 
 , add: function() {
     var anchor = this.anchors.end;
+    if(!this.walked) {
+      this.walked = true;
+      this.watchers = checkBinding.walk.call(this.vm, this.frag);
+    }
     this.watchers.forEach(function(watcher) {
-      watcher.hide = false;
-      watcher.update()
+      watcher._hide = false;
+      if(watcher._needUpdate) {
+        watcher.update()
+        watcher._needUpdate = false;
+      }
     })
     anchor.parentNode && anchor.parentNode.insertBefore(this.frag, anchor);
   }
@@ -64,8 +71,7 @@ module.exports = {
       }
     }
     this.watchers.forEach(function(watcher) {
-      watcher.hide = true;
+      watcher._hide = true;
     })
-    // this.watcher = [];
   }
 };

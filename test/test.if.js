@@ -6,7 +6,6 @@ if(typeof window === 'undefined') {
 }
 
 test('b-if', function(t) {
-  var Test = Bee.tag('test', {});
   var tpl = '<span><span b-if="flag" b-ref="span">{{text}}</span></span>'
 
   var bee = new Bee(tpl, {$data: {flag: true, text: 'text'}})
@@ -39,4 +38,21 @@ test('b-if-start, b-if-end', function(t) {
   t.equal($(bee.$el).text(), 'test123456', 'show again')
 
   t.end();
+})
+
+test('component b-if', function(t) {
+  var Test = Bee.tag('test', {
+    $tpl: '<div>test</div>'
+  })
+
+  var tpl = '<div><test b-if="flag"></test></div>'
+  var bee = new Bee(tpl)
+
+  t.equal($(bee.$el).text(), '')
+
+  bee.$set('flag', true)
+
+  t.equal($(bee.$el).text(), 'test')
+
+  t.end()
 })

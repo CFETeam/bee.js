@@ -111,6 +111,17 @@ var deepGet = function (keyStr, obj) {
   return cur;
 }
 
+//html 中属性名不区分大小写, 并且会全部转成小写.
+//这里会将连字符写法转成驼峰式
+//attr-name --> attrName
+//attr--name --> attr-name
+var hyphensReg = /-(-?)([a-z])/ig;
+var hyphenToCamel = function(attrName) {
+  return attrName.replace(hyphensReg, function(s, dash, char) {
+    return dash ? dash + char : char.toUpperCase();
+  })
+}
+
 var utils = {
   noop: function (){}
 , ie: !!doc.attachEvent
@@ -208,7 +219,8 @@ var utils = {
       }
     }
     return arr;
-  }
+  },
+  hyphenToCamel: hyphenToCamel
 };
 
 module.exports = utils;

@@ -114,7 +114,8 @@ utils.extend(Watcher.prototype, {
       , newVal
       ;
 
-    if(this.hide) {
+    if(this._hide) {
+      this._needUpdate = true;
       return;
     }
     newVal = this.dir.getValue(this.vm);

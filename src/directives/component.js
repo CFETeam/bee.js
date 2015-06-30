@@ -42,7 +42,7 @@ module.exports = {
           //comPath = '$data'
           utils.extend($data, vm.$get(curPath))
         }else{
-          comPath = dir.dirName;
+          comPath = utils.hyphenToCamel(dir.dirName);
           $data[comPath] = vm.$get(curPath);
         }
 
