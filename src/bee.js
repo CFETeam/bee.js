@@ -166,7 +166,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
     props = props || {};
     if(Comp) {
       props.$data = extend(domUtils.getAttrs(el), props.$data)
-      instance = new Comp(extend({$target: el}, props))
+      instance = new Comp(extend({$target: el, __mountcall: true}, props))
     }else{
       instance = new Bee(el, props);
     }

@@ -20,8 +20,7 @@ module.exports = {
 
     if(Comp) {
 
-      //TODO
-      if(Comp === cstr) {
+      if(Comp === cstr && vm.__mountcall) {
         return;
       }
 
