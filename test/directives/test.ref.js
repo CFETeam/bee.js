@@ -1,5 +1,5 @@
 var test = require('tape');
-var Bee = require('../');
+var Bee = require('../../');
 var $ = require('jquery')
 if(typeof window === 'undefined') {
   $ = $(Bee.doc.parentWindow)

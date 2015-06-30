@@ -1,5 +1,5 @@
 var test = require('tape');
-var Bee = require('../');
+var Bee = require('../../');
 var $ = require('jquery')
 if(typeof window === 'undefined') {
   $ = $(Bee.doc.parentWindow)
@@ -45,7 +45,7 @@ test('component b-if', function(t) {
     $tpl: '<div>test</div>'
   })
 
-  var tpl = '<div><test b-if="flag"></test></div>'
+  var tpl = '<div><span b-component="test" b-if="flag"></span></div>'
   var bee = new Bee(tpl)
 
   t.equal($(bee.$el).text(), '')
