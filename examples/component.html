@@ -38,9 +38,6 @@
   <script>
     Bee.tag('x-dialog', {
       $tpl: document.getElementById('dialogTpl').innerHTML,
-      $data: {
-        title: '弹层标题'
-      },
       $btnEvents: {
         'click': function() {
           console.log(this.$index)
@@ -51,6 +48,10 @@
 
       $toggle: function() {
         this.$set({'show': !this.show})
+      }
+    }, {
+      defaults: {
+        title: '弹层标题'
       }
     })
   </script>

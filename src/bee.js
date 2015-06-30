@@ -58,7 +58,7 @@ function Bee(tpl, props) {
 
   var defaults = {
     //$ 开头的是共有属性/方法
-    $data: {}
+    $data: extend(true, {}, this.constructor.defaults)
   , $watchers: {}
   , $refs: {}
   , $mixins: []

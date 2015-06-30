@@ -4,9 +4,15 @@ var Bee = require('../');
 test(function(t) {
   t.test('初始值', function(t) {
     var a1 = 1, c1 = 3;
+    var e1 = 'e1', f1 = 'f1'
     var Ant = Bee.extend({
       $data: {a: a1, c: c1},
       $tpl: '<span>abc</span>'
+    }, {
+      defaults: {
+        e: e1,
+        f: f1
+      }
     });
 
     var b2 = 2, c2 = '3.1'
@@ -21,6 +27,9 @@ test(function(t) {
     t.equal(ant.$data.b, b2)
     t.equal(ant.$data.c, c2)
     t.notEqual(ant.$data.c, c1)
+
+    t.equal(ant.$data.e, e1)
+    t.equal(ant.$data.f, f1)
 
     var data2 = 'ant';
     var ant2 = new Ant({
