@@ -38,7 +38,7 @@ module.exports = {
 , update: function(items) {
     var curArr = this.curArr;
     var parentNode = this.anchors.end.parentNode;
-    var that = this, list = this.vmList;
+    var that = this, vmList = this.vmList;
     var trackId = this.trackId;
 
     if(utils.isArray(items)) {
@@ -51,9 +51,9 @@ module.exports = {
       arrDiff(curArr, items, trackId).forEach(function(item) {
         var pos = indexByTrackId(item, curArr, trackId)
         curArr.splice(pos, 1)
-        parentNode.removeChild(list[pos].$el)
-        list[pos].$destroy()
-        list.splice(pos, 1)
+        parentNode.removeChild(vmList[pos].$el)
+        vmList[pos].$destroy()
+        vmList.splice(pos, 1)
       })
 
       items.forEach(function(item, i) {
@@ -75,8 +75,8 @@ module.exports = {
             $root: this.vm.$root, $parent: this.vm,
             __repeat: true
           });
-          parentNode.insertBefore(vm.$el, list[pos] && list[pos].$el || this.anchors.end)
-          list.splice(pos, 0, vm);
+          parentNode.insertBefore(vm.$el, vmList[pos] && vmList[pos].$el || this.anchors.end)
+          vmList.splice(pos, 0, vm);
           curArr.splice(pos, 0, item)
 
           //延时赋值给 `_relativePath`, 避免出现死循环
@@ -86,18 +86,18 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(list[oldPos].$el, list[pos] && list[pos].$el || that.anchors.end)
-            parentNode.insertBefore(list[pos].$el, list[oldPos + 1] && list[oldPos + 1].$el || that.anchors.end)
-            list[oldPos] = [list[pos], list[pos] = list[oldPos]][0]
+            parentNode.insertBefore(vmList[oldPos].$el, vmList[pos] && vmList[pos].$el || that.anchors.end)
+            parentNode.insertBefore(vmList[pos].$el, vmList[oldPos + 1] && vmList[oldPos + 1].$el || that.anchors.end)
+            vmList[oldPos] = [vmList[pos], vmList[pos] = vmList[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
-            list[pos].$index = pos
-            list[pos].$update('$index')
+            vmList[pos].$index = pos
+            vmList[pos].$update('$index')
           }
         }
       }.bind(this))
 
       //更新索引
-      list.forEach(function(vm, i) {
+      vmList.forEach(function(vm, i) {
         vm.$index = i
         vm.$el.$index = i
         vm.$update('$index', false)

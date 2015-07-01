@@ -59,8 +59,6 @@ Directive.prototype = {
       }
 
       return nodes;
-    }else{
-      return null;
     }
   }
   //解析表达式

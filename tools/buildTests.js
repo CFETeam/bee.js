@@ -23,7 +23,6 @@ module.exports = function() {
 }
 
 function getTests(path) {
-  console.log(path)
   var tests = [];
   var files = fs.readdirSync(path);
 

@@ -47,10 +47,10 @@ var lifeCycles = {
 
 /**
  * 构造函数
- * ---
+ * @constructor
  * @param {String|Element} [tpl] 模板. 等同于 props.$tpl
  * @param {Object} [props] 属性/方法
- **/
+ */
 function Bee(tpl, props) {
   if(isPlainObject(tpl)) {
     props = tpl;
@@ -103,7 +103,7 @@ function Bee(tpl, props) {
     }
   }.bind(this))
 
-  isObject(this.$data) && extend(this, this.$data);
+  extend(this, this.$data);
 
   tpl = tpl || this.$tpl;
   elInfo = domUtils.tplParse(tpl, this.$target, this.$content);
@@ -189,7 +189,7 @@ for(var dir in dirs) {
 //----
 extend(Bee.prototype, lifeCycles, {
   /**
-   * 获取属性/方法--
+   * 获取属性/方法
    * @param {String} expression 路径/表达式
    * @returns {*}
    */
@@ -203,7 +203,6 @@ extend(Bee.prototype, lifeCycles, {
   }
 
   /**
-   * ### bee.$set
    * 更新合并 `.data` 中的数据. 如果只有一个参数, 那么这个参数将并入 .$data
    * @param {String} [key] 数据路径.
    * @param {AnyType|Object} val 数据内容.

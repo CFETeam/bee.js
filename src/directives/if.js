@@ -48,11 +48,10 @@ module.exports = {
 , remove: function() {
     var nodes = this.getNodes();
 
-    if(nodes) {
-      for(var i = 0, l = nodes.length; i < l; i++) {
-        this.frag.appendChild(nodes[i]);
-      }
+    for(var i = 0, l = nodes.length; i < l; i++) {
+      this.frag.appendChild(nodes[i]);
     }
+
     this.watchers.forEach(function(watcher) {
       watcher._hide = true;
     })
