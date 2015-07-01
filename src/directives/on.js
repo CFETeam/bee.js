@@ -8,6 +8,7 @@ var utils = require('../utils')
 module.exports = {
   watch: false
 , sub: true
+, priority: -3 //事件应该在 b-model 之后监听. 防止普通事件调用过快
 , immediate: false // watch 和 immediate 同时为 false 时, 指令的 update 方法将不会自动被外部调用
 , link: function() {
     var dir = this;
