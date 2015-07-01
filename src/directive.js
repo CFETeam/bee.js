@@ -5,6 +5,7 @@ var utils = require('./utils.js')
   , doc = require('./env.js').document
   , parse = require('./parse.js').parse
   , evaluate = require('./eval.js')
+  , domUtils = require('./dom-utils')
 
   , create = utils.create
   ;
@@ -187,7 +188,33 @@ function getDir(dirName, dirs) {
   return dir;
 }
 
-Directive.directive = directive;
-directive.getDirs = getDirs;
+function fixRange(start, endDir, anchors) {
+  var end = start
+    , parent
+    ;
 
-module.exports = Directive;
+  while(end = end.nextSibling) {
+    if(domUtils.hasAttr(end, endDir)){
+      end.removeAttribute(endDir)
+      break;
+    }
+  }
+  if(end) {
+    parent = end.parentNode
+
+    if(end.nextSibling) {
+      parent.insertBefore(anchors.end, end.nextSibling)
+    }else{
+      parent.appendChild(anchors.end)
+    }
+  }else{
+    console.error('expect: ' + endDir + ', but not found!')
+  }
+}
+
+module.exports = {
+  Directive: Directive,
+  directive: directive,
+  getDirs: getDirs,
+  fixRange: fixRange
+};

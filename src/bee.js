@@ -3,7 +3,7 @@
 var doc = require('./env.js').document
   , utils = require('./utils.js')
   , Class = require('./class.js')
-  , Dir = require('./directive.js')
+  , directive = require('./directive.js')
   , Com = require('./component.js')
   , Watcher = require('./watcher.js')
 
@@ -11,6 +11,8 @@ var doc = require('./env.js').document
   , domUtils = require('./dom-utils.js')
   , checkBinding = require('./check-binding.js')
   , scope = require('./scope')
+
+  , Dir = directive.Directive
   ;
 
 
@@ -136,6 +138,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
   sub.filters = extend(create(this.filters), sub.filters);
 }), utils: utils}, Dir, Com, {
   setPrefix: setPrefix
+, directive: directive.directive
 , prefix: ''
 , doc: doc
 , directives: {}
@@ -152,7 +155,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
     var instance;
-    var dirs = this.directive.getDirs(el, this);
+    var dirs = directive.getDirs(el, this);
     var Comp, dir;
 
     dir = dirs.filter(function(dir) {

@@ -4,6 +4,7 @@ var Watcher = require('./watcher')
   , token = require('./token.js')
   , utils = require('./utils')
   , doc = require('./env.js').document
+  , directive = require('./directive')
   ;
 
 var NODETYPE = {
@@ -83,7 +84,7 @@ function walk(el) {
 //遍历属性
 function checkAttr(el) {
   var cstr = this.constructor
-    , dirs = cstr.directive.getDirs(el, cstr)
+    , dirs = directive.getDirs(el, cstr)
     , dir
     , terminalPriority, watchers = []
     , result = {};

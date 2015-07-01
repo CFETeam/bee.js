@@ -3,6 +3,7 @@
 var checkBinding = require('../check-binding')
   , domUtils = require('../dom-utils')
   , doc = require('../env').document
+  , directive = require('../directive')
 
 module.exports = {
   anchor: true
@@ -10,30 +11,12 @@ module.exports = {
 , terminal: true
 , sub: true
 , link: function() {
-    var end = this.el;
     var endDir = this.vm.constructor.prefix + 'if-end';
-    var parent;
 
     this.watchers = [];
 
     if(this.subType === 'start') {
-      while(end = end.nextSibling) {
-        if(domUtils.hasAttr(end, endDir)){
-          end.removeAttribute(endDir)
-          break;
-        }
-      }
-      if(end) {
-        parent = end.parentNode
-
-        if(end.nextSibling) {
-          parent.insertBefore(this.anchors.end, end.nextSibling)
-        }else{
-          parent.appendChild(this.anchors.end)
-        }
-      }else{
-        console.error('expect: ' + endDir + ', but not found!')
-      }
+      directive.fixRange(this.el, endDir, this.anchors)
     }
     this.frag = doc.createDocumentFragment()
     this.remove();
