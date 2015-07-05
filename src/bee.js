@@ -54,9 +54,12 @@ var lifeCycles = {
 function Bee(tpl, props) {
   if(isPlainObject(tpl)) {
     props = tpl;
-    tpl = props.$tpl;
+  }else{
+    props = props || {};
+    if(tpl) {
+      props.$tpl = tpl;
+    }
   }
-  props = props || {};
 
   var defaults = {
     //$ 开头的是共有属性/方法
@@ -105,8 +108,7 @@ function Bee(tpl, props) {
 
   extend(this, this.$data);
 
-  tpl = tpl || this.$tpl;
-  elInfo = domUtils.tplParse(tpl, this.$target, this.$content);
+  elInfo = domUtils.tplParse(this.$tpl, this.$target, this.$content);
 
   if(this.$el){
     this.$el.appendChild(elInfo.el);
@@ -218,24 +220,10 @@ extend(Bee.prototype, lifeCycles, {
       }else{
         this.$data = key;
       }
+      update.call(reVm, key);
     }else{
-      hasKey = true;
-      reformed = scope.reformScope(this, key)
-      reKey = reformed.path;
-      reVm = reformed.vm;
-      keys = parseKeyPath(reKey);
-      add = deepSet(reKey, val, {});
-      if(keys[0] === '$data') {
-        add = add.$data
-      }
-      if(isObject(reVm.$data)) {
-        extend(true, reVm.$data, add);
-        extend(true, reVm, add);
-      }else{
-        reVm.$data = add;
-      }
+      this.$replace(key, val);
     }
-    hasKey ? update.call(reVm, reKey, val) : update.call(reVm, key);
   }
   /**
    * 数据替换

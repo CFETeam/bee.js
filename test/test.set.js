@@ -21,11 +21,11 @@ test('$set', function(t) {
   bee.$set('a', {d: 6})
   t.equal(bee.$get('a.d'), 6)
   t.equal(bee.a.d, 6)
-  t.equal(bee.$get('a.b'), 2)
-  t.equal(bee.a.b, 2)
-  t.equal(bee.$get('a.c'), 5)
-  t.equal(bee.a.c, 5)
-  t.equal(Object.keys(bee.$get('a')).length, 3)
+  t.equal(bee.$get('a.b'), undefined, 'replaced')
+  t.equal(bee.a.b, undefined, 'replaced')
+  t.equal(bee.$get('a.c'), undefined, 'replaced')
+  t.equal(bee.a.c, undefined, 'replaced')
+  t.equal(Object.keys(bee.$get('a')).length, 1)
 
   t.comment('$set({e: 7})')
   bee.$set({e: 7});
@@ -34,8 +34,8 @@ test('$set', function(t) {
 
   t.comment("$set('$data', {f: 8})")
   bee.$set('$data', {f: 8})
-  t.equal(bee.$get('e'), 7)
-  t.equal(bee.e, 7)
+  t.equal(bee.$get('e'), undefined, 'replaced')
+  t.equal(bee.e, undefined, 'replaced')
   t.equal(bee.$get('f'), 8)
   t.equal(bee.f, 8)
 
