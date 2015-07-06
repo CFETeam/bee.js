@@ -23,7 +23,7 @@ module.exports = {
       , crlf = /\r\n/g//IE 8 下 textarea 会自动将 \n 换行符换成 \r\n. 需要将其替换回来
 
         //更新组件
-      , callback = function(val) {
+      , update = function(val) {
           var newVal = (val || '') + ''
             , val = comp[attr]
             ;
@@ -52,14 +52,14 @@ module.exports = {
       comp = comp.bee;
       value = comp.$valuekey;
       if(value) {
-        callback = function(val) {
+        update = function(val) {
           comp.$replace(value, val)
         };
         handler = function() {
           vm.$replace(keyPath, comp.$get(value))
         }
-        comp.$watch(value, function() {
-          handler()
+        comp.$watch(value, function(val, oldValue) {
+          val !== oldValue && handler()
         }, true)
       }
     }else{
@@ -79,7 +79,7 @@ module.exports = {
             case 'radio':
               attr = 'checked';
               if(ie) { ev += ' click'; }
-              callback = function(val) {
+              update = function(val) {
                 comp.checked = comp.value === val + '';
               };
               isSetDefaut = comp.checked;
@@ -106,7 +106,7 @@ module.exports = {
               }
               vm.$replace(keyPath, vals);
             };
-            callback = function(vals){
+            update = function(vals){
               if(vals && vals.length){
                 for(var i = 0, l = comp.options.length; i < l; i++){
                   comp.options[i].selected = vals.indexOf(comp.options[i].value) !== -1;
@@ -128,6 +128,6 @@ module.exports = {
       }
     }
 
-    this.update = callback;
+    this.update = update;
   }
 };

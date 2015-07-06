@@ -30,6 +30,8 @@ module.exports = {
     //只继承静态的默认参数
     this.cstr = cstr.extend({}, this.cstr)
 
+    this.cstr.defaults = {};
+
     this.curArr = [];
     this.vmList = [];//子 VM list
 
@@ -71,7 +73,8 @@ module.exports = {
           el = this.el.cloneNode(true)
 
           vm = new this.cstr(el, {
-            $data: item, _assignments: this.summary.assignments, $index: pos,
+            $data: item,
+            _assignments: this.summary.assignments, $index: pos,
             $root: this.vm.$root, $parent: this.vm,
             __repeat: true
           });
