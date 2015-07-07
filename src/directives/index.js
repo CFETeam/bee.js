@@ -40,6 +40,23 @@ dirs.html = {
   }
 };
 
+dirs.template = {
+  priority: 10000
+, watch: false
+, link: function() {
+    var nodes = this.el.childNodes
+      , frag = doc.createDocumentFragment()
+      ;
+
+    while(nodes[0]) {
+      frag.appendChild(nodes[0]);
+    }
+
+    this.el.content = frag;
+    //this.el.setAttribute(this.nodeName, '');
+  }
+};
+
 //图片用, 避免加载 URL 中带有大括号的原始模板内容
 dirs.src = {
   update: function(val) {
