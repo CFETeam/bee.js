@@ -33,7 +33,7 @@ function setPrefix(newPrefix) {
 
 //TODO 清理这个
 var mergeProps = {
-  $data: 1, $watchers: 1
+  $data: 1
 };
 
 var lifeCycles = {
@@ -64,7 +64,6 @@ function Bee(tpl, props) {
   var defaults = {
     //$ 开头的是共有属性/方法
     $data: extend(true, {}, this.constructor.defaults)
-  , $watchers: {}
   , $refs: {}
   , $mixins: []
 
@@ -123,10 +122,6 @@ function Bee(tpl, props) {
 
   //__links 包含了 $el 下所有的绑定引用
   this.__links = this.__links.concat( checkBinding.walk.call(this, this.$el) );
-
-  for(var key in this.$watchers) {
-    this.$watch(key, this.$watchers[key])
-  }
 
   this._isRendered = true;
   this.$afterInit();

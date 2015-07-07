@@ -2,7 +2,7 @@
 - [ ] 在 `repeat` 中调用方法 `this` 指向问题
 - [x] 自定义双向绑定
 - [ ] 同步数组多实例时, 内部的更新的同步问题
-- [x] 移除反模式的原型属性默认值特性 `$data, $watchers`
+- [ ] 移除反模式的原型属性默认值特性 `$data, $watchers`
 - [ ] 改造 `$target` 和 `$content`
 - [ ] transition
 - [x] 多元素 repeat
