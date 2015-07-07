@@ -27,7 +27,6 @@ test('range if', function(t) {
   var tpl = '<div><div b-template b-if="flag"><span>{{text}}</span><div>123</div><div>456</div></div></div>'
 
   var bee = new Bee(tpl, {$data: {flag: true, text: 'text'}})
-  document.body.appendChild(bee.$el)
   t.equal($(bee.$el).text(), 'text123456', 'all right when true')
 
   bee.$set('flag', false)

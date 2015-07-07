@@ -62,7 +62,8 @@ module.exports = {
       el.appendChild(content)
 
       this.component = comp = new Comp({
-        $target: el,
+        $el: el,
+        $isReplace: true,
         $data: utils.extend({}, Comp.prototype.$data, $data, domUtils.getAttrs(el))
       });
       el.bee = comp;

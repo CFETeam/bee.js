@@ -68,10 +68,10 @@ function Bee(tpl, props) {
   , $mixins: []
 
   , $el: this.$el || null
-  , $target: this.$target || null
   , $tpl: this.$tpl || '<div></div>'
   , $content: this.$content || null
 
+  , $isReplace: false
   , $parent: null
   , $root: this
 
@@ -82,8 +82,6 @@ function Bee(tpl, props) {
   , __links: []
   , _isRendered: false
   };
-
-  var elInfo;
 
   var mixins = [defaults].concat(this.$mixins).concat(props.$mixins).concat([props])
 
@@ -107,15 +105,7 @@ function Bee(tpl, props) {
 
   extend(this, this.$data);
 
-  elInfo = domUtils.tplParse(this.$tpl, this.$target, this.$content);
-
-  if(this.$el){
-    this.$el.appendChild(elInfo.el);
-  }else{
-    this.$el = elInfo.el;
-  }
-  this.$tpl = elInfo.tpl;
-  this.$content = elInfo.content;
+  resolveTpl.call(this);
 
   this.$beforeInit()
   this.$el.bee = this;
@@ -166,7 +156,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
     props = props || {};
     if(Comp) {
       props.$data = extend(domUtils.getAttrs(el), props.$data)
-      instance = new Comp(extend({$target: el, __mountcall: true}, props))
+      instance = new Comp(extend({$el: el, $isReplace: true, __mountcall: true}, props))
     }else{
       instance = new Bee(el, props);
     }
@@ -347,6 +337,49 @@ function update (keyPath, data) {
     this.$update(path, true);
   }
   this.$afterUpdate(this.$data)
+}
+
+//处理 $el,  $content, $tpl
+function resolveTpl() {
+  var el = this.$el
+    , content = this.$content
+    , tpl = this.$tpl
+    , tplEl
+    ;
+
+  content = el && el.childNodes ? el.childNodes : content
+
+  if(el) {
+    //传入 $el 元素的子元素都存放到 $conten 中
+    content = el.childNodes;
+  }
+
+  if(content) {
+    //创建 $content documentFragment
+    this.$content = domUtils.createContent(content)
+  }
+
+  if(utils.isObject(tpl)){
+    //DOM 元素
+    tplEl = tpl;
+    tpl = tplEl.outerHTML;
+  }else{
+    //字符串
+    tplEl = domUtils.createContent(tpl).childNodes[0];
+  }
+
+  if(el) {
+    if(this.$isReplace) {
+      el.parentNode && el.parentNode.replaceChild(tplEl, el)
+      el = tplEl;
+    }else{
+      el.appendChild(tplEl)
+    }
+  }else{
+    el = tplEl;
+  }
+
+  this.$el = el;
 }
 
 Bee.version = '%VERSION';
