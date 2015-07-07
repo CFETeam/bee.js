@@ -81,6 +81,21 @@ test('repeat: 普通对象数组', function(t) {
   t.end()
 })
 
+test('repeat context', function(t) {
+  t.plan(2)
+  var tpl = '<ul><li b-repeat="item in list" data-parentname="{{name}}" data-test="{{method(this)}}" data-index="{{$index}}">{{item.size}}</li></ul>';
+  var list = [{size: 1}];
+  var bee = new Bee(tpl, {
+    $data: {name: 'parentName'},
+    method: function(context) {
+      t.equal(this, bee, 'this in repeat call')
+      t.notEqual(this, context, 'this in repeat')
+    }
+  })
+
+  bee.$set('list', list)
+})
+
 test('repeat: 数组转换', function(t) {
   var Ant = Bee.extend({
     $tpl: '<ul><li b-repeat="item in list.map(map)" data-index="{{$index}}">{{item.size}}</li></ul>'

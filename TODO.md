@@ -1,8 +1,8 @@
 - [x] 条件指令 `b-if` 为 false 时, 不其执行内部指令
-- [ ] 在 `repeat` 中调用方法 `this` 指向问题
+- [x] 在 `repeat` 中调用方法 `this` 指向问题
 - [x] 自定义双向绑定
 - [ ] 同步数组多实例时, 内部的更新的同步问题
-- [ ] 移除反模式的原型属性默认值特性 `$data, $watchers`
+- [x] 移除反模式的原型属性默认值特性 `$data, $watchers`
 - [x] 改造 `$target` 和 `$content`
 - [ ] transition
 - [x] 多元素 repeat

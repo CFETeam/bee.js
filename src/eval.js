@@ -56,7 +56,7 @@ var operators = {
     }
 
     //TODO 模板中方法的 this 应该指向 root
-  , '(': function(l, r){ return l.apply(context.locals, r) }
+  , '(': function(l, r){ return l.apply(root, r) }
     //filter. name|filter
   , '|': function(l, r){ return callFilter(l, r, []) }
   , 'new': function(l, r){
