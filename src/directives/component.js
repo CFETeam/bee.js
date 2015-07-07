@@ -68,10 +68,10 @@ module.exports = {
       el.bee = comp;
 
       //直接将component 作为根元素时, 同步跟新容器 .$el 引用
-      if(vm.$el === el) {
-        vm.__ref = comp;
-        vm.$el = comp.$el;
-      }
+      // if(vm.$el === el) {
+      //   vm.__ref = comp;
+      //   vm.$el = comp.$el;
+      // }
       return comp;
     }else{
       console.warn('Component: ' + this.path + ' not defined! Ignore');

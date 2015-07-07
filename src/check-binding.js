@@ -15,6 +15,8 @@ var NODETYPE = {
   , FRAGMENT: 11
 };
 
+doc.createElement('template');
+
 /**
  * 遍历 dom 树
  * @private
@@ -48,6 +50,16 @@ function walk(el) {
       //文本节点
       watchers = watchers.concat( checkText.call(this, el) );
       return watchers;
+  }
+
+  if(el.nodeName.toLowerCase() === 'template') {
+    //template shim
+    if(!el.content) {
+      el.content = doc.createDocumentFragment();
+      while(el.childNodes[0]) {
+        el.content.appendChild(el.childNodes[0])
+      }
+    }
   }
 
   dirResult = checkAttr.call(this, el);

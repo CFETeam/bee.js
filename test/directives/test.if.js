@@ -22,9 +22,9 @@ test('b-if', function(t) {
   t.end();
 })
 
-test('b-if-start, b-if-end', function(t) {
+test('range if', function(t) {
   var Test = Bee.tag('test', {});
-  var tpl = '<div><span b-if-start="flag">{{text}}</span><div>123</div><div b-if-end>456</div></div>'
+  var tpl = '<div><template b-if="flag"><span>{{text}}</span><div>123</div><div>456</div></template></div>'
 
   var bee = new Bee(tpl, {$data: {flag: true, text: 'text'}})
 
@@ -36,6 +36,7 @@ test('b-if-start, b-if-end', function(t) {
 
   bee.$set('flag', true)
   t.equal($(bee.$el).text(), 'test123456', 'show again')
+  t.equal($(bee.$el).html().toLowerCase(), '<!--if start--><span>test</span><div>123</div><div>456</div><!--if end-->', 'tag')
 
   t.end();
 })

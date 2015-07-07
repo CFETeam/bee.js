@@ -49,11 +49,14 @@ Directive.prototype = {
 , anchor: false
 , anchors: null
 
-  //当 anchor 为 true 时, 获取两个锚点之间的所有节点.
-, getNodes: function() {
-    var nodes = [], node = this.anchors.start.nextSibling;
+  //获取两个锚点之间的所有节点.
+, getNodes: function(start, end) {
+    start = start || this.anchors.start;
+    end = end || this.anchors.end;
+
+    var nodes = [], node = start.nextSibling;
     if(this.anchor && node) {
-      while(node !== this.anchors.end){
+      while(node !== end){
         nodes.push(node);
         node = node.nextSibling;
       }
@@ -186,33 +189,8 @@ function getDir(dirName, dirs) {
   return dir;
 }
 
-function fixRange(start, endDir, anchors) {
-  var end = start
-    , parent
-    ;
-
-  while(end = end.nextSibling) {
-    if(domUtils.hasAttr(end, endDir)){
-      end.removeAttribute(endDir)
-      break;
-    }
-  }
-  if(end) {
-    parent = end.parentNode
-
-    if(end.nextSibling) {
-      parent.insertBefore(anchors.end, end.nextSibling)
-    }else{
-      parent.appendChild(anchors.end)
-    }
-  }else{
-    console.error('expect: ' + endDir + ', but not found!')
-  }
-}
-
 module.exports = {
   Directive: Directive,
   directive: directive,
-  getDirs: getDirs,
-  fixRange: fixRange
+  getDirs: getDirs
 };

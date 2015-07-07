@@ -3,22 +3,20 @@
 var checkBinding = require('../check-binding')
   , domUtils = require('../dom-utils')
   , doc = require('../env').document
-  , directive = require('../directive')
 
 module.exports = {
   anchor: true
 , priority: 900
 , terminal: true
-, sub: true
 , link: function() {
-    var endDir = this.vm.constructor.prefix + 'if-end';
-
     this.watchers = [];
 
-    if(this.subType === 'start') {
-      directive.fixRange(this.el, endDir, this.anchors)
+    if(this.el.content) {
+      this.frag = this.el.content;
+      this.el.parentNode.removeChild(this.el);
+    }else{
+      this.frag = doc.createDocumentFragment()
     }
-    this.frag = doc.createDocumentFragment()
     this.remove();
   }
 , update: function(val) {

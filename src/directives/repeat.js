@@ -30,11 +30,18 @@ module.exports = {
     //只继承静态的默认参数
     this.cstr = cstr.extend({}, this.cstr)
 
+    //默认数据不应继承
     this.cstr.defaults = {};
 
     this.curArr = [];
     this.vmList = [];//子 VM list
 
+    if(this.el.content) {
+      this.frag = this.el.content;
+      this.isRange = true
+    }else{
+      this.frag = this.el;
+    }
     this.el.parentNode.removeChild(this.el);
   }
 , update: function(items) {
@@ -53,7 +60,14 @@ module.exports = {
       arrDiff(curArr, items, trackId).forEach(function(item) {
         var pos = indexByTrackId(item, curArr, trackId)
         curArr.splice(pos, 1)
-        parentNode.removeChild(vmList[pos].$el)
+
+        if(that.isRange) {
+          getNodesByIndex(that, pos).forEach(function(node) {
+            parentNode.removeChild(node)
+          })
+        }else{
+          parentNode.removeChild(vmList[pos].$el)
+        }
         vmList[pos].$destroy()
         vmList.splice(pos, 1)
       })
@@ -61,24 +75,28 @@ module.exports = {
       items.forEach(function(item, i) {
         var pos = indexByTrackId(item, items, trackId, i)
           , oldPos = indexByTrackId(item, curArr, trackId, i)
-          , vm, el
+          , vm, el, anchor
           ;
-
-        //pos < 0 && (pos = items.lastIndexOf(item, i));
-        //oldPos < 0 && (oldPos = curArr.lastIndexOf(item, i));
 
         //新增元素
         if(oldPos < 0) {
 
-          el = this.el.cloneNode(true)
+          el = this.frag.cloneNode(true)
+
+          if(this.isRange) {
+            anchor = doc.createComment('')
+            el.childNodes.length ? el.insertBefore(anchor, el.childNodes[0]) : el.appendChild(anchor)
+          }
 
           vm = new this.cstr(el, {
             $data: item,
             _assignments: this.summary.assignments, $index: pos,
             $root: this.vm.$root, $parent: this.vm,
-            __repeat: true
+            __repeat: true,
+            __anchor__: anchor
           });
-          parentNode.insertBefore(vm.$el, vmList[pos] && vmList[pos].$el || this.anchors.end)
+
+          parentNode.insertBefore(vm.$el, getAnchor(that, pos))
           vmList.splice(pos, 0, vm);
           curArr.splice(pos, 0, item)
 
@@ -89,8 +107,10 @@ module.exports = {
 
           //调序
           if (pos !== oldPos) {
-            parentNode.insertBefore(vmList[oldPos].$el, vmList[pos] && vmList[pos].$el || that.anchors.end)
-            parentNode.insertBefore(vmList[pos].$el, vmList[oldPos + 1] && vmList[oldPos + 1].$el || that.anchors.end)
+
+            parentNode.insertBefore(getElByIndex(that, oldPos), getAnchor(that, pos))
+            parentNode.insertBefore(getElByIndex(that, pos), getAnchor(that, oldPos + 1))
+
             vmList[oldPos] = [vmList[pos], vmList[pos] = vmList[oldPos]][0]
             curArr[oldPos] = [curArr[pos], curArr[pos] = curArr[oldPos]][0]
             vmList[pos].$index = pos
@@ -149,6 +169,31 @@ module.exports = {
   }
 };
 
+function getAnchor(dir, index) {
+  var vm = dir.vmList[index]
+  return vm ? ( dir.isRange ? vm.__anchor__ : vm.$el ) : dir.anchors.end
+}
+
+//根据索引获取该次迭代中的所有元素
+function getNodesByIndex(dir, index) {
+  var vmList = dir.vmList
+    , anchor = vmList[index].__anchor__
+    , next = vmList[index + 1]
+    ;
+  return [anchor].concat(dir.getNodes(anchor, next && next.__anchor__))
+}
+
+function getElByIndex (dir, index) {
+  var frag = doc.createDocumentFragment()
+  if(dir.isRange) {
+    getNodesByIndex(dir, index).forEach(function(node) {
+      frag.appendChild(node)
+    })
+  }else{
+    frag.appendChild(dir.vmList[index].$el)
+  }
+  return frag
+}
 
 function arrDiff(arr1, arr2, trackId) {
   var arr2Copy = arr2.slice();
