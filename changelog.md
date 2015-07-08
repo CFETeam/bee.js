@@ -1,3 +1,15 @@
+0.5.0
+---
+- 支持模板内事件调用 `b-on-click="dosth()"` 写法
+- 自定义组件双向绑定支持. via `$valuekey`
+- 添加 `b-comonent` 的简写 `b-tag`
+- 多元素的 `b-if` 及 `b-repeat` 支持. via `template` or `b-template`
+- 移除 `$watchers`
+- 模板中 `repeat` 内调用方法的 `this` 改为指向根 ViewModel
+- 使用 `$isReplace` 替换 `$target` 的作用
+- 当 `b-if` 为 false 时, 其内部表达式将停止监听执行
+- 新增 `{{> content}}` 直接量简写 `b-content`
+
 0.4.1
 ---
 - `b-style` 将不会覆盖原始的 `style` 样式

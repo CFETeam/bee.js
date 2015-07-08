@@ -110,7 +110,7 @@ var attrPostReg = /\?$/;
  */
 function getDirs(el, cstr){
   var attr, attrName, dirName, proto
-    , dirs = [], dir, anchors = {}
+    , dirs = [], dir
     , parent = el.parentNode
     , nodeName = el.nodeName.toLowerCase()
     , directives = cstr.directives
@@ -146,17 +146,8 @@ function getDirs(el, cstr){
 
     if(dir) {
       if(dir.anchor) {
-        anchors.start = doc.createComment(dir.dirName + ' start');
-        parent.insertBefore(anchors.start, el);
-
-        anchors.end = doc.createComment(dir.dirName + ' end');
-        if(el.nextSibling) {
-          parent.insertBefore(anchors.end, el.nextSibling);
-        }else{
-          parent.appendChild(anchors.end);
-        }
+        dir.anchors = setAnchors(el, dir.dirName);
       }
-      dir.anchors = dir.anchor ? anchors : null;
       dirs.push(utils.extend(dir, proto));
     }
   }
@@ -189,8 +180,26 @@ function getDir(dirName, dirs) {
   return dir;
 }
 
+function setAnchors(node, dirName) {
+  var parent = node.parentNode
+    , anchors = {}
+    ;
+
+    anchors.start = doc.createComment(dirName + ' start');
+    parent.insertBefore(anchors.start, node);
+
+    anchors.end = doc.createComment(dirName + ' end');
+    if(node.nextSibling) {
+      parent.insertBefore(anchors.end, node.nextSibling);
+    }else{
+      parent.appendChild(anchors.end);
+    }
+    return anchors
+}
+
 module.exports = {
   Directive: Directive,
   directive: directive,
-  getDirs: getDirs
+  getDirs: getDirs,
+  setAnchors: setAnchors
 };

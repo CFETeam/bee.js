@@ -114,6 +114,7 @@ function checkAttr(el) {
   return result
 }
 
+var partialReg = /^>\s*/;
 //处理文本节点中的绑定占位符({{...}})
 function checkText(node) {
   var watchers = [];
@@ -136,7 +137,15 @@ function checkText(node) {
     }else{
       t = tokens[0];
       //内置各占位符处理.
-      dir = utils.create(t.escape ? dirs.text : dirs.html);
+      if(partialReg.test(t.path)) {
+        t.path = t.path.replace(partialReg, '');
+        dir = utils.create(dirs.content)
+        dir.dirName = dir.type
+        dir.anchors = directive.setAnchors(node, dir.type)
+      }else{
+        dir = utils.create(t.escape ? dirs.text : dirs.html)
+      }
+
       watchers = setBinding.call(this, utils.extend(dir, t, {
         el: node
       }));

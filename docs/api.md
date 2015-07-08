@@ -39,16 +39,14 @@ bee.a;              //'a'
 > 尽管 `props` 和 `$data` 都会并入 Bee 实例中, 多数时候它们使用起来也没有区别.
 但正像它们的名字那样, 请还是区分它们的使用. 即在 `$data` 中存放数据, 而方法和其他属性放在 `props` 里.
 
-#### $tpl, $el 及 $target
-这三个属性相互关联, 但是有不同的用处.
+#### $tpl 和 $el
+这两个属性相互关联, 但是有不同的用处.
 
 - `$tpl` 等同于前面的参数 `tpl`, 缺省值为 `<div></div>`. 当传入一个 dom 对象时,
 其会被传换成该元素的 `outerHTML`.
-- `$el` 是一个 dom 元素, 缺省值是 `$tpl` 表示的元素. 当 `$tpl` 和 `$el` 都传入时,
-`$tpl` 将被插入 `$el` 中.
-- `$target` 类似 `$el`, 不同的是 `$target` 节点会被 `$tpl` 节点替换, 而不是插入.
-- 当 `$target` 存在时, 会同时创建一个 `$content` 的 documentFragment,
-`$target` 的子元素会被存放其中.
+- `$el` 是一个 dom 元素, 缺省值是 `$tpl` 表示的元素. `$el` 的子元素, 会被移到 `$content` 属性中.
+- 当 `$tpl` 和 `$el` 都传入时, 根据 `$isReplace` 来判断是用 `$tpl` 替换 `$el`
+还是将 `$tpl` 插入 `$el`中.
 
 ```js
 var el = document.getElementById('someId');
@@ -57,9 +55,10 @@ bee.$el === el;    //true
 ```
 
 #### $content [String|Element|NodeList]
-传入的 `$content` 内容会被转成一个 documentFragment 存放在对应属性中. 配合 `content` 指令可以将其内容展示出来.
+传入的 `$content` 内容会被转成一个 documentFragment 存放在对应属性中.
+配合 `content` 指令可以将其内容展示出来.
 
-当有定义 `$target` 时, `$content` 会被 `$target` 中的内容替代.
+当有传入 `$el` 时, `$content` 会被 `$el` 中的内容替代.
 
 #### $mixins [Array]
 除了构造函数继承外, `$mixins`  是另外一种继承方式. 一些可复用的方法集合可通过 `$mixins` 并入 Bee 实例中.
@@ -76,7 +75,7 @@ bee.$el === el;    //true
 
 ### Bee.defaults
 
-定义默认值, 该构造函数都将带上这些默认值.
+数据 `$data` 的默认值, 该构造函数下的实例都将带上这些默认值.
 
 ### Bee.extend
 
@@ -152,10 +151,11 @@ bee.$set('key', 1);
 ### $watch
 
 参数:
-- **expression** `String`
-- **callback** `Function`
+- **expression** `String` 监听的表达式
+- **callback** `Function` 回调
+- **immediate** `Boolean` 是否在监听时立即回调一次. 默认为 false
 
-监听某个表达式的变化. 调用后 `callback` 回调会立即执行一次.
+监听某个表达式的变化.
 
 ### $unwatch
 
@@ -274,13 +274,15 @@ IE 浏览器会校验 `style` 属性值, 所以直接使用 `style='{{"color: wh
 
 - `b-text` 用于展示普通文本内容. 等同于双花括号表达式. 比如在文本中 `<span b-text="some.key"><span>` 等同于 `{{some.key}}`
 - `b-html` 用于展示为转义 HTML 内容. 等同于三花括号表达式. 比如 `<span b-html="some.key"><span>` 等同于 `{{{some.key}}}`
-- `b-content` 可用于展示 DOM 内容.
+- `b-content` 可用于展示 DOM 内容. 等同于 `{{> some.key }}`
 
 ### b-ref
 对指定元素或组件建立一个快速的引用. `b-ref` 标记引用以供 `$refs` 使用.
 
+### b-template
+`templte` 标签的 `ie8` 兼容.
 
-### b-component
+### b-component b-tag
 用于组件化自定义标签. 等同于自定义标签. 如 `<span b-compoent="x-component">content</span>` 等同于 `<x-component>content</x-component>`
 
-需要注意的是, IE8 中的自定义标签 bug 极多, 在某些情况下甚至不能正常工作. 所以如果要兼容 IE8, 请尽量使用 `b-component`  代替自定义标签.
+需要注意的是, IE8 中的自定义标签 bug 极多, 在某些情况下甚至不能正常工作. 所以如果要兼容 IE8, 请尽量使用 `b-component` 或 `b-tag` 代替自定义标签.

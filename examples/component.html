@@ -30,7 +30,7 @@
     <div b-style="{display: show ? 'block' : 'none'}" data-role="dialog">
     <h3>{{title}}</h3>
     <div class="content">
-        <span b-content="$content"></span>
+        {{> $content }}
     </div>
   <div> <button b-on="$btnEvents" b-repeat="btn in $btns">{{btn}}</button> </div>
   </div>
