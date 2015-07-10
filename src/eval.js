@@ -43,13 +43,13 @@ var operators = {
   , ',': function(l, r) { return l, r; }
 
   , '.': function(l, r) {
-      if(r){
+      if(r && path){
         path = path + '.' + r;
       }
       return l[r];
     }
   , '[': function(l, r) {
-      if(typeof r !== 'undefined'){
+      if(typeof r !== 'undefined' && path){
         path = path + '.' + r;
       }
       return l[r];

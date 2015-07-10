@@ -24,7 +24,7 @@ module.exports = {
 
         //更新组件
       , update = function(val) {
-          if(val === 0) { val = '0' }
+          if(val === 0 && comp.type !== 'checkbox') { val = '0' }
           var newVal = (val || '') + ''
             , val = comp[attr]
             ;

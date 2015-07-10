@@ -99,14 +99,9 @@ Watcher.getWatchers = function getWatchers(vm, keyPath) {
 }
 
 function watcherUpdate (val) {
-  var oldValue;
-  try{
-    oldValue = this.val;
-    this.val = val;
-    this.dir.update(val, oldValue);
-  }catch(e){
-    console.error(e);
-  }
+  var oldValue = this.val;
+  this.val = val;
+  this.dir.update(val, oldValue);
 }
 
 utils.extend(Watcher.prototype, {

@@ -34,8 +34,6 @@ testConstructor(Bee);
 test(function(t) {
   t.test('默认选项', function(t) {
     var bee = new Bee;
-    t.equal(bee.$tpl, '<div></div>')
-    t.equal(bee.$el.outerHTML.toLowerCase().trim(), bee.$tpl)
     t.equal(Object.keys(bee.$data).length, 0)
     t.equal(bee.$parent, null)
     t.equal(bee.$root, bee)

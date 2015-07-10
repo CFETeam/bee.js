@@ -68,7 +68,7 @@ function Bee(tpl, props) {
   , $mixins: []
 
   , $el: this.$el || null
-  , $tpl: this.$tpl || '<div></div>'
+  , $tpl: this.$tpl || '<div>{{> $content }}</div>'
   , $content: this.$content || null
 
   , $isReplace: false

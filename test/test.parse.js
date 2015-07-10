@@ -204,10 +204,20 @@ test('context summary', function(t) {
       }
     }
 
-    t.equal(Object.keys(context.locals).length, 0);
-    t.equal(Object.keys(context.filters).length, 0);
-    t.equal(Object.keys(context.paths).length, 0);
+    t.equal(Object.keys(context.locals).length, 0, 'lcoals');
+    t.equal(Object.keys(context.filters).length, 0, 'filters');
+    t.equal(Object.keys(context.paths).length, 0, 'paths');
 
     t.end();
+  })
+
+  t.test('[].slice.call([1, 2])', function() {
+    var s = summary(parse('[].slice.call([1, 2])'))
+
+    t.equal(s.locals.length, 0, 'locals');
+    t.equal(s.filters.length, 0, 'filters');
+    t.equal(s.paths.length, 0, 'paths');
+
+    t.end()
   })
 });
