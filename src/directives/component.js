@@ -20,7 +20,7 @@ module.exports = {
 
     if(Comp) {
 
-      if(Comp === cstr && vm.__mountcall) {
+      if(Comp === cstr && vm.__mountcall || el.bee && el.bee === vm) {
         return;
       }
 
@@ -54,12 +54,12 @@ module.exports = {
         })
       });
 
-      content = domUtils.createContent(el.childNodes);
+      //content = domUtils.createContent(el.childNodes);
 
       //组件内容属于其容器
-      vm.__links = vm.__links.concat(checkBinding.walk.call(vm, content));
+      vm.__links = vm.__links.concat(checkBinding.walk.call(vm, el.childNodes));
 
-      el.appendChild(content)
+      //el.appendChild(content)
 
       this.component = comp = new Comp({
         $el: el,
