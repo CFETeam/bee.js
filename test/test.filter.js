@@ -143,7 +143,7 @@ test('filter', function(t) {
         setTimeout(function() {
           t.equal($(bee.$el).text(), '7')
           t.end()
-        }, 10)
+        }, 100)
       })
 
       t.test(function(t) {
@@ -178,7 +178,7 @@ test('filter', function(t) {
         setTimeout(function () {
           t.equal($(bee.$el).text(), '8')
           t.end();
-        }, 10)
+        }, 100)
       })
 
       t.test(function(t) {
