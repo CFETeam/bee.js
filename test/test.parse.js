@@ -163,6 +163,7 @@ test('expression 表达式', function(t) {
   , '"0" !== 0'
   , '"0" != 2'
   , 'new Date(123456789).getTime()'
+  , '!Math.random()'
   ];
 
   for(var i = 0, l = exps.length; i < l; i++){
