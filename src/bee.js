@@ -123,6 +123,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
   sub.directives = extend(create(this.directives), sub.directives);
   sub.components = extend(create(this.components), sub.components);
   sub.filters = extend(create(this.filters), sub.filters);
+  sub.defaults = extend(true, {}, this.defaults, sub.defaults);
 }), utils: utils}, Dir, Com, {
   setPrefix: setPrefix
 , directive: directive.directive

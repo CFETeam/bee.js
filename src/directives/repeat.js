@@ -90,10 +90,12 @@ module.exports = {
 
           vm = new this.cstr(el, {
             $data: item,
-            _assignments: this.summary.assignments, $index: pos,
-            $root: this.vm.$root, $parent: this.vm,
+            $index: pos,
+            $root: this.vm.$root,
+            $parent: this.vm,
+            _assignments: this.summary.assignments,
             __repeat: true,
-            __anchor__: anchor
+            __anchor: anchor
           });
 
           parentNode.insertBefore(vm.$el, getAnchor(that, pos))
@@ -171,16 +173,16 @@ module.exports = {
 
 function getAnchor(dir, index) {
   var vm = dir.vmList[index]
-  return vm ? ( dir.isRange ? vm.__anchor__ : vm.$el ) : dir.anchors.end
+  return vm ? ( dir.isRange ? vm.__anchor : vm.$el ) : dir.anchors.end
 }
 
 //根据索引获取该次迭代中的所有元素
 function getNodesByIndex(dir, index) {
   var vmList = dir.vmList
-    , anchor = vmList[index].__anchor__
+    , anchor = vmList[index].__anchor
     , next = vmList[index + 1]
     ;
-  return [anchor].concat(dir.getNodes(anchor, next && next.__anchor__))
+  return [anchor].concat(dir.getNodes(anchor, next && next.__anchor))
 }
 
 function getElByIndex (dir, index) {
