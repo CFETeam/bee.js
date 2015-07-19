@@ -1,4 +1,5 @@
 - [ ] 同步数组多实例时, 内部的更新的同步问题
+- [ ] `track-by="$index"` 支持
 - [ ] 通过 HTML 属性传递复杂类型数据
 - [ ] transition
 - [ ] 移除 node 端的 jsdom 依赖

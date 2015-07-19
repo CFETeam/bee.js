@@ -18,17 +18,14 @@ module.exports = {
     })
   }
 , link: function() {
-    var cstr = this.cstr = this.vm.constructor;
-
-    while(cstr.__super__){
-      cstr = cstr.__super__.constructor;
-    }
+    var Bee = require('../bee')
 
     this.trackId = this.el.getAttribute('track-by')
     this.el.removeAttribute('track-by')
 
-    //只继承静态的默认参数
-    this.cstr = cstr.extend({}, this.cstr)
+    //创建 repeat 的匿名构造函数
+    //继承父构造函数的 `directives, components, filters` 属性
+    this.cstr = Bee.extend({}, this.vm.constructor)
 
     //默认数据不应继承
     this.cstr.defaults = {};
