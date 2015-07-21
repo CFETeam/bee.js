@@ -159,7 +159,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
       props.$data = extend(domUtils.getAttrs(el), props.$data)
       instance = new Comp(extend({$el: el, $isReplace: true, __mountcall: true}, props))
     }else{
-      instance = new Bee(el, props);
+      instance = new this(el, props);
     }
     return instance
   }
