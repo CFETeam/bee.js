@@ -13,7 +13,7 @@
   <script type="text/javascript" src="../build/bee.js"></script>
 	<script>
 	Bee.tag('test', {
-		$tpl: '<div>test</div>'
+		$tpl: '<div>test {{a | json}}</div>'
 	})
 	</script>
 </head>
@@ -31,7 +31,7 @@
       <label for="title"><input type="text" disabled?="disabled" b-model="attr.title" id="title" value="输入显示框的 title"/></label>
       <label for="disabled">条件属性<input type="checkbox" b-model="disabled" id="disabled"/></label>
     </div>
-		<test b-if="disabled"></test>
+		<test a=" {{style}}"></test>
   </div>
 <script type="text/javascript" id=js>
   var bee = new Bee(window.template, {
