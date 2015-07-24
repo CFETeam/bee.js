@@ -23,7 +23,7 @@
     <div class="show" b-attr="attr" b-style="{width: width + '%',color: style.color, height: height * 2, 'backgroundColor':  bgcolor}">
         {{toJSON($data)}}
     </div>
-    <div class="control" title="这里也是 title: {{attr.title}}">
+    <div class="control" b-class="{disabled: 'bbb'}" title="这里也是 title: {{attr.title}}">
       <label for="width">width<input type="range" value=50 b-model=width id="width"></label>
       <label for="height">height<input type="range" b-model=height id="height"></label>
       <label for="color" b-style="style">文字颜色<input type="color" b-model='style.color' value="#0044ff" id="color"></label>

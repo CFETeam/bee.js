@@ -436,7 +436,7 @@ var make_parse = function (vars) {
 	infix("/", 60);
 	infix("%", 60);
 
-	infix("(", 70, function (left) {
+	infix("(", 75, function (left) {
 		var a = [];
 		if (left.id === "." || left.id === "[") {
 			this.arity = "ternary";
@@ -478,7 +478,7 @@ var make_parse = function (vars) {
 		return this;
 	});
 
-	infix("[", 80, function (left) {
+	infix("[", 60, function (left) {
 		this.first = left;
 		this.second = expression(0);
 		this.arity = "binary";

@@ -20,7 +20,8 @@ test('静态内容', function(t) {
   var $el = $(bee.$el)
 
   t.ok($el.hasClass('container'))
-  t.ok($el.children().hasClass('component'))
+  console.log($el.html())
+  t.ok($el.children().hasClass('component'), '组件内容默认会替换自定义标签')
 
   t.equal($el.children().children().length, 2)
   t.equal($el.children().text(), '这里是$content的内容')

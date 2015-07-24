@@ -121,9 +121,9 @@ function Bee(tpl, props) {
 extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
   //每个构造函数都有自己的 directives ,components, filters 引用, 继承自父构造函数
   //默认情况下, 更新父构造函数 directive, components, filters 会同步更新子构造函数. 反之不行
-  sub.directives = create(this.directives);
-  sub.components = create(this.components);
-  sub.filters = create(this.filters);
+  sub.directives = extend(create(this.directives), sub.directives);
+  sub.components = extend(create(this.components), sub.components);
+  sub.filters = extend(create(this.filters), sub.filters);
 
   sub.defaults = extend(true, {}, this.defaults, sub.defaults);
 }), utils: utils}, Dir, Com, {
@@ -161,7 +161,7 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
       props.$data = extend(domUtils.getAttrs(el), props.$data)
       instance = new Comp(extend({$el: el, $isReplace: true, __mountcall: true}, props))
     }else{
-      instance = new Bee(el, props);
+      instance = new this(el, props);
     }
     return instance
   }

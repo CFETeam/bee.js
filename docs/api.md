@@ -45,8 +45,7 @@ bee.a;              //'a'
 - `$tpl` 等同于前面的参数 `tpl`, 缺省值为 `<div></div>`. 当传入一个 dom 对象时,
 其会被传换成该元素的 `outerHTML`.
 - `$el` 是一个 dom 元素, 缺省值是 `$tpl` 表示的元素. `$el` 的子元素, 会被移到 `$content` 属性中.
-- 当 `$tpl` 和 `$el` 都传入时, 根据 `$isReplace` 来判断是用 `$tpl` 替换 `$el`
-还是将 `$tpl` 插入 `$el`中.
+
 
 ```js
 var el = document.getElementById('someId');

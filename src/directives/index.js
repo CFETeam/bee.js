@@ -75,5 +75,6 @@ dirs.on = require('./on');
 dirs.component = dirs.tag = require('./component');
 dirs.content = require('./content')
 dirs.ref = require('./ref')
+dirs['class'] = require('./class.js')
 
 module.exports = dirs;

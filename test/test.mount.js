@@ -26,5 +26,25 @@ test('Bee.mount', function(t) {
     t.end()
   })
 
+  t.test('sub class mount', function(t) {
+    var Ant = Bee.extend()
+
+    Ant.tag('test2', {})
+
+    var tpl = '<div><test2 b-ref="test" attr="1"></test2></div>'
+    var bee = Bee.mount($(tpl)[0])
+
+    t.notOk(bee.$refs.test.$data)
+
+    bee = Ant.mount($(tpl)[0])
+
+    t.ok(bee.$refs.test.$data)
+
+    t.equal(bee.$refs.test.$data.attr, "1")
+
+    t.end()
+
+  })
+
   t.end()
 })

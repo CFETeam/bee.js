@@ -1,4 +1,7 @@
 require("es6-promise").polyfill();
+require('./directives/test.class.js');
+require('./directives/test.component.js');
+require('./directives/test.content.js');
 require('./directives/test.if.js');
 require('./directives/test.ref.js');
 require('./directives/test.repeat.js');

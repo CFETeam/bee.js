@@ -8,7 +8,7 @@
 ---
 - [x] 自定义标签
 - [x] 数据绑定
-- [x] 轻量级 `MIN + GZIP` 后 `11K`
+- [x] 轻量级 `MIN + GZIP` 后 `12K`
 
 ```javascript
 new Bee

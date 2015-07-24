@@ -16,12 +16,14 @@ module.exports = {
 , update: function(val) {
     var el = this.el;
     var newAttrs = {};
+
+    //b-attr
     if(this.dirName === this.type) {
       for(var attr in val) {
         setAttr(el, attr, val[attr]);
-        //if(val[attr]) {
-          delete this.attrs[attr];
-        //}
+
+        delete this.attrs[attr];
+        
         newAttrs[attr] = true;
       }
 
@@ -42,7 +44,7 @@ module.exports = {
 };
 
 
-//IE 浏览器很多属性通过 `setAttribute` 设置后无效. 
+//IE 浏览器很多属性通过 `setAttribute` 设置后无效.
 //这些通过 `el[attr] = value` 设置的属性却能够通过 `removeAttribute` 清除.
 function setAttr(el, attr, val){
   try{

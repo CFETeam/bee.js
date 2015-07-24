@@ -18,17 +18,14 @@ module.exports = {
     })
   }
 , link: function() {
-    var cstr = this.cstr = this.vm.constructor;
-
-    while(cstr.__super__){
-      cstr = cstr.__super__.constructor;
-    }
+    var Bee = require('../bee')
 
     this.trackId = this.el.getAttribute('track-by')
     this.el.removeAttribute('track-by')
 
-    //只继承静态的默认参数
-    this.cstr = cstr.extend({}, this.cstr)
+    //创建 repeat 的匿名构造函数
+    //继承父构造函数的 `directives, components, filters` 属性
+    this.cstr = Bee.extend({}, this.vm.constructor)
 
     //默认数据不应继承
     this.cstr.defaults = {};
@@ -90,10 +87,12 @@ module.exports = {
 
           vm = new this.cstr(el, {
             $data: item,
-            _assignments: this.summary.assignments, $index: pos,
-            $root: this.vm.$root, $parent: this.vm,
+            $index: pos,
+            $root: this.vm.$root,
+            $parent: this.vm,
+            _assignments: this.summary.assignments,
             __repeat: true,
-            __anchor__: anchor
+            __anchor: anchor
           });
 
           parentNode.insertBefore(vm.$el, getAnchor(that, pos))
@@ -171,16 +170,16 @@ module.exports = {
 
 function getAnchor(dir, index) {
   var vm = dir.vmList[index]
-  return vm ? ( dir.isRange ? vm.__anchor__ : vm.$el ) : dir.anchors.end
+  return vm ? ( dir.isRange ? vm.__anchor : vm.$el ) : dir.anchors.end
 }
 
 //根据索引获取该次迭代中的所有元素
 function getNodesByIndex(dir, index) {
   var vmList = dir.vmList
-    , anchor = vmList[index].__anchor__
+    , anchor = vmList[index].__anchor
     , next = vmList[index + 1]
     ;
-  return [anchor].concat(dir.getNodes(anchor, next && next.__anchor__))
+  return [anchor].concat(dir.getNodes(anchor, next && next.__anchor))
 }
 
 function getElByIndex (dir, index) {

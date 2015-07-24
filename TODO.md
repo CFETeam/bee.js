@@ -1,9 +1,6 @@
-- [x] 条件指令 `b-if` 为 false 时, 不其执行内部指令
-- [x] 在 `repeat` 中调用方法 `this` 指向问题
-- [x] 自定义双向绑定
 - [ ] 同步数组多实例时, 内部的更新的同步问题
-- [x] 移除反模式的原型属性默认值特性 `$data, $watchers`
-- [x] 改造 `$target` 和 `$content`
+- [ ] `track-by="$index"` 支持
+- [ ] 通过 HTML 属性传递复杂类型数据
 - [ ] transition
-- [x] 多元素 repeat
+- [ ] 移除 node 端的 jsdom 依赖
 - [ ] 文档, 文档, 测试, 测试

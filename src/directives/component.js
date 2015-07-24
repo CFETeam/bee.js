@@ -13,23 +13,18 @@ module.exports = {
     var vm = this.vm;
     var el = this.el;
     var cstr = vm.constructor;
-    var comp, content;
-    //var refName;
-    var dirs = [], $data = {};
+    var comp;
+    var dirs, $data = {};
     var Comp = cstr.getComponent(this.path)
 
     if(Comp) {
 
+      //直接 `Bee.mount` 一个组件
       if(Comp === cstr && vm.__mountcall || el.bee && el.bee === vm) {
         return;
       }
 
-      dirs = this.dirs;
-
-      dirs = dirs.filter(function (dir) {
-        // if(dir.type === 'ref') {
-        //   refName = dir.path;
-        // }
+      dirs = this.dirs.filter(function (dir) {
         return dir.type == 'attr' || dir.type == 'with';
       });
 
@@ -54,28 +49,20 @@ module.exports = {
         })
       });
 
-      //content = domUtils.createContent(el.childNodes);
-
       //组件内容属于其容器
       vm.__links = vm.__links.concat(checkBinding.walk.call(vm, el.childNodes));
-
-      //el.appendChild(content)
 
       this.component = comp = new Comp({
         $el: el,
         $isReplace: true,
-        $data: utils.extend({}, Comp.prototype.$data, $data, domUtils.getAttrs(el))
+        
+        $data: utils.extend(true, {}, $data, domUtils.getAttrs(el))
       });
       el.bee = comp;
 
-      //直接将component 作为根元素时, 同步跟新容器 .$el 引用
-      // if(vm.$el === el) {
-      //   vm.__ref = comp;
-      //   vm.$el = comp.$el;
-      // }
       return comp;
     }else{
-      console.warn('Component: ' + this.path + ' not defined! Ignore');
+      console.error('Component: ' + this.path + ' not defined!');
     }
   }
 };
