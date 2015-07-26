@@ -122,9 +122,30 @@ var hyphenToCamel = function(attrName) {
   })
 }
 
+//驼峰转连接符
+var camelReg = /([A-Z])/g;
+var camelToHyphen = function(key) {
+  return key.replace(camelReg, function (upperChar) {
+    return '-' + upperChar.toLowerCase();
+  })
+}
+
 var utils = {
   noop: function (){}
-, ie: !!doc.attachEvent
+, ie: (function(){
+    var undef,
+        v = 3,
+        div = doc.createElement('div'),
+        all = div.getElementsByTagName('i');
+
+    while (
+      div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
+      all[0]
+    );
+
+    return v > 4 ? v : undef;
+
+  }())
 
 , isObject: function (val) {
     return typeof val === 'object' && val !== null;
@@ -219,8 +240,9 @@ var utils = {
       }
     }
     return arr;
-  },
-  hyphenToCamel: hyphenToCamel
+  }
+, hyphenToCamel: hyphenToCamel
+, camelToHyphen: camelToHyphen
 };
 
 module.exports = utils;

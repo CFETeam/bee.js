@@ -16,6 +16,7 @@ module.exports = {
     var comp;
     var dirs, $data = {};
     var Comp = cstr.getComponent(this.path)
+    var statics = {};
 
     if(Comp) {
 
@@ -37,13 +38,14 @@ module.exports = {
           utils.extend($data, vm.$get(curPath))
         }else{
           comPath = utils.hyphenToCamel(dir.dirName);
-          $data[comPath] = vm.$get(curPath);
+          $data[comPath] = getProperty(dir)
+          dir.el.removeAttribute(dir.dirName)
         }
 
         //监听父组件更新, 同步数据
         vm.$watch(curPath, function (val) {
           if(comp){
-            val = dir.textMap ? dir.textMap.join('') : val;
+            val = getProperty(dir);
             comPath ? comp.$set(comPath, val) : comp.$set(val);
           }
         })
@@ -52,11 +54,24 @@ module.exports = {
       //组件内容属于其容器
       vm.__links = vm.__links.concat(checkBinding.walk.call(vm, el.childNodes));
 
+      statics = domUtils.getAttrs(el)
+
+      //排除指令属性
+      var _dir;
+      for(var attr in statics) {
+        _dir = utils.camelToHyphen(attr);
+        _dir = _dir.slice(vm.constructor.prefix.length)
+
+        if(_dir in vm.constructor.directives) {
+          delete statics[attr]
+        }
+      }
+
       this.component = comp = new Comp({
         $el: el,
         $isReplace: true,
-        
-        $data: utils.extend(true, {}, $data, domUtils.getAttrs(el))
+
+        $data: utils.extend(true, {}, $data, statics)
       });
       el.bee = comp;
 
@@ -66,3 +81,11 @@ module.exports = {
     }
   }
 };
+
+//如果组件的属性只有一个表达式, 则保持该表达式的数据类型
+function getProperty(dir) {
+  var textMap = dir.textMap, val
+  val = textMap && textMap.length > 1 ? textMap.join('') : textMap[0]
+
+  return utils.isPlainObject(val) ? utils.extend(true, {}, val) : val;
+}

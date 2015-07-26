@@ -23,7 +23,7 @@ module.exports = {
         setAttr(el, attr, val[attr]);
 
         delete this.attrs[attr];
-        
+
         newAttrs[attr] = true;
       }
 
@@ -36,7 +36,7 @@ module.exports = {
       if(this.conditional) {
         val ? setAttr(el, this.dirName, val) : removeAttr(el, this.dirName);
       }else{
-        this.textMap[this.position] = val && (val + '');
+        this.textMap[this.position] = val;
         setAttr(el, this.dirName, this.textMap.join(''));
       }
     }

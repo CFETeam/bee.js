@@ -58,14 +58,16 @@ test(function(t) {
   })
 
   t.test('Bee.extend', function(t) {
-    var proto = {pro: Math.random()}, staticProp = {sta: Math.random(), filters: {b: function(){}}};
+    var proto = {pro: Math.random()},
+      staticProp = {sta: Math.random(), filters: {b: function(){}}};
+
     var Ant = Bee.extend(proto, staticProp)
     t.equal(Ant.sta, staticProp.sta);
     t.equal(Ant.prototype.pro, proto.pro);
     t.equal(Ant.extend, Bee.extend);
     t.equal(Ant.tag, Bee.tag);
     t.equal(Ant.directive, Bee.directive);
-    t.ok(Ant.filters.b)
+    t.equal(Ant.filters.b, staticProp.filters.b)
 
     t.notOk(Bee.sta)
     t.notOk(Bee.prototype.pro)
@@ -78,6 +80,24 @@ test(function(t) {
     t.notOk(Ant.filters.c)
 
     testConstructor(Ant, 'Ant');
+
+    t.comment('更新父构造函数 directive, components, filters 会同步更新子构造函数')
+
+    var newFilter = function() {}
+
+    Ant.filter('b', newFilter)
+
+    t.equal(Ant.filters.b, newFilter, 'filter update')
+    t.equal(Cicada.filters.b, newFilter, 'filter update')
+    t.notEqual(newFilter, staticProp.filters.b)
+
+    t.comment('反之不行')
+
+    Cicada.filter('b', staticProp.filters.b)
+
+    t.equal(Cicada.filters.b, staticProp.filters.b, 'filter update')
+    t.equal(Ant.filters.b, newFilter, 'filter update')
+    t.notEqual(newFilter, staticProp.filters.b)
 
     t.end()
   })

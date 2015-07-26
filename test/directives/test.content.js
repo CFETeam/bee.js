@@ -1,5 +1,7 @@
 var test = require('tape');
 var Bee = require('../../');
+var utils = require('../../src/utils')
+
 var $ = require('jquery')
 if(typeof window === 'undefined') {
   $ = $(Bee.doc.parentWindow)
@@ -9,12 +11,12 @@ var Ant = Bee.extend({
   $tpl: '<div class="component"><span b-content="$content"></span></div>'
 })
 
-Bee.tag('ant', Ant)
-
 test('静态内容', function(t) {
 
+  Bee.tag('ant', Ant)
+
   var bee = new Bee({
-    $tpl: '<div class="container"><ant><span>这里是</span><span>$content的内容</span></ant></div>'
+    $tpl: '<div class="container"><div b-tag="ant"><span>这里是</span><span>$content的内容</span></div></div>'
   })
 
   var $el = $(bee.$el)
@@ -31,8 +33,10 @@ test('静态内容', function(t) {
 
 test('普通内容', function(t) {
 
+  Bee.tag('ant', Ant)
+
   var bee = new Bee({
-    $tpl: '<div class="container"><ant><span>{{text}}</span><span>here</span></ant></div>',
+    $tpl: '<div class="container"><div b-tag="ant"><span>{{text}}</span><span>here</span></div></div>',
     $data: {text: 'container content '}
   })
 
@@ -50,8 +54,10 @@ test('普通内容', function(t) {
 
 test('含有 b-if 的内容', function(t) {
 
+  Bee.tag('ant', Ant)
+
   var bee = new Bee({
-    $tpl: '<div class="container"><ant><span b-if="flag">{{text}}</span><span>here</span></ant></div>',
+    $tpl: '<div class="container"><div b-tag="ant"><span b-if="flag">{{text}}</span><span>here</span></div></div>',
     $data: {text: 'container content '}
   })
 
@@ -75,8 +81,10 @@ test('含有 b-if 的内容', function(t) {
 
 test('含有 b-repeat 的内容', function(t) {
 
+  Bee.tag('ant', Ant)
+
   var bee = new Bee({
-    $tpl: '<div class="container"><ant><span b-repeat="item in list">{{item}} </span><span>here</span></ant></div>',
+    $tpl: '<div class="container"><div b-tag="ant"><span b-repeat="item in list">{{item}} </span><span>here</span></div></div>',
     $data: {list: ['ant']}
   })
 

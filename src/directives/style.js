@@ -2,7 +2,6 @@
 
 //样式指令
 var utils = require('../utils')
-var camelReg = /([A-Z])/g;
 
 //默认单位为 px 的属性
 var pixelAttrs = [
@@ -30,9 +29,7 @@ module.exports = {
         val = styles[key];
 
         //marginTop -> margin-top. 驼峰转连接符式
-        dashKey = key.replace(camelReg, function (upperChar) {
-          return '-' + upperChar.toLowerCase();
-        });
+        dashKey = utils.camelToHyphen(key);
 
         if (pixelAttrs.indexOf(dashKey) >= 0 && utils.isNumeric(val)) {
           val += 'px';

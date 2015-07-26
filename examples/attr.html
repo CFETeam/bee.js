@@ -31,7 +31,7 @@
       <label for="title"><input type="text" disabled?="disabled" b-model="attr.title" id="title" value="输入显示框的 title"/></label>
       <label for="disabled">条件属性<input type="checkbox" b-model="disabled" id="disabled"/></label>
     </div>
-		<test a=" {{style}}"></test>
+		<test a="{{style}}"></test>
   </div>
 <script type="text/javascript" id=js>
   var bee = new Bee(window.template, {
@@ -42,9 +42,9 @@
       style: {
         color: '#dd0707'
       }
-  }
-  , toJSON: function(obj) {
-          return JSON.stringify(obj)
+	  },
+		toJSON: function(obj) {
+    	return JSON.stringify(obj)
     }
   });
 </script>
