@@ -35,20 +35,18 @@ module.exports = {
         curPath = dir.path;
         if(dir.type === 'with') {
           //comPath = '$data'
-          utils.extend($data, vm.$get(curPath))
+          utils.extend(true, $data, vm.$get(curPath))
+
+          //监听父组件更新, 同步数据
+          //TODO 移到 b-with 指令中完成
+          vm.$watch(curPath, function (val) {
+            comp && comp.$set(utils.extend(true, {}, vm.$get(curPath)));
+          })
         }else{
           comPath = utils.hyphenToCamel(dir.dirName);
           $data[comPath] = getProperty(dir)
           dir.el.removeAttribute(dir.dirName)
         }
-
-        //监听父组件更新, 同步数据
-        vm.$watch(curPath, function (val) {
-          if(comp){
-            val = getProperty(dir);
-            comPath ? comp.$set(comPath, val) : comp.$set(val);
-          }
-        })
       });
 
       //组件内容属于其容器

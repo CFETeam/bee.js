@@ -47,7 +47,7 @@ module.exports = {
 function setProperty(el, key, val) {
   var component = el.bee
   if(component && !component.__repeat) {
-    component.$set(key, val)
+    component.$set(key, utils.isPlainObject(val) ? utils.extend(true, {}, val) : val)
   }else{
     setAttr(el, key, val)
   }
