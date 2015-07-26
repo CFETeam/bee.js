@@ -16,11 +16,12 @@ module.exports = {
 , update: function(val) {
     var el = this.el;
     var newAttrs = {};
+    var textMap = this.textMap
 
     //b-attr
     if(this.dirName === this.type) {
       for(var attr in val) {
-        setAttr(el, attr, val[attr]);
+        setProperty(el, attr, val[attr]);
 
         delete this.attrs[attr];
 
@@ -29,19 +30,37 @@ module.exports = {
 
       //移除不在上次记录中的属性
       for(var attr in this.attrs) {
-        removeAttr(el, attr);
+        removeProperty(el, attr);
       }
       this.attrs = newAttrs;
     }else{
       if(this.conditional) {
-        val ? setAttr(el, this.dirName, val) : removeAttr(el, this.dirName);
+        val ? setProperty(el, this.dirName, val) : removeProperty(el, this.dirName);
       }else{
-        this.textMap[this.position] = val;
-        setAttr(el, this.dirName, this.textMap.join(''));
+        textMap[this.position] = val;
+        setProperty(el, this.dirName, textMap.length > 1 ? textMap.join('') : textMap[0]);
       }
     }
   }
 };
+
+function setProperty(el, key, val) {
+  var component = el.bee
+  if(component && !component.__repeat) {
+    component.$set(key, val)
+  }else{
+    setAttr(el, key, val)
+  }
+}
+
+function removeProperty(el, key, undef) {
+  var component = el.bee
+  if(component && !component.__repeat) {
+    component.$set(key, undef)
+  }else{
+    el.removeAttribute(attr);
+  }
+}
 
 
 //IE 浏览器很多属性通过 `setAttribute` 设置后无效.
@@ -60,8 +79,4 @@ function setAttr(el, attr, val){
   }catch(e){}
   //chrome setattribute with `{{}}` will throw an error
   el.setAttribute(attr, val);
-}
-
-function removeAttr(el, attr) {
-  el.removeAttribute(attr);
 }

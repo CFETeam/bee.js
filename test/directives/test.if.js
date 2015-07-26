@@ -44,7 +44,7 @@ test('range if', function(t) {
 
 test('component b-if', function(t) {
   var Test = Bee.tag('test', {
-    $tpl: '<div>test</div>'
+    $tpl: '<div>test{{a}}</div>'
   })
 
   var tpl = '<div><span b-component="test" b-if="flag" a="{{ a }}"></span></div>'
@@ -55,6 +55,16 @@ test('component b-if', function(t) {
   bee.$set('flag', true)
 
   t.equal($(bee.$el).text(), 'test')
+
+  bee.$set('flag', false)
+
+  bee.$set('a', ' aa')
+
+  t.equal($(bee.$el).text(), '')
+
+  bee.$set('flag', true)
+
+  t.equal($(bee.$el).text(), 'test aa')
 
   t.end()
 })
