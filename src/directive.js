@@ -70,6 +70,9 @@ Directive.prototype = {
     if(cache && cache._type === this.type){
       this.ast = cache
     }else {
+      if(this.type == 'attr' && this.escape === false) {
+        this.path = '{' + this.path + '}'
+      }
       try {
         this.ast = parse(this.path, this.type);
         this.ast._type = this.type;

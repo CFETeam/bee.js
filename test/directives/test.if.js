@@ -47,7 +47,7 @@ test('component b-if', function(t) {
     $tpl: '<div>test</div>'
   })
 
-  var tpl = '<div><span b-component="test" b-if="flag"></span></div>'
+  var tpl = '<div><span b-component="test" b-if="flag" a="{{ a }}"></span></div>'
   var bee = new Bee(tpl)
 
   t.equal($(bee.$el).text(), '')
