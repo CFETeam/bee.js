@@ -184,7 +184,7 @@ var utils = {
 , beforeFn: function (oriFn, fn, breakCheck) {
     return function() {
       var ret = fn.apply(this, arguments);
-      if(breakCheck && breakCheck.call(this, ret)){
+      if(breakCheck && breakCheck.call(this, ret, arguments)){
         return ret;
       }
       return oriFn.apply(this, arguments);
@@ -194,7 +194,7 @@ var utils = {
 , afterFn: function (oriFn, fn, breakCheck) {
     return function() {
       var ret = oriFn.apply(this, arguments);
-      if(breakCheck && breakCheck.call(this, ret)){
+      if(breakCheck && breakCheck.call(this, ret, arguments)){
         return ret;
       }
       fn.apply(this, arguments);

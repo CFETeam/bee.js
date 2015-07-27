@@ -21,7 +21,7 @@ module.exports = {
     //b-attr
     if(this.dirName === this.type) {
       for(var attr in val) {
-        setProperty(el, attr, val[attr]);
+        setProperty.call(this, el, attr, val[attr]);
 
         delete this.attrs[attr];
 
@@ -30,33 +30,31 @@ module.exports = {
 
       //移除不在上次记录中的属性
       for(var attr in this.attrs) {
-        removeProperty(el, attr);
+        removeProperty.call(this, el, attr);
       }
       this.attrs = newAttrs;
     }else{
       if(this.conditional) {
-        val ? setProperty(el, this.dirName, val) : removeProperty(el, this.dirName);
+        val ? setProperty.call(this, el, this.dirName, val) : removeProperty.call(this, el, this.dirName);
       }else{
         textMap[this.position] = val;
-        setProperty(el, this.dirName, textMap.length > 1 ? textMap.join('') : textMap[0]);
+        setProperty.call(this, el, this.dirName, textMap.length > 1 ? textMap.join('') : textMap[0]);
       }
     }
   }
 };
 
 function setProperty(el, key, val) {
-  var component = el.bee
-  if(component && !component.__repeat) {
-    component.$set(key, utils.isPlainObject(val) ? utils.extend(true, {}, val) : val)
+  if(isComponent(this)) {
+    el.bee.$set(key, utils.isPlainObject(val) ? utils.extend(true, {}, val) : val)
   }else{
     setAttr(el, key, val)
   }
 }
 
 function removeProperty(el, key, undef) {
-  var component = el.bee
-  if(component && !component.__repeat) {
-    component.$set(key, undef)
+  if(isComponent(this)) {
+    el.bee.$set(key, undef)
   }else{
     el.removeAttribute(key);
   }
@@ -79,4 +77,9 @@ function setAttr(el, attr, val){
   }catch(e){}
   //chrome setattribute with `{{}}` will throw an error
   el.setAttribute(attr, val);
+}
+
+function isComponent (dir) {
+  var component = dir.el.bee;
+  return component && !component.__repeat && component != dir.vm;
 }

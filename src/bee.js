@@ -118,14 +118,15 @@ function Bee(tpl, props) {
 }
 
 //静态属性
-extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
+extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub, args) {
+  var staticProps = args[1] || {};
   //每个构造函数都有自己的 directives ,components, filters 引用, 继承自父构造函数
   //默认情况下, 更新父构造函数 directive, components, filters 会同步更新子构造函数. 反之不行
-  sub.directives = extend(create(this.directives), sub.directives);
-  sub.components = extend(create(this.components), sub.components);
-  sub.filters = extend(create(this.filters), sub.filters);
+  sub.directives = extend(create(this.directives), staticProps.directives);
+  sub.components = extend(create(this.components), staticProps.components);
+  sub.filters = extend(create(this.filters), staticProps.filters);
 
-  sub.defaults = extend(true, {}, this.defaults, sub.defaults);
+  sub.defaults = extend(true, {}, this.defaults, staticProps.defaults);
 }), utils: utils}, Dir, Com, {
   setPrefix: setPrefix
 , directive: directive.directive
