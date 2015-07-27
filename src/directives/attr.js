@@ -58,7 +58,7 @@ function removeProperty(el, key, undef) {
   if(component && !component.__repeat) {
     component.$set(key, undef)
   }else{
-    el.removeAttribute(attr);
+    el.removeAttribute(key);
   }
 }
 
