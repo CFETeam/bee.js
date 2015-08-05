@@ -46,7 +46,7 @@ module.exports = {
 
 function setProperty(el, key, val) {
   if(isComponent(this)) {
-    el.bee.$set(key, utils.isPlainObject(val) ? utils.extend(true, {}, val) : val)
+    el.bee.$set(utils.hyphenToCamel(key), val)
   }else{
     setAttr(el, key, val)
   }
@@ -54,7 +54,7 @@ function setProperty(el, key, val) {
 
 function removeProperty(el, key, undef) {
   if(isComponent(this)) {
-    el.bee.$set(key, undef)
+    el.bee.$set(utils.hyphenToCamel(key), undef)
   }else{
     el.removeAttribute(key);
   }

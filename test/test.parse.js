@@ -72,7 +72,7 @@ test('literal 直接量', function(t) {
 
 test('variable 变量', function(t) {
   t.test('parse: a + b', function(t) {
-    var l = summary(parse('a + b')).locals;
+    var l = summary(parse('a + b')).paths;
 
     t.equal(l.length, 2);
     t.equal(l[0], 'a');
@@ -83,11 +83,7 @@ test('variable 变量', function(t) {
 
   t.test('parse: a.abc', function(t) {
     var s = summary(parse('a.abc'))
-      , l = s.locals
       ;
-
-      t.equal(l.length, 1);
-      t.equal(l[0], 'a');
 
       t.equal(s.paths.length, 1);
       t.equal(s.paths[0], 'a.abc');
@@ -97,12 +93,8 @@ test('variable 变量', function(t) {
 
   t.test('parse: a[abc]', function(t) {
     var s = summary(parse('a[abc]'))
-      , l = s.locals
+      , l = s.paths
       ;
-
-      t.equal(l.length, 2);
-      t.equal(l[0], 'a');
-      t.equal(l[1], 'abc');
 
       t.equal(s.paths.length, 2);
       t.equal(s.paths[0], 'a');
@@ -113,14 +105,35 @@ test('variable 变量', function(t) {
 
   t.test('parse: a["abc"]', function(t) {
     var s = summary(parse('a["abc"]'))
-      , l = s.locals
       ;
-
-      t.equal(l.length, 1);
-      t.equal(l[0], 'a');
 
       t.equal(s.paths.length, 1);
       t.equal(s.paths[0], 'a.abc');
+
+      t.end();
+  });
+
+  t.test('parse: a[abc]', function(t) {
+    var s = summary(parse('a[abc]'))
+      , l = s.paths
+      ;
+
+      t.equal(s.paths.length, 2);
+      t.equal(s.paths[0], 'a');
+      t.equal(s.paths[1], 'abc');
+
+      t.end();
+  });
+
+  //动态 paths
+  t.test('parse: a[abc].b', function(t) {
+    var s = summary(parse('a[abc].b'))
+      , l = s.paths
+      ;
+
+      t.equal(s.paths.length, 2);
+      t.equal(s.paths[0], 'a');
+      t.equal(s.paths[1], 'abc');
 
       t.end();
   });
@@ -191,8 +204,7 @@ test('expression 表达式', function(t) {
 test('context summary', function(t) {
   t.test('23 | filter:abc', function(t) {
     var context = {
-      locals: {a: 1, b: 1, c:1}
-    , filters: {filter: 1, fi: 1}
+      filters: {filter: 1, fi: 1}
     , paths: {'a.b': 1, 'b.c': 1, b: 1, 'a.bc': 1, 'c.0': 1}
     };
 
@@ -205,7 +217,6 @@ test('context summary', function(t) {
       }
     }
 
-    t.equal(Object.keys(context.locals).length, 0, 'lcoals');
     t.equal(Object.keys(context.filters).length, 0, 'filters');
     t.equal(Object.keys(context.paths).length, 0, 'paths');
 
@@ -215,7 +226,6 @@ test('context summary', function(t) {
   t.test('[].slice.call([1, 2])', function() {
     var s = summary(parse('[].slice.call([1, 2])'))
 
-    t.equal(s.locals.length, 0, 'locals');
     t.equal(s.filters.length, 0, 'filters');
     t.equal(s.paths.length, 0, 'paths');
 

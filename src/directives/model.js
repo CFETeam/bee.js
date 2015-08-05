@@ -3,6 +3,7 @@
 var utils = require('../utils.js')
   , hasToken = require('../token.js').hasToken
   , events = require('../event-bind.js')
+  , checkBinding = require('../check-binding')
   ;
 
 
@@ -64,6 +65,9 @@ module.exports = {
         }, true)
       }
     }else{
+      //优先解析内部内容
+      vm.__links = vm.__links.concat(checkBinding.walk.call(vm, comp.childNodes));
+
       //HTML 原生控件的双向绑定
       switch(comp.tagName) {
         default:

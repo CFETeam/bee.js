@@ -40,7 +40,7 @@ module.exports = {
           //监听父组件更新, 同步数据
           //TODO 移到 b-with 指令中完成
           vm.$watch(curPath, function (val) {
-            comp && comp.$set(utils.extend(true, {}, vm.$get(curPath)));
+            comp && comp.$set(utils.extend({}, vm.$get(curPath)));
           })
         }else{
           comPath = utils.hyphenToCamel(dir.dirName);

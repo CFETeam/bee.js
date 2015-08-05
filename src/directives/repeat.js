@@ -47,6 +47,9 @@ module.exports = {
     var that = this, vmList = this.vmList;
     var trackId = this.trackId;
 
+    //TODO 将数组修饰移至所有表达式中
+    var arrs = []; //repeat 表达式中出现的数组
+
     if(utils.isArray(items)) {
       // 在 repeat 指令表达式中相关变量
       this.listPath = this.summary.paths.filter(function(path) {
@@ -125,40 +128,43 @@ module.exports = {
         vm.$update('$index', false)
       });
 
-      this.summary.paths.forEach(function(localKey) {
-        var local = that.vm.$get(localKey);
+      this.listPath.forEach(function(localKey) {
+        var local = that.vm.$get(localKey)
+        utils.isArray(local) && arrs.push(local)
+      })
+      arrs.push(items)
+      arrs.forEach(function(local) {
         var dirs = local.__dirs__;
-        if(utils.isArray(local)) {
-          if(!dirs){
-            //数组操作方法
-            utils.extend(local, {
-              $set: function(i, item) {
-                local.splice(i, 1, utils.isObject(item) ? utils.extend({}, local[i], item) : item)
-              },
-              $replace: function(i, item) {
-                local.splice(i, 1, item)
-              },
-              $remove: function(i) {
-                local.splice(i, 1);
-              }
-            });
-            arrayMethods.forEach(function(method) {
-              local[method] = utils.afterFn(local[method], function() {
-                dirs.forEach(function(dir) {
-                  dir.listPath.forEach(function(path) {
-                    var reformed = scope.reformScope(dir.vm, path)
-                    reformed.vm.$update(reformed.path)
-                  })
+
+        if(!dirs){
+          //数组操作方法
+          utils.extend(local, {
+            $set: function(i, item) {
+              local.splice(i, 1, utils.isObject(item) ? utils.extend({}, local[i], item) : item)
+            },
+            $replace: function(i, item) {
+              local.splice(i, 1, item)
+            },
+            $remove: function(i) {
+              local.splice(i, 1);
+            }
+          });
+          arrayMethods.forEach(function(method) {
+            local[method] = utils.afterFn(local[method], function() {
+              dirs.forEach(function(dir) {
+                dir.listPath.forEach(function(path) {
+                  var reformed = scope.reformScope(dir.vm, path)
+                  reformed.vm.$update(reformed.path)
                 })
               })
-            });
-            dirs = local.__dirs__  = [];
-          }
-          //一个数组多处使用
-          //TODO 移除时的情况
-          if(dirs.indexOf(that) === -1) {
-            dirs.push(that)
-          }
+            })
+          });
+          dirs = local.__dirs__  = [];
+        }
+        //一个数组多处使用
+        //TODO 移除时的情况
+        if(dirs.indexOf(that) === -1) {
+          dirs.push(that)
         }
       })
 

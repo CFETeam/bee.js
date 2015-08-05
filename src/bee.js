@@ -268,7 +268,7 @@ extend(Bee.prototype, lifeCycles, {
       watchers = this._watchers[key] || [];
 
       for (var i = 0, l = watchers.length; i < l; i++) {
-        watchers[i].update();
+        watchers[i] && watchers[i].update();
       }
 
       if(isBubble) {

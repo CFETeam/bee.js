@@ -43,7 +43,9 @@ var operators = {
   , ',': function(l, r) { return l, r; }
 
   , '.': function(l, r) {
-      if(r && path){
+      var prev = this.first;
+      //排除 a[b].c 这种情况
+      if(r && path && !(prev.arity === 'binary' && prev.value === '[')){
         path = path + '.' + r;
       }
       return l[r];
@@ -159,7 +161,6 @@ var evaluate = function(tree) {
       summary.assignments[value] = true;
     break;
     case 'name':
-      summary.locals[value] = true;
       res = getValue(value, context.locals);
     break;
     case 'filter':
@@ -167,7 +168,7 @@ var evaluate = function(tree) {
       res = context.filters[value];
     break;
     case 'this':
-      res = context.locals;//TODO this 指向 vm 还是 dir?
+      res = context.locals;
     break;
   }
   return res;
@@ -190,7 +191,7 @@ function reset(scope, that) {
     self = that;
   }
 
-  summary = {filters: {}, locals: {}, paths: {}, assignments: {}};
+  summary = {filters: {}, paths: {}, assignments: {}};
   path = '';
 }
 
@@ -210,7 +211,7 @@ exports.eval = function(tree, scope, that) {
 };
 
 //表达式摘要
-//return: {filters:[], locals:[], paths: [], assignments: []}
+//return: {filters:[], paths: [], assignments: []}
 exports.summary = function(tree) {
   reset();
 
