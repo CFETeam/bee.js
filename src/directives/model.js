@@ -62,7 +62,9 @@ module.exports = {
         }
         comp.$watch(value, function(val, oldValue) {
           val !== oldValue && handler()
-        }, true)
+        })
+        //将父组件的值同步到子组件
+        comp.$set(value, vm.$get(keyPath))
       }
     }else{
       //优先解析内部内容
