@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>color</title>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="../src/es5-bee-shim.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="../build/bee.js"></script>
+</head>
+<body>
+<div id="demo">
+  <div>
+    <ul style="display:inline-block;vertical-align:middle">
+      <li><label>R: <input type="range" min=0 max=255 b-model="rgb.r"> {{rgb.r}} </label></li>
+      <li><label>G: <input type="range" min=0 max=255 b-model="rgb.g"> {{rgb.g}} </label></li>
+      <li><label>B: <input type="range" min=0 max=255 b-model="rgb.b"> {{rgb.b}} </label></li>
+    </ul>
+    <div style="width: 100px; height: 100px; display:inline-block;vertical-align:middle"
+      b-style="{backgroundColor: '#' + hex}">
+    </div>
+    <div>
+      <ul>
+        <li>Hex: #{{hex}}</li>
+        <li>HSL:
+          <ul>
+            <li>HUE (色相): {{hsl.h}} º</li>
+            <li>Saturation (饱和度): {{hsl.s}} %</li>
+            <li>Lightness (明度): {{hsl.l}} %</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script>
+  var bee = Bee.mount('demo', {
+    rgbToHsl: function(rgb) {
+      var r = rgb.r / 255,
+        g = rgb.g / 255,
+        b = rgb.b /255,
+        max = Math.max(r, g, b),
+        min = Math.min(r, g, b),
+        delta = max - min,
+        lightness = (min + max) / 2,
+        hsl = {};
+
+      if(delta === 0) {
+        hsl.h = 0
+        hsl.s = 0
+      }else{
+        if(max === r) {
+          hsl.h = (g - b) / delta % 6
+        }else if(max === g) {
+          hsl.h = (b - r) / delta + 2
+        }else {
+          hsl.h = (r - g) / delta + 4
+        }
+        hsl.h *= 60
+
+        if(hsl.h < 0) {
+          hsl.h = 360 + hsl.h
+        }
+
+        hsl.s = (delta / (1 - Math.abs(2 * lightness - 1)) ) * 100
+      }
+      hsl.l = lightness * 100;
+
+      hsl.h = hsl.h.toFixed(0)
+      hsl.s = hsl.s.toFixed(0)
+      hsl.l = hsl.l.toFixed(0)
+
+      return hsl
+    },
+    rgbToHex: function(rgb) {
+      var hex = toHex(rgb.r) + toHex(rgb.g) + toHex(rgb.b)
+      return hex
+    }
+  })
+
+  bee.$watch('rgb', function(rgb) {
+    this.$set({
+      hex: this.rgbToHex(rgb),
+      hsl: this.rgbToHsl(rgb)
+    })
+  }, true)
+
+  //转 16 进制, 补零
+  function toHex(c) {
+    var str = (c * 1).toString(16)
+    return str.length === 1 ? (0 + str) : str
+  }
+</script>
+</body>
+</html>

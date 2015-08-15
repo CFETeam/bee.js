@@ -7,14 +7,14 @@ browsers:
   - name: ie
     version: 8..latest
   - name: firefox
-    version: 36..latest
+    version: 37..latest
   - name: chrome
-    version: 40..latest
+    version: 41..latest
   - name: safari
     version: 6..latest
   - name: opera
     version: 11..latest
   - name: iphone
-    version: 6.0..latest
+    version: 6.1..latest
   - name: android
     version: 4.0..latest
