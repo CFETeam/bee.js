@@ -6,7 +6,7 @@ var utils = require('../utils.js');
 
 module.exports = {
   link: function() {
-    if(this.dirName === this.type) {//attr binding
+    if(this.dirName === this.type && this.nodeName !== this.dirName) {//attr binding
       this.attrs = {};
     }else {
       //属性表达式默认将值置空, 防止表达式内变量不存在
@@ -19,7 +19,7 @@ module.exports = {
     var textMap = this.textMap
 
     //b-attr
-    if(this.dirName === this.type) {
+    if(this.attrs) {
       for(var attr in val) {
         setProperty.call(this, el, attr, val[attr]);
 

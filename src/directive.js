@@ -138,7 +138,7 @@ function getDirs(el, cstr){
     }else if(token.hasToken(attr.value)) {
       //属性表达式可能有多个表达式区
       token.parseToken(attr.value).forEach(function(origin) {
-        origin.dirName = attrName.indexOf(prefix) === 0 ? dirName : attrName ;
+        origin.dirName = attrName ;
         dirs.push(utils.extend(create(directives.attr), proto, origin))
       });
       //由于已知属性表达式不存在 anchor, 所以直接跳过下面的检测
