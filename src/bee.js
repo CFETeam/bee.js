@@ -308,12 +308,13 @@ extend(Bee.prototype, lifeCycles, {
     Watcher.unwatch(this, expression, callback)
   }
   //销毁当前实例
+  //removeEl 为 false 时不移除元素
 , $destroy: function(removeEl) {
     this.$beforeDestroy()
     this.__links.forEach(function(wacher) {
       wacher.unwatch()
     })
-    removeEl && this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
+    removeEl !== false && this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
     this.__links = [];
     this.$afterDestroy()
   }
