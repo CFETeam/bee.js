@@ -95,7 +95,8 @@ module.exports = {
             $parent: this.vm,
             _assignments: this.summary.assignments,
             __repeat: true,
-            __anchor: anchor
+            __anchor: anchor,
+            __vmList: this.vmList
           });
 
           parentNode.insertBefore(vm.$el, getAnchor(that, pos))
