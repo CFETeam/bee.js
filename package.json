@@ -1,6 +1,6 @@
 {
   "name": "beejs",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "轻量级 MVVM 库",
   "main": "src/bee.js",
   "scripts": {
