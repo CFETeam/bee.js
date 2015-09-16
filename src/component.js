@@ -21,14 +21,19 @@ function tag(tagName, Component, statics) {
 
 /**
  * 查询某构造函数下的注册组件
- * @parm {String} componentName
+ * @param {String} componentName 组件标签名
+ * @param {Bee} Context 组件出现的环境组件构造函数
  */
-function getComponent(componentName) {
+function getComponent(componentName, Context) {
   var paths = utils.parseKeyPath(componentName);
   var CurCstr = this;
   paths.forEach(function(comName) {
     CurCstr = CurCstr && CurCstr.components[comName];
   });
+
+  if(Context && !CurCstr) {
+    CurCstr = Context.getComponent(componentName);
+  }
   return CurCstr || null;
 }
 

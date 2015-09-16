@@ -15,7 +15,7 @@ module.exports = {
     var cstr = vm.constructor;
     var comp;
     var dirs, $data = {};
-    var Comp = cstr.getComponent(this.path)
+    var Comp = cstr.getComponent(this.path, vm.$context && vm.$context.constructor)
     var statics = {};
 
     if(Comp) {
@@ -68,6 +68,7 @@ module.exports = {
       this.component = comp = new Comp({
         $el: el,
         $isReplace: true,
+        $context: vm,
 
         $data: utils.extend(true, {}, $data, statics)
       });

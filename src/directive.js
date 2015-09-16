@@ -109,9 +109,10 @@ var attrPostReg = /\?$/;
  * 获取一个元素上所有用 HTML 属性定义的指令
  * @param  {Element} el   指令所在元素
  * @param  {Bee} cstr 组件构造函数
+ * @param  {Bee} context 当前实例的上下文构造函数
  * @return {directeve[]}      `el` 上所有的指令
  */
-function getDirs(el, cstr){
+function getDirs(el, cstr, context){
   var attr, attrName, dirName, proto
     , dirs = [], dir
     , parent = el.parentNode
@@ -121,7 +122,7 @@ function getDirs(el, cstr){
     ;
 
   //对于自定义标签, 将其转为 directive
-  if(cstr.getComponent(nodeName)) {
+  if(cstr.getComponent(nodeName, context)) {
     el.setAttribute(prefix + 'component', nodeName);
   }
 

@@ -74,6 +74,7 @@ function Bee(tpl, props) {
   , $isReplace: false
   , $parent: null
   , $root: this
+  , $context: null
 
     //私有属性/方法
   , _watchers: {}

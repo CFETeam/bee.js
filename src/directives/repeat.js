@@ -93,6 +93,7 @@ module.exports = {
             $index: pos,
             $root: this.vm.$root,
             $parent: this.vm,
+            $context: this.vm.$context,
             _assignments: this.summary.assignments,
             __repeat: true,
             __anchor: anchor,
