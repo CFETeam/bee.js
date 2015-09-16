@@ -62,7 +62,7 @@ var operators = {
     //filter. name|filter
   , '|': function(l, r){ return callFilter(l, r, []) }
   , 'new': function(l, r){
-      return l === Date ? new Function('return new Date(' + r.join(', ') + ')')() : new (Function.prototype.bind.apply(l, r));
+      return l === Date ? new Function('return new Date(' + r.join(', ') + ')')() : new (Function.prototype.bind.apply(l, [null].concat(r)));
     }
 
   , 'in': function(l, r){
@@ -151,7 +151,7 @@ var evaluate = function(tree) {
       try{
         res = getOperator(arity, value).apply(tree, args);
       }catch(e){
-        //summaryCall || console.warn(e);
+        summaryCall || console.warn(e);
       }
     break;
     case 'literal':
