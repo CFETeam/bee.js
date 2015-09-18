@@ -22,17 +22,17 @@ function tag(tagName, Component, statics) {
 /**
  * 查询某构造函数下的注册组件
  * @param {String} componentName 组件标签名
- * @param {Bee} Context 组件出现的环境组件构造函数
+ * @param {Bee} context 组件出现的环境实例
  */
-function getComponent(componentName, Context) {
+function getComponent(componentName, context) {
   var paths = utils.parseKeyPath(componentName);
   var CurCstr = this;
   paths.forEach(function(comName) {
     CurCstr = CurCstr && CurCstr.components[comName];
   });
 
-  if(Context && !CurCstr) {
-    CurCstr = Context.getComponent(componentName);
+  if(context && context.constructor && !CurCstr) {
+    CurCstr = context.constructor.getComponent(componentName, context.$context);
   }
   return CurCstr || null;
 }

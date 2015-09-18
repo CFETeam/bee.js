@@ -15,7 +15,7 @@ module.exports = {
     var cstr = vm.constructor;
     var comp;
     var dirs, $data = {};
-    var Comp = cstr.getComponent(this.path, vm.$context && vm.$context.constructor)
+    var Comp = cstr.getComponent(this.path, vm.$context)
     var statics = {};
 
     if(Comp) {

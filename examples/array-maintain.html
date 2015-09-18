@@ -17,15 +17,17 @@
   {{list.length}}
   <button b-on-click="list.push({name: '新'})">添加</button>
   <ul>
-    <li b-repeat="item in list" b-on="events">
-      <span>({{$index + 1}}) name: {{name}} - item.name: {{item.name}}</span>
+    <li b-repeat="item in list" b-on="events" b-ref="list">
+      <span>name: {{name}} - item.name: {{item.name}}</span>
+      <br />
+      <span b-ref="l" b-repeat="i in item.l">- {{i}} - {{$parent.$index}} -</span>
       <a href="javascript:;" b-on-click="list.$remove($index)">删除</a>
     </li>
   </ul>
 </div>
 <script type="text/javascript">
   var bee = new Bee(document.getElementById('template'), {
-    $data: {list:[{name: 'click me'}, {name: 'row 2'}, {name: 'd3'}], name: 'parent name'},
+    $data: {list:[{name: 'click me', l: ['a']}, {name: 'row 2', l: ['b']}, {name: 'd3', l: ['c']}], name: 'parent name'},
     add: function() {
       this.list.push({name: '新'})
     },

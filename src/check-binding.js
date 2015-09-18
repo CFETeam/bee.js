@@ -84,7 +84,7 @@ function walk(el) {
 //遍历属性
 function checkAttr(el) {
   var cstr = this.constructor
-    , dirs = directive.getDirs(el, cstr, this.$context && this.$context.constructor)
+    , dirs = directive.getDirs(el, cstr, this.$context)
     , dir
     , terminalPriority, watchers = []
     , result = {};

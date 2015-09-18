@@ -151,7 +151,7 @@ var evaluate = function(tree) {
       try{
         res = getOperator(arity, value).apply(tree, args);
       }catch(e){
-        summaryCall || console.warn(e);
+        !summaryCall && value == '(' && console.error(e);
       }
     break;
     case 'literal':

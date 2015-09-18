@@ -108,8 +108,8 @@ var attrPostReg = /\?$/;
 /**
  * 获取一个元素上所有用 HTML 属性定义的指令
  * @param  {Element} el   指令所在元素
- * @param  {Bee} cstr 组件构造函数
- * @param  {Bee} context 当前实例的上下文构造函数
+ * @param  {Function} cstr 组件构造函数
+ * @param  {Bee} context 当前实例的上下文实例
  * @return {directeve[]}      `el` 上所有的指令
  */
 function getDirs(el, cstr, context){
