@@ -261,12 +261,18 @@ HTML 属性指令.
 IE 浏览器会校验 `style` 属性值, 所以直接使用 `style='{{"color: white"}}'` 这种写法在 IE 中没有效果. 为了兼容 IE 浏览器,
  可以使用 `b-style` 指令, 指令值可以为字符串或对象.
 
-直接使用 `src='{{src}}'` 这种写法有可能会想服务器发送一条无效的 `404` 请求, 为了避免这种情况应该使用 `b-src` 指令代替.
+直接使用 `src='{{src}}'` 这种写法有可能会向服务器发送一条无效的 `404` 请求, 为了避免这种情况请使用 `b-src` 指令代替.
 
 ```html
 <div b-style="{color: color, width: 50}"></div>
 <div b-style="'color: ' + color + '; width: 50px;'"></div>
 ```
+
+### b-class
+`b-class` 用于快速的设定元素的 CSS 类名. `b-class` 指令支持字符串或者对象格式.
+
+对于对象格式 `<span b-class="{'myclassname': 'mykey'}"></span>`,
+当 `mykey` 为 `true` 时会在 `span` 元素上添加一个 `myclassname` 的类名, 反之则移除这个类名.
 
 ### b-text b-html b-content
 这三种指令都用于展示内容.

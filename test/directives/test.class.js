@@ -17,13 +17,13 @@ test('b-class', function(t) {
   t.equal(el.className, 'a b', 'string class')
 
   t.test('object class', function(t){
-    bee.$set({ klass: {key: 'c'} })
+    bee.$set({ klass: {'c d': 'key'} })
 
     t.equal(el.className, 'a')
 
     bee.$set({key: true})
 
-    t.equal(el.className, 'a c')
+    t.equal(el.className, 'a c d')
 
     bee.$set({key: false})
 
