@@ -16,3 +16,21 @@ test('b-ref', function(t) {
 
   t.end();
 })
+
+test('b-ref in repeat', function(t) {
+  var Test = Bee.tag('test', { })
+
+  var bee = new Bee('<span><span b-repeat="item in list" b-ref="list"><div b-component="test" b-ref="test"></div></span></span>', {
+    $data: {
+      list: [{}]
+    }
+  })
+
+  t.ok(Array.isArray(bee.$refs.list))
+  t.equal(bee.$refs.list.length, bee.list.length)
+  t.ok(bee.$refs.list[0].$refs.test instanceof Test)
+  bee.list.push({})
+  t.equal(bee.$refs.list.length, bee.list.length)
+
+  t.end()
+})

@@ -12,7 +12,8 @@ module.exports = {
 , link: function() {
     var vm = this.vm
     //在 `repeat` 元素上的 `ref` 会指向匿名 `viewmodel`
-    if(vm.__repeat){
+    //ref 在  repeat 节点上时 vm 和 this.el.bee 都指向 repeat 所创建的匿名 vm
+    if(vm.__repeat && vm == this.el.bee){
       if(!vm.$index) {
         vm.$parent.$refs[this.path] = vm.__vmList;
       }
