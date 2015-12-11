@@ -18,7 +18,7 @@ module.exports = {
 
     var comp = this.el
       , ev = 'change'
-      , attr
+      , attr, compVal
       , value = attr = 'value'
       , isSetDefaut = utils.isUndefined(vm.$get(keyPath))//界面的初始值不会覆盖 model 的初始值
       , crlf = /\r\n/g//IE 8 下 textarea 会自动将 \n 换行符换成 \r\n. 需要将其替换回来
@@ -63,8 +63,14 @@ module.exports = {
         comp.$watch(value, function(val, oldValue) {
           val !== oldValue && handler()
         })
-        //将父组件的值同步到子组件
-        comp.$set(value, vm.$get(keyPath))
+        compVal = vm.$get(keyPath)
+
+        //默认使用父组件的对应值同步自组件, 如果父组件对应 key 的值是 `undefined` 则反向同步
+        if(utils.isUndefined(compVal)) {
+          handler()
+        }else{
+          update(compVal)
+        }
       }
     }else{
       //优先解析内部内容
@@ -129,7 +135,7 @@ module.exports = {
         events.removeEvent(comp, e, callHandler);
         events.addEvent(comp, e, callHandler);
       });
-      //根据表单元素的初始化默认值设置对应 model 的值
+      //用组件内部初始化值更新对应 model 的值
       if(comp[value] && isSetDefaut){
          handler();
       }
