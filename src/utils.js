@@ -29,7 +29,7 @@ function extend(/* deep, target, object... */) {
     , target = arguments[0] || {}
     , i = 1
     , length = arguments.length
-    , deep = false
+    , deep = false, isArray
     ;
 
   // Handle a deep copy situation
@@ -49,10 +49,11 @@ function extend(/* deep, target, object... */) {
   for ( ; i < length; i++ ) {
     // Only deal with non-null/undefined values
     if ( (options = arguments[ i ]) != null ) {
+      isArray = utils.isArray(options)
       // Extend the base object
       for ( name in options ) {
         //android 2.3 browser can enum the prototype of constructor...
-        if(name !== 'prototype'){
+        if(name !== 'prototype' && !(isArray && !(name >= 0))){
           src = target[ name ];
           copy = options[ name ];
 

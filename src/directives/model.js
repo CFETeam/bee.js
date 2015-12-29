@@ -126,6 +126,28 @@ module.exports = {
                 }
               }
             };
+          }else{
+            if(comp.hasAttribute && comp.hasAttribute('data-forcesync') || ('data-forcesync' in comp)) {
+              update = function(val) {
+                if(val === 0 && comp.type !== 'checkbox') { val = '0' }
+                var newVal = (val || '') + ''
+                  , val = comp[attr]
+                  ;
+                val && val.replace && (val = val.replace(crlf, '\n'));
+                if(newVal !== val){
+                  for(var i = 0, l = comp.options.length; i < l; i++){
+                    if(comp.options[i].value === newVal + '') {
+                      comp.options[i].selected = true;
+                      comp[attr] = newVal;
+                      break;
+                    }
+                  }
+                  if(i == l) {
+                    handler()
+                  }
+                }
+              }
+            }
           }
           isSetDefaut = isSetDefaut && !hasToken(comp[value]);
         break;
