@@ -19,7 +19,7 @@ var Event = {
   //移除监听事件.
   $off: function(name, handler, context) {
     var ctx = context || this
-      , handlers = ctx._handlers
+      , handlers = ctx._handlers || {}
       ;
 
     if(name && handlers[name]){

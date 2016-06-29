@@ -315,6 +315,17 @@ extend(Bee.prototype, lifeCycles, {
     this.__links.forEach(function(wacher) {
       wacher.unwatch()
     })
+
+    var node = this.$el.firstChild
+    while(node) {
+      if(node.bee) {
+        node.bee.$destroy(removeEl)
+        node = node.nextSibling
+      }else {
+        node = node.nextSibling || node.firstChild
+      }
+    }
+
     removeEl !== false && this.$el.parentNode && this.$el.parentNode.removeChild(this.$el)
     this.__links = [];
     this.$afterDestroy()
