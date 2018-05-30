@@ -78,7 +78,7 @@ module.exports = {
         vm.__ref = comp;
         vm.$el = comp.$el;
       }
-      return true;
+      return comp;
     }else{
       console.warn('Component: ' + this.path + ' not defined! Ignore');
     }

@@ -21,14 +21,15 @@ function tag(tagName, Component, statics) {
 
 /**
  * 查询某构造函数下的注册组件
+ * @parm {String} componentName
  */
-function getComponent(compName) {
-  var paths = utils.parseKeyPath(compName);
+function getComponent(componentName) {
+  var paths = utils.parseKeyPath(componentName);
   var CurCstr = this;
   paths.forEach(function(comName) {
-    CurCstr = CurCstr.components[comName]
+    CurCstr = CurCstr && CurCstr.components[comName];
   });
-  return CurCstr;
+  return CurCstr || null;
 }
 
 exports.tag = exports.component = tag;

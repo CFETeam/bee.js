@@ -141,7 +141,11 @@ extend(Bee, {extend: utils.afterFn(Class.extend, utils.noop, function(sub) {
 , doc: doc
 , directives: {}
 , components: {}
-, filters: {}
+, filters: {
+    //build in filter
+    json: function(obj, replacer, space) {
+      return JSON.stringify(obj, replacer, space) }
+  }
 , mount: function(id, props) {
     var el = id.nodeType ? id : doc.getElementById(id);
     var Comp = this.getComponent(el.tagName.toLowerCase());
